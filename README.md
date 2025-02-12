@@ -32,3 +32,5 @@ MAC: ```source venv/bin/activate```
 
 5. Next run the command ```pip install -r requirements.txt```, this will install all the nessecary packages.
 6. Run ```python manage.py runserver``` to start up the backend server which will be available at ```127.0.0.1:8000```
+
+Changes
