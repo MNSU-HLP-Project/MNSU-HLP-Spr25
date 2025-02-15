@@ -1,17 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import EntryForm from './EntryForm'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import EntryForm from "./EntryForm";
+import AdminPage from "./dashboard/adminpanel";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-      <EntryForm>
-      </EntryForm>
-
-  )
+    <Router>
+      <Routes>
+        {/* Home Page (Default Route) */}
+        <Route path="/" element={<EntryForm />} />
+        
+        {/* Dashboard Page */}
+        <Route path="/dashboard" element={<AdminPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
