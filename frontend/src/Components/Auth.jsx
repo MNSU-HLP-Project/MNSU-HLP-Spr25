@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import axios from 'axios';
+import { decodeToken } from "../utils/jwtHelper";
 
 
 
@@ -26,6 +27,7 @@ function Auth() {
     role: ''
   });
   const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
 
   const handleChange = (form) => {
     const {name, value} = form.target;
@@ -50,6 +52,12 @@ function Auth() {
           });
 
           if(response.status == 200) {
+            const token = response.data.token;
+            localStorage.setItem("jwtToken", token);
+
+            const decoded = decodeToken(token);
+            setUserDetails(decoded);
+            console.log(decoded)
             navigate('/mainmenu/')
           } else {
             setErrors({password: 'Username or Password is incorrect'})

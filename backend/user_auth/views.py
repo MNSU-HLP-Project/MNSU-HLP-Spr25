@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import login
 from .serializers import SignupSerializer, LoginSerializer
+import jwt
+from django.conf import settings
 
 class SignupView(APIView):
     def post(self, request):
-        print(request.data)
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -18,6 +19,8 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
+            #TODO add a role to this
+            token = jwt.encode({'role': 'admin', 'firstname': user.first_name, 'lastname': user.last_name}, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             login(request, user)
-            return Response({"message": "Login successful!"}, status=status.HTTP_200_OK)
+            return Response({"token": token}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

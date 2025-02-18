@@ -27,7 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+#TODO Create a secret key mechanism
+SECRET_KEY = 'secret'
+JWT_ALGORITHM = 'HS256'  # HMAC-SHA256 is a common choice
+JWT_EXP_DELTA_SECONDS = 3600  # Token expiry in seconds
 # Application definition
 
 INSTALLED_APPS = [
