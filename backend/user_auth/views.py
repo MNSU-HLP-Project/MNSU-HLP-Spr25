@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from .serializers import SignupSerializer, LoginSerializer
 import jwt
 from django.conf import settings
+from .models import ExtendUser
 
 class SignupView(APIView):
     def post(self, request):
@@ -20,7 +21,13 @@ class LoginView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data
             #TODO add a role to this
-            token = jwt.encode({'role': 'admin', 'firstname': user.first_name, 'lastname': user.last_name}, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+            token = jwt.encode({
+                'role': ExtendUser.objects.get(user=user).role, 
+                'id': user.username, 
+                'firstname': user.first_name, 
+                'lastname': user.last_name,
+                'org': ExtendUser.objects.get(user=user).org
+                }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             login(request, user)
             return Response({"token": token}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

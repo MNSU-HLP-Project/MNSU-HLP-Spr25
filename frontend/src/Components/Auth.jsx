@@ -27,7 +27,6 @@ function Auth() {
     role: ''
   });
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState(null);
 
   const handleChange = (form) => {
     const {name, value} = form.target;
@@ -56,19 +55,17 @@ function Auth() {
             localStorage.setItem("jwtToken", token);
 
             const decoded = decodeToken(token);
-            setUserDetails(decoded);
             console.log(decoded)
             navigate('/mainmenu/')
           } else {
             setErrors({password: 'Username or Password is incorrect'})
           }
           } catch (error) {
-            console.error('Login Error:', error.response.data);
+            console.error('Login Error:', error);
             alert('Invalid credentials. Please try again.');
           }
 
         } else {
-          console.log(formData)
           const newErrors = {
             firstName: formData.firstName ? '' : 'First name is required.',
             lastName: formData.lastName ? '' : 'Last name is required.',
@@ -93,17 +90,24 @@ function Auth() {
                 role: formData.role
               });
               if (response.status == 201) {
-              console.log('Signup Successful:', response.data);
-              setIsLogin(true); // Switch to login after successful registration
+                console.log('Signup Successful:', response.data);
+                setIsLogin(true); // Switch to login after successful registration
               }
               else {
                 console.log(response.data)
               }
             } catch (error) {
-              console.error('Signup Error:', error.response.data);
-              alert('An error occurred during signup. Please try again.');
+              if (error.response && error.response.data) {
+                if (error.response.data.email) {
+                    newErrors.email = error.response.data.email;
+                    setErrors({email: error.response.data.email}); // Update the errors state
+                }
             }
+            alert('An error occurred during signup. Please try again.');
+            }
+            
         }
+        
       }
     }
   };
