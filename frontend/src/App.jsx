@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import LandingPage from "./Pages/LandingPage";
 import Auth from "./Components/Auth"; // Updated import to the new component
 import MainMenu from "./Components/MainMenu";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -8,13 +9,10 @@ import AdminPage from "./dashboard/adminpanel";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-center text-2xl font-bold mt-4">Teach Track</h1>
-      <Routes>
-        <Route path="/" element={<Auth />} /> {/* Unified Auth Page */}
-        <Route path='/mainmenu/' element={<MainMenu />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/mainmenu/" element={<MainMenu />} />
+    </Routes>
   );
 }
 
