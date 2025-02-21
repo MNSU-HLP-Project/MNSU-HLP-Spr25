@@ -1,18 +1,20 @@
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Auth from "./Components/Auth"; // Updated import to the new component
+import MainMenu from "./Components/MainMenu";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EntryForm from "./EntryForm";
 import AdminPage from "./dashboard/adminpanel";
 
 function App() {
   return (
-    <Router>
+    <div>
+      <h1 className="text-center text-2xl font-bold mt-4">Teach Track</h1>
       <Routes>
-        {/* Home Page (Default Route) */}
-        <Route path="/" element={<EntryForm />} />
-        
-        {/* Dashboard Page */}
-        <Route path="/dashboard" element={<AdminPage />} />
+        <Route path="/" element={<Auth />} /> {/* Unified Auth Page */}
+        <Route path='/mainmenu/' element={<MainMenu />} />
       </Routes>
-    </Router>
+    </div>
   );
 }
 

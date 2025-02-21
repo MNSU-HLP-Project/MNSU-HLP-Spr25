@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('entries.urls')),  # Connect entries API
+    path('api/', include ('user_auth.urls')),
+    path('', home, name='home'),  # Main page
 ]
