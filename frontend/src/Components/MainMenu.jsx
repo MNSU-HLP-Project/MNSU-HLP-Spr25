@@ -3,10 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainMenu = () => {
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const buttonPress = () => {
-    navigate("/");
+  const buttonPress = (route) => {
+    navigate(route);
   };
 
   return (
@@ -14,7 +13,13 @@ const MainMenu = () => {
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
         <button
           className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          onClick={buttonPress}
+          onClick={() => buttonPress('/hlpcategories/')}
+        >
+          HLP Categories
+        </button>
+        <button
+          className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          onClick={() => buttonPress('/')}
         >
           Log Out
         </button>
