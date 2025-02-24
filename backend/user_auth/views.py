@@ -2,10 +2,28 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import login
-from .serializers import SignupSerializer, LoginSerializer
+from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from django.conf import settings
-from .models import ExtendUser
+from .models import ExtendUser, Invitation
+from rest_framework.decorators import api_view
+
+@api_view(['POST'])
+def generate_invitation(request):
+    max_uses = request.data.get('max_uses', None) 
+    userid = request.data.get('userid')
+    if not userid:
+        return Response({'error': 'User ID is required'}, status=400)
+
+    # Ensure user exists before creating invitation
+    from django.contrib.auth.models import User
+    try:
+        teacher = User.objects.get(username=userid)
+    except User.DoesNotExist:
+        return Response({'error': 'Teacher not found'}, status=404)
+
+    invitation = Invitation.objects.create(teacher=teacher, max_uses=max_uses)
+    return Response(InvitationSerializer(invitation).data)
 
 class SignupView(APIView):
     def post(self, request):
