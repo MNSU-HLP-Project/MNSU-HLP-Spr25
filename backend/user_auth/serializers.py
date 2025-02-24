@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser
+from .models import ExtendUser, Organization, StudentTeacher, Supervisor, GradeLevel
 
 class SignupSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='first_name')
@@ -47,3 +47,40 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid credentials.")
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    members = serializers.PrimaryKeyRelatedField(many=True, read_only=True)  # Show user IDs of members
+
+    class Meta:
+        model = Organization
+        fields = '__all__'
+
+class ExtendUserSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Returns username instead of ID
+    org = OrganizationSerializer(read_only=True)  # Nested serialization for org
+
+    class Meta:
+        model = ExtendUser
+        fields = '__all__'
+
+class GradeLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GradeLevel
+        fields = '__all__'
+
+class StudentTeacherSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Display username instead of ID
+    org = OrganizationSerializer(read_only=True)  # Nested organization details
+    grade_levels = GradeLevelSerializer(many=True, read_only=True)  # Show grade levels as objects
+
+    class Meta:
+        model = StudentTeacher
+        fields = '__all__'
+
+class SupervisorSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Show username instead of ID
+    student_teachers = StudentTeacherSerializer(many=True, read_only=True)  # Show student teachers
+
+    class Meta:
+        model = Supervisor
+        fields = '__all__'

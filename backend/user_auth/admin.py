@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ExtendUser
+from .models import ExtendUser, StudentTeacher, Organization, Supervisor, GradeLevel
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -38,3 +38,8 @@ try:
 except:
     print('Didnt work')
 admin.site.register(User, UserAdmin)
+
+admin.site.register(StudentTeacher)
+admin.site.register(Supervisor)
+admin.site.register(Organization)
+admin.site.register(GradeLevel)
