@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Auth from "../Components/Auth";
+import Auth from "../Components/Login";
 
 function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);

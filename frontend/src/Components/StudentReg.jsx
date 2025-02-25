@@ -22,7 +22,6 @@ function StudentRegister() {
     password: "",
     organization: "",
     confirmPassword: "",
-    role: "Student Teacher",
     searchParams: ""
   });
   const [errors, setErrors] = useState({});
@@ -47,7 +46,7 @@ function StudentRegister() {
     if (formData.password !== formData.confirmPassword) {
     newErrors.confirmPassword = "Passwords do not match.";
     }
-    if (!formData.role) newErrors.role = "Role is required.";
+    // if (!formData.role) newErrors.role = "Role is required.";
     
 
     setErrors(newErrors);
@@ -62,7 +61,6 @@ function StudentRegister() {
           email: formData.email,
           password: formData.password,
           organization: formData.organization,
-          role: formData.role,
           invitation_code: formData.searchParams
         });
 
@@ -131,7 +129,7 @@ function StudentRegister() {
               <p className="text-red-500 text-sm mt-1">{errors.organization}</p>
             )}
           </div>
-          <div className="mt-4 flex items-center gap-2">
+          {/* <div className="mt-4 flex items-center gap-2">
             <label className="text-gray-700 font-medium">Role:</label>
             <select
               name="role"
@@ -148,7 +146,7 @@ function StudentRegister() {
             {errors.role && (
               <p className="text-red-500 text-sm mt-1">{errors.role}</p>
             )}
-          </div>
+          </div> */}
         </>
       
 

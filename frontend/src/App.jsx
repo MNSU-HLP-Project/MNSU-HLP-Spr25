@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
-import Auth from "./Components/Auth"; // Updated import to the new component
+import Auth from "./Components/Login"; // Updated import to the new component
 import MainMenu from "./Components/MainMenu";
 import HLPCategories from "./Components/HLPCategories";
 import StudentRegister from "./Components/StudentReg";

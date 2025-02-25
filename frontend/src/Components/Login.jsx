@@ -6,7 +6,7 @@ import { decodeToken } from "../utils/jwtHelper";
 
 function Auth() {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -23,7 +23,7 @@ function Auth() {
   const buttonPress = async () => {
     const newErrors = {};
     
-    if (!formData.email) newErrors.email = "Email is required.";
+    if (!formData.username) newErrors.username = "username is required.";
     if (!formData.password) newErrors.password = "Password is required.";
 
     setErrors(newErrors);
@@ -33,7 +33,7 @@ function Auth() {
 
     try {
         const response = await axios.post("http://localhost:8000/api/login/", {
-          email: formData.email,
+          username: formData.username,
           password: formData.password,
         });
 
@@ -53,7 +53,7 @@ function Auth() {
         const apiErrors = error.response.data;
         const updatedErrors = { ...newErrors };
 
-        if (apiErrors.email) updatedErrors.email = apiErrors.email;
+        if (apiErrors.username) updatedErrors.username = apiErrors.username;
         if (apiErrors.password) updatedErrors.password = apiErrors.password;
         if (apiErrors.detail) updatedErrors.general = apiErrors.detail;
         if (apiErrors.error) updatedErrors.general = apiErrors.error
@@ -73,14 +73,14 @@ function Auth() {
 
       <div className="mt-4">
         <input
-          name="email"
-          type="email"
-          placeholder="Email"
+          name="username"
+          type="username"
+          placeholder="username"
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           onChange={handleChange}
         />
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+        {errors.username && (
+          <p className="text-red-500 text-sm mt-1">{errors.username}</p>
         )}
       </div>
 

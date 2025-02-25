@@ -7,22 +7,37 @@ import jwt
 from django.conf import settings
 from .models import ExtendUser, Invitation
 from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
 
 @api_view(['POST'])
 def generate_invitation(request):
     max_uses = request.data.get('max_uses', None) 
+    role = request.data.get('role')
     userid = request.data.get('userid')
     if not userid:
         return Response({'error': 'User ID is required'}, status=400)
 
     # Ensure user exists before creating invitation
-    from django.contrib.auth.models import User
     try:
         teacher = User.objects.get(username=userid)
     except User.DoesNotExist:
-        return Response({'error': 'Teacher not found'}, status=404)
+        return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Check if user is authorized
+    if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin']).exists() is False:
+        return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    invitation = Invitation.objects.create(teacher=teacher, max_uses=max_uses)
+    # Check if invitation already exists
+    invitation = Invitation.objects.filter(teacher=teacher).first()
+    if invitation:
+        return Response(InvitationSerializer(invitation).data)
+    
+    if role == 'Supervisor':
+        newrole = 'Student Teacher'
+    else: 
+        newrole = 'Supervisor'
+        
+    invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses)
     return Response(InvitationSerializer(invitation).data)
 
 class SignupView(APIView):
@@ -38,7 +53,6 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            #TODO add a role to this
             token = jwt.encode({
                 'role': ExtendUser.objects.get(user=user).role, 
                 'id': user.username, 
@@ -46,6 +60,5 @@ class LoginView(APIView):
                 'lastname': user.last_name,
                 'org': ExtendUser.objects.get(user=user).org
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-            login(request, user)
             return Response({"token": token}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
