@@ -19,6 +19,12 @@ const MainMenu = () => {
         </button>
         <button
           className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          onClick={() => buttonPress('/link/')}
+        >
+          Invite Link
+        </button>
+        <button
+          className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           onClick={() => buttonPress('/')}
         >
           Log Out

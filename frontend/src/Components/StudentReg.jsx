@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { decodeToken } from "../utils/jwtHelper";
+import { useSearchParams } from "react-router-dom";
 
-function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
+
+function StudentRegister() {
+    const [searchParams] = useSearchParams();
+    useEffect(() => {
+        const code = searchParams.get('code');
+        if (code) {
+            setFormData((prev) => ({ ...prev, searchParams: code }));
+        }
+    }, [searchParams]);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -13,7 +22,7 @@ function Auth() {
     password: "",
     organization: "",
     confirmPassword: "",
-    role: "Student Teacher",
+    searchParams: ""
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -31,16 +40,14 @@ function Auth() {
     
     if (!formData.email) newErrors.email = "Email is required.";
     if (!formData.password) newErrors.password = "Password is required.";
-
-    if (!isLogin) {
-      if (!formData.firstName) newErrors.firstName = "First name is required.";
-      if (!formData.lastName) newErrors.lastName = "Last name is required.";
-      if (!formData.organization) newErrors.organization = "Organization is required.";
-      if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Passwords do not match.";
-      }
-      if (!formData.role) newErrors.role = "Role is required.";
+    if (!formData.firstName) newErrors.firstName = "First name is required.";
+    if (!formData.lastName) newErrors.lastName = "Last name is required.";
+    if (!formData.organization) newErrors.organization = "Organization is required.";
+    if (formData.password !== formData.confirmPassword) {
+    newErrors.confirmPassword = "Passwords do not match.";
     }
+    // if (!formData.role) newErrors.role = "Role is required.";
+    
 
     setErrors(newErrors);
 
@@ -48,34 +55,19 @@ function Auth() {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      if (isLogin) {
-        const response = await axios.post("http://localhost:8000/api/login/", {
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (response.status === 200) {
-          const token = response.data.token;
-          localStorage.setItem("jwtToken", token);
-          const decoded = decodeToken(token);
-          console.log(decoded);
-          navigate("/mainmenu/");
-        }
-      } else {
         const response = await axios.post("http://localhost:8000/api/signup/", {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
           organization: formData.organization,
-          role: formData.role,
+          invitation_code: formData.searchParams
         });
 
         if (response.status === 201) {
           console.log("Signup Successful:", response.data);
-          setIsLogin(true);
+          navigate('/')
         }
-      }
     } catch (error) {
       console.error("Error:", error);
 
@@ -98,10 +90,10 @@ function Auth() {
   return (
     <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold text-center text-gray-800">
-        {isLogin ? "Login" : "Sign Up"}
+        Sign Up
       </h2>
 
-      {!isLogin && (
+
         <>
           <div className="mt-4 flex gap-2">
             <input
@@ -137,7 +129,7 @@ function Auth() {
               <p className="text-red-500 text-sm mt-1">{errors.organization}</p>
             )}
           </div>
-          <div className="mt-4 flex items-center gap-2">
+          {/* <div className="mt-4 flex items-center gap-2">
             <label className="text-gray-700 font-medium">Role:</label>
             <select
               name="role"
@@ -154,9 +146,9 @@ function Auth() {
             {errors.role && (
               <p className="text-red-500 text-sm mt-1">{errors.role}</p>
             )}
-          </div>
+          </div> */}
         </>
-      )}
+      
 
       <div className="mt-4">
         <input
@@ -184,7 +176,7 @@ function Auth() {
         )}
       </div>
 
-      {!isLogin && (
+
         <div className="mt-4">
           <input
             name="confirmPassword"
@@ -199,27 +191,19 @@ function Auth() {
             </p>
           )}
         </div>
-      )}
+
 
       {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
 
-        <p className="mt-4 text-center text-gray-600">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <button
-            className="text-blue-500 hover:underline"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ? "Sign Up" : "Login"}
-          </button>
-        </p>
       <button
         className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         onClick={buttonPress}
       >
-        {isLogin ? "Login" : "Create Account"}
+        Create Account
       </button>
     </div>
   );
 }
 
-export default Auth;
+
+export default StudentRegister;

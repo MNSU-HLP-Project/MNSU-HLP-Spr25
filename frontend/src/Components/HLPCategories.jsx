@@ -15,7 +15,7 @@ export default function HLPCategories() {
     navigate('/mainmenu/')
 };
   const handleMenuClick = () => alert('Menu button clicked');
-  const handleCategoryClick = (name) => console.log(`${name} clicked`);
+  const handleCategoryClick = (name) => navigate('/collaboration/');
 
   return (
     <div className="min-h-screen bg-white p-4">

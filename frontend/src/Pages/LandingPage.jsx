@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Auth from "../Components/Auth";
+import Auth from "../Components/Login";
 
 function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);
@@ -17,7 +17,7 @@ function LandingPage() {
           className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-md hover:bg-gray-200"
           onClick={() => setShowAuth(true)}
         >
-          Log-in / Sign-up
+          Log In
         </button>
       </section>
 
