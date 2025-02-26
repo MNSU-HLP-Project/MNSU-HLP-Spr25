@@ -13,7 +13,7 @@ function Auth() {
     password: "",
     organization: "",
     confirmPassword: "",
-    role: "General Educator",
+    role: "Student Teacher",
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -86,6 +86,7 @@ function Auth() {
         if (apiErrors.email) updatedErrors.email = apiErrors.email;
         if (apiErrors.password) updatedErrors.password = apiErrors.password;
         if (apiErrors.detail) updatedErrors.general = apiErrors.detail;
+        if (apiErrors.error) updatedErrors.general = apiErrors.error
 
         setErrors(updatedErrors);
       } else {
@@ -146,9 +147,9 @@ function Auth() {
               <option value="" disabled>
                 Select an option...
               </option>
-              <option value="General educator">General Educator</option>
-              <option value="Special educator">Special Educator</option>
-              <option value="Other">Other</option>
+              <option value="Student Teacher">Student Teacher</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Admin">Admin</option>
             </select>
             {errors.role && (
               <p className="text-red-500 text-sm mt-1">{errors.role}</p>
@@ -202,6 +203,15 @@ function Auth() {
 
       {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
 
+        <p className="mt-4 text-center text-gray-600">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <button
+            className="text-blue-500 hover:underline"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? "Sign Up" : "Login"}
+          </button>
+        </p>
       <button
         className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         onClick={buttonPress}
