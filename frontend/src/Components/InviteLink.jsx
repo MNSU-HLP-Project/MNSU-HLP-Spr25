@@ -23,10 +23,13 @@ function InviteLink() {
     <p>
         Share this link with students: 
         <button 
-            onClick={() => navigator.clipboard.writeText(inviteLink)}
+            onClick={() => {
+                navigator.clipboard.writeText(inviteLink); 
+                alert('Copied to clipboard')
+            }}
             style={{ marginLeft: '10px', cursor: 'pointer' }}
         >
-            Copy Link
+            {inviteLink}
         </button>
     </p>
 )}
