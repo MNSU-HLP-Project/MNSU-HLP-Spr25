@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ExtendUser, Invitation, StudentProfile
+from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -31,10 +31,6 @@ class UserAdmin(BaseUserAdmin):
             return None  # Return None if no related ExtendUser exists
     inlines = [EmployeeInline]
 
-@admin.register(StudentProfile)
-class StudentProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'teacher')  # Customize fields shown in the list view
-    search_fields = ('user__username', 'teacher__username')
 
 # Register Invitation
 @admin.register(Invitation)
@@ -47,3 +43,7 @@ try:
 except:
     print('Didnt work')
 admin.site.register(User, UserAdmin)
+
+admin.site.register(StudentTeacher)
+admin.site.register(Supervisor)
+admin.site.register(Organization)

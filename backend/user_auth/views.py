@@ -6,6 +6,8 @@ from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from django.conf import settings
 from .models import ExtendUser, Invitation
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor
+from .serializers import ExtendUserSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
@@ -23,6 +25,8 @@ def generate_invitation(request):
     except User.DoesNotExist:
         return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    org = ExtendUser.objects.get(user=teacher).org
+
     # Check if user is authorized
     if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin']).exists() is False:
         return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -37,7 +41,7 @@ def generate_invitation(request):
     else: 
         newrole = 'Supervisor'
         
-    invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses)
+    invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org)
     return Response(InvitationSerializer(invitation).data)
 
 class SignupView(APIView):
@@ -58,7 +62,7 @@ class LoginView(APIView):
                 'id': user.username, 
                 'firstname': user.first_name, 
                 'lastname': user.last_name,
-                'org': ExtendUser.objects.get(user=user).org
+                'org': ExtendUser.objects.get(user=user).org.name
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             return Response({"token": token}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

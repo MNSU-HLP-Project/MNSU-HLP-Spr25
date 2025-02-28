@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, StudentProfile
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,12 +13,14 @@ class SignupSerializer(serializers.ModelSerializer):
     lastName = serializers.CharField(source='last_name')
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    organization = serializers.CharField(source='org')
+    # organization = serializers.CharField(source='org')
     invitation_code = serializers.UUIDField(required=True)
+    grade_level = serializers.JSONField(source='grade_levels')
+    type_of_educator = serializers.CharField(source='type_of_teacher')
     
     class Meta:
         model = User
-        fields = ['firstName', 'lastName', 'email', 'password', 'organization', 'invitation_code']
+        fields = ['firstName', 'lastName', 'email', 'password', 'invitation_code', 'grade_level', 'type_of_educator']
 
     def create(self, validated_data):
         invitation_code = validated_data.pop('invitation_code')
@@ -32,7 +34,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
         if User.objects.filter(email=validated_data['email'].lower()).exists():
             raise serializers.ValidationError({"email": "A user with this email already exists."})
-        org = validated_data.pop('org')
+        org = invitation.org
 
         user = User.objects.create_user(
             username=validated_data['email'].lower(),  # Use email as the username
@@ -52,7 +54,16 @@ class SignupSerializer(serializers.ModelSerializer):
         invitation.use_count += 1
         invitation.save()
         if role == 'Student Teacher':
-            StudentProfile.objects.create(user=user, teacher=invitation.teacher)
+            StudentTeacher.objects.create(user=user, grade_levels=[validated_data['grade_levels']], type_of_teacher=validated_data['type_of_teacher'])
+            sup = Supervisor.objects.filter(user=invitation.teacher).first()
+            if sup:
+                sup.student_teachers.add(StudentTeacher.objects.get(user=user))
+            else:
+                Supervisor.objects.create(user=invitation.teacher)
+                Supervisor.objects.get(user=invitation.teacher).student_teachers.add(StudentTeacher.objects.get(user=user))
+
+            
+                
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -60,7 +71,39 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
     
     def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
+        user = authenticate(username=data['username'], password=data['password']) or authenticate(email=data['username'], password=data['password'])
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid credentials.")
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    members = serializers.PrimaryKeyRelatedField(many=True, read_only=True)  # Show user IDs of members
+
+    class Meta:
+        model = Organization
+        fields = '__all__'
+
+class ExtendUserSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Returns username instead of ID
+    org = OrganizationSerializer(read_only=True)  # Nested serialization for org
+
+    class Meta:
+        model = ExtendUser
+        fields = '__all__'
+
+
+class StudentTeacherSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Display username instead of ID
+    org = OrganizationSerializer(read_only=True)  # Nested organization details
+
+    class Meta:
+        model = StudentTeacher
+        fields = '__all__'
+
+class SupervisorSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Show username instead of ID
+    student_teachers = StudentTeacherSerializer(many=True, read_only=True)  # Show student teachers
+
+    class Meta:
+        model = Supervisor
+        fields = '__all__'

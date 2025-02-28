@@ -13,16 +13,23 @@ function StudentRegister() {
         if (code) {
             setFormData((prev) => ({ ...prev, searchParams: code }));
         }
+        const role = searchParams.get('role')
+        if (role == 'sup') {
+            setFormData((prev) => ({ ...prev, student_teacher: false}))
+        }
     }, [searchParams]);
 
   const [formData, setFormData] = useState({
+    student_teacher: true,
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    organization: "",
+    // organization: "",
     confirmPassword: "",
-    searchParams: ""
+    searchParams: "",
+    grade_level:"",
+    type_of_educator: "GE"
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -42,10 +49,11 @@ function StudentRegister() {
     if (!formData.password) newErrors.password = "Password is required.";
     if (!formData.firstName) newErrors.firstName = "First name is required.";
     if (!formData.lastName) newErrors.lastName = "Last name is required.";
-    if (!formData.organization) newErrors.organization = "Organization is required.";
+    // if (!formData.organization) newErrors.organization = "Organization is required.";
     if (formData.password !== formData.confirmPassword) {
     newErrors.confirmPassword = "Passwords do not match.";
-    }
+    };
+    if (!formData.grade_level) newErrors.grade_level = "Grade level is required."
     // if (!formData.role) newErrors.role = "Role is required.";
     
 
@@ -53,15 +61,17 @@ function StudentRegister() {
 
     // If any errors exist, stop execution
     if (Object.keys(newErrors).length > 0) return;
-
+    console.log(formData)
     try {
         const response = await axios.post("http://localhost:8000/api/signup/", {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
-          organization: formData.organization,
-          invitation_code: formData.searchParams
+        //   organization: formData.organization,
+          invitation_code: formData.searchParams,
+          grade_level: formData.grade_level,
+          type_of_educator: formData.type_of_educator
         });
 
         if (response.status === 201) {
@@ -117,36 +127,36 @@ function StudentRegister() {
               <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
             )}
           </div>
-          <div className="mt-4">
+          {formData.student_teacher && (<div className="mt-4">
             <input
-              name="organization"
+              name="grade_level"
               type="text"
-              placeholder="Organization"
+              placeholder="Grade Level"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               onChange={handleChange}
             />
-            {errors.organization && (
-              <p className="text-red-500 text-sm mt-1">{errors.organization}</p>
+            {errors.grade_level && (
+              <p className="text-red-500 text-sm mt-1">{errors.grade_level}</p>
             )}
-          </div>
-          {/* <div className="mt-4 flex items-center gap-2">
-            <label className="text-gray-700 font-medium">Role:</label>
+          </div>)}
+          {formData.student_teacher && (
+          <div className="mt-4 flex items-center gap-2">
+            <label className="text-gray-700 font-medium">Educator Type:</label>
             <select
-              name="role"
+              name="type_of_educator"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               onChange={handleChange}
             >
-              <option value="" disabled>
+              {/* <option value="" disabled>
                 Select an option...
-              </option>
-              <option value="Student Teacher">Student Teacher</option>
-              <option value="Supervisor">Supervisor</option>
-              <option value="Admin">Admin</option>
+              </option> */}
+              <option value="GE">General Educator</option>
+              <option value="SE">Special Educator</option>
             </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+            {errors.type_of_educator && (
+              <p className="text-red-500 text-sm mt-1">{errors.type_of_educator}</p>
             )}
-          </div> */}
+          </div>)}
         </>
       
 

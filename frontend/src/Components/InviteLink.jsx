@@ -13,7 +13,11 @@ function InviteLink() {
             userid: decodeToken(token).id,
             role: decodeToken(token).role
         });
-        setInviteLink(`${window.location.origin}/register?code=${response.data.code}`);
+        if (decodeToken(token).role == 'Admin') {
+            setInviteLink(`${window.location.origin}/register?role=sup&code=${response.data.code}`);
+        } else {
+            setInviteLink(`${window.location.origin}/register?role=stu&code=${response.data.code}`);
+        }
     };
 
     return (
