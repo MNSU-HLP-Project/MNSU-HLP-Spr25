@@ -53,7 +53,7 @@ function StudentRegister() {
     if (formData.password !== formData.confirmPassword) {
     newErrors.confirmPassword = "Passwords do not match.";
     };
-    if (!formData.grade_level) newErrors.grade_level = "Grade level is required."
+    if (formData.student_teacher && !formData.grade_level) newErrors.grade_level = "Grade level is required."
     // if (!formData.role) newErrors.role = "Role is required.";
     
 
