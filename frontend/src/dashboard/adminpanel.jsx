@@ -41,6 +41,7 @@ export default function AdminPage() {
         <thead>
           <tr>
             <th>HLP Number</th>
+            <th>Lookfor Number</th>
             <th>Date</th>
             <th>Score</th>
             <th>Comments</th>
@@ -50,7 +51,8 @@ export default function AdminPage() {
         <tbody>
           {entries.map((entry) => (
             <tr key={entry.id}>
-              <td>{entry.hlp_number}</td>
+              <td>{entry.hlp}</td>
+              <td>{entry.lookfor_number}</td>
               <td>{entry.date}</td>
               <td>{entry.score}</td>
               <td>{entry.comments}</td>
