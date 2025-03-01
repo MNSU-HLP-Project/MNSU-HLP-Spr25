@@ -1,3 +1,8 @@
-from django.test import TestCase
+# from django.test import TestCase
+# from models import Entries
 
-# Create your tests here.
+# class EntriesModelTest(TestCase):
+#     def test_entry_creation(self):
+#         entry = Entries.objects.create(comment="Good")
+#         self.assertEqual(entry.comment, "Good")
+#         print(entry)

@@ -13,10 +13,12 @@ class Invitation(models.Model):
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='students')
+    
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Organization Name Instead of User
     members = models.ManyToManyField(User, related_name='organizations')  # Users linked to an Organization
+    admin = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
@@ -24,10 +26,10 @@ class Organization(models.Model):
 class ExtendUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extend_user')
     role = models.CharField(max_length=100)
-    org = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)  
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True, related_name='user_org')  
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} ({self.role})"
 
 class GradeLevel(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -44,15 +46,15 @@ class StudentTeacher(models.Model):
     ]
 
     type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES)
-    org = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='org_studentteacher')
     grade_levels = models.ManyToManyField(GradeLevel, blank=True)
 
     def __str__(self):
-        return self.user.name
+        return f"{self.user.username} (Student Teacher)"
 
 class Supervisor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='supervisor')  # Unique related_name
     student_teachers = models.ManyToManyField(StudentTeacher)  # Allow supervising multiple student teachers
 
     def __str__(self):
-        return self.user.name
+        return f"Supervisor Group ({self.id})"

@@ -7,6 +7,7 @@ import HLPCategories from "./Components/HLPCategories";
 import StudentRegister from "./Components/StudentReg";
 import InviteLink from "./Components/InviteLink";
 import Collaboration from "./Components/HLP Pages/CollaborationPage";
+import AdminPage from "./dashboard/adminpanel";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path='/register/' element={<StudentRegister />} />
       <Route path='/link/' element={<InviteLink />} />
       <Route path='/collaboration/' element={<Collaboration />} />
+      <Route path='/dashboard/' element = {<AdminPage/>}/>
     </Routes>
   );
 }

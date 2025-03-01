@@ -101,3 +101,8 @@ class SupervisorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supervisor
         fields = '__all__'
+
+class Admin(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  
+    org = OrganizationSerializer(read_only=True) 
+    

@@ -121,3 +121,23 @@ def create_grade_levels(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+@api_view(["GET"])
+def get_users_by_role(request):
+    """Retrieve user names based on role"""
+    role = request.GET.get("role", "").strip()  # Get role from query params
+
+    if not role:
+        return Response({"error": "Role parameter is required"}, status=400)
+
+    # Filter ExtendUser by role
+    users = ExtendUser.objects.filter(role__iexact=role).select_related('user')
+
+    if not users.exists():
+        return Response({"error": f"No users found for role '{role}'"}, status=404)
+
+    # Extract usernames
+    user_data = [{ "name": user.user.get_full_name() or user.user.username} for user in users]
+
+    return Response({"role": role, "users": user_data}, status=200)
