@@ -12,7 +12,9 @@ export default function HLPCategories() {
   const navigate = useNavigate();
   const handleBackClick = () => navigate("/mainmenu/");
   const handleMenuClick = () => alert("Menu button clicked");
-  const handleCategoryClick = (name) => navigate("/collaboration/");
+  const handleCategoryClick = (name) => navigate("/hlpselection/", {
+    state: {name}
+  });
   const handleLogout = () => navigate("/");
 
   return (

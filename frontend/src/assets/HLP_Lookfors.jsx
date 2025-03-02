@@ -1,4 +1,26 @@
 const HLP_LookFors = {
+    "groups": {
+        "Collaboration": {
+            "Pillars": [1, 3],
+            "Embedded": [2],
+            color: "bg-red-600"
+        },
+        "Data-Driven Planning": {
+            "Pillars": [6],
+            "Embedded": [4, 5, 11, 12],
+            color: "bg-purple-600"
+        },
+        "Instruction in Behavior and Academics": {
+            "Pillars": [7, 16],
+            "Embedded": [9, 14, 21, 13, 15, 17, 18, 8],
+            color: "bg-blue-600"
+        },
+        "Intensify and Intervene as Needed": {
+            "Pillars": [20],
+            "Embedded": [10],
+            color: "bg-orange-500"
+        }
+    },
     "1": {
       "group": "Collaboration",
       "title": "Collaborate with Professionals to Increase Student Success",
@@ -261,7 +283,7 @@ const HLP_LookFors = {
         "8": "Determine if changes to assistive technology devices or services are needed based on student data."
         }
     },
-    "8/22": {
+    "8": {
         "group": "Instruction in Behavior and Academics",
         "title": "Provide Positive and Constructive Feedback to Guide Students’ Behavior and Academics",
         "lookFors": {
