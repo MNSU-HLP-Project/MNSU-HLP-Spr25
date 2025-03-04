@@ -17,7 +17,13 @@ class ExtendUser(models.Model):
     def __str__(self):
         return self.user.username
 
-
+class GradeLevel(models.Model):
+    gradelevel = models.CharField(max_length=50, null=True)
+    
+    def __str__(self):
+        return self.gradelevel
+    
+    
 class StudentTeacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_teacher') 
 
@@ -28,7 +34,7 @@ class StudentTeacher(models.Model):
 
     type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES)
     # org = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
-    grade_levels = models.JSONField(default=list)
+    grade_levels = models.ManyToManyField(GradeLevel)
 
     def __str__(self):
         return self.user.username

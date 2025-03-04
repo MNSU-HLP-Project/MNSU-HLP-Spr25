@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,7 +15,7 @@ class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     # organization = serializers.CharField(source='org')
     invitation_code = serializers.UUIDField(required=True)
-    grade_level = serializers.JSONField(source='grade_levels')
+    grade_level = serializers.CharField(source='grade_levels')
     type_of_educator = serializers.CharField(source='type_of_teacher')
     
     class Meta:
@@ -54,17 +54,21 @@ class SignupSerializer(serializers.ModelSerializer):
         invitation.use_count += 1
         invitation.save()
         if role == 'Student Teacher':
-            StudentTeacher.objects.create(user=user, grade_levels=[validated_data['grade_levels']], type_of_teacher=validated_data['type_of_teacher'])
+            stuteach = StudentTeacher.objects.create(user=user, type_of_teacher=validated_data['type_of_teacher'])
+            stuteach.grade_levels.add(GradeLevel.objects.get(gradelevel=validated_data['grade_levels']))
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             if sup:
                 sup.student_teachers.add(StudentTeacher.objects.get(user=user))
             else:
                 Supervisor.objects.create(user=invitation.teacher)
                 Supervisor.objects.get(user=invitation.teacher).student_teachers.add(StudentTeacher.objects.get(user=user))
-
-            
-                
+      
         return user
+
+class GradeLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GradeLevel
+        fields = '__all__' 
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()

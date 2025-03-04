@@ -6,8 +6,8 @@ from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from django.conf import settings
 from .models import ExtendUser, Invitation
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor
-from .serializers import ExtendUserSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel
+from .serializers import ExtendUserSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
@@ -23,6 +23,11 @@ def check_token(token):
     else:
         return None
     
+@api_view(['GET'])
+def get_grade_levels(request):
+    grade_levels = GradeLevel.objects.all()
+    serializer = GradeLevelSerializer(grade_levels, many=True)
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def generate_invitation(request):
