@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import decodeToken from '../utils/jwtHelper';
 
 function InviteLink() {
     const [inviteLink, setInviteLink] = useState('');
@@ -10,13 +9,12 @@ function InviteLink() {
     const generateInvite = async () => {
         const token = localStorage.getItem('jwtToken');  // Assuming you're using token-based auth
         const response = await axios.post('http://localhost:8000/api/generate-invite/', {
-            userid: decodeToken(token).id,
-            role: decodeToken(token).role
+            token: token
         });
-        if (decodeToken(token).role == 'Admin') {
-            setInviteLink(`${window.location.origin}/register?role=sup&code=${response.data.code}`);
+        if (response.data.role == 'Admin') {
+            setInviteLink(`${window.location.origin}/register?role=sup&code=${response.data.inviation.code}`);
         } else {
-            setInviteLink(`${window.location.origin}/register?role=stu&code=${response.data.code}`);
+            setInviteLink(`${window.location.origin}/register?role=stu&code=${response.data.inviation.code}`);
         }
     };
 

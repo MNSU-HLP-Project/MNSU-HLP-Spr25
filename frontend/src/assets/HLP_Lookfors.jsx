@@ -3,22 +3,22 @@ const HLP_LookFors = {
         "Collaboration": {
             "Pillars": [1, 3],
             "Embedded": [2],
-            color: "bg-red-600"
+            color: "bg-collab"
         },
         "Data-Driven Planning": {
             "Pillars": [6],
             "Embedded": [4, 5, 11, 12],
-            color: "bg-purple-600"
+            color: "bg-data"
         },
         "Instruction in Behavior and Academics": {
             "Pillars": [7, 16],
             "Embedded": [9, 14, 21, 13, 15, 17, 18, 8],
-            color: "bg-blue-600"
+            color: "bg-instr"
         },
         "Intensify and Intervene as Needed": {
             "Pillars": [20],
             "Embedded": [10],
-            color: "bg-orange-500"
+            color: "bg-itens"
         }
     },
     "1": {

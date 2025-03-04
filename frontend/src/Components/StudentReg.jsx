@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { decodeToken } from "../utils/jwtHelper";
 import { useSearchParams } from "react-router-dom";
 
 

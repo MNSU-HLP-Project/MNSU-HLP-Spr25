@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { decodeToken } from "../utils/jwtHelper";
 
 function Auth() {
   const [formData, setFormData] = useState({
@@ -40,8 +39,8 @@ function Auth() {
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("jwtToken", token);
-          const decoded = decodeToken(token);
-          console.log(decoded);
+          localStorage.setItem("role", response.data.role)
+          console.log(response.data.role)
           navigate("/mainmenu/");
         }
       

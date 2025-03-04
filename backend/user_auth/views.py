@@ -11,11 +11,29 @@ from .serializers import ExtendUserSerializer, OrganizationSerializer, StudentTe
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
+def check_token(token):
+    """Checks Token and returns a token dictionary
+
+    Args:
+        token (_type_): A JWT token
+    """
+    decoded = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.JWT_ALGORITHM)
+    if decoded:
+        return decoded
+    else:
+        return None
+    
+
 @api_view(['POST'])
 def generate_invitation(request):
-    max_uses = request.data.get('max_uses', None) 
-    role = request.data.get('role')
-    userid = request.data.get('userid')
+    max_uses = 50
+    token = check_token(request.data['token'])
+    
+    if not token:
+        return Response({'error': 'User not authenticated'}, status=400)
+    
+    role = token['role']
+    userid = token['id']
     if not userid:
         return Response({'error': 'User ID is required'}, status=400)
 
@@ -33,8 +51,10 @@ def generate_invitation(request):
 
     # Check if invitation already exists
     invitation = Invitation.objects.filter(teacher=teacher).first()
-    if invitation:
+    if invitation and invitation.use_count < invitation.max_uses:
         return Response(InvitationSerializer(invitation).data)
+    elif invitation and invitation.use_count >= invitation.max_uses:
+        invitation.delete()
     
     if role == 'Supervisor':
         newrole = 'Student Teacher'
@@ -42,7 +62,8 @@ def generate_invitation(request):
         newrole = 'Supervisor'
         
     invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org)
-    return Response(InvitationSerializer(invitation).data)
+    return Response({'invitation': InvitationSerializer(invitation).data,
+                     'role': newrole})
 
 class SignupView(APIView):
     def post(self, request):
@@ -64,5 +85,5 @@ class LoginView(APIView):
                 'lastname': user.last_name,
                 'org': ExtendUser.objects.get(user=user).org.name
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-            return Response({"token": token}, status=status.HTTP_200_OK)
+            return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

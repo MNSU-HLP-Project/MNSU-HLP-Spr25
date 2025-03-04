@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function HLPCategories() {
   const categories = [
-    { name: "Collaboration", color: "bg-red-600", textColor: "text-white" },
-    { name: "Data-Driven Planning", color: "bg-purple-600", textColor: "text-white" },
-    { name: "Instruction in Behavior and Academics", color: "bg-blue-600", textColor: "text-white" },
-    { name: "Intensify and Intervene as Needed", color: "bg-orange-500", textColor: "text-white" },
+    { name: "Collaboration", color: "bg-collab", textColor: "text-white" },
+    { name: "Data-Driven Planning", color: "bg-data", textColor: "text-white" },
+    { name: "Instruction in Behavior and Academics", color: "bg-instr", textColor: "text-white" },
+    { name: "Intensify and Intervene as Needed", color: "bg-itens", textColor: "text-white" },
   ];
 
   const navigate = useNavigate();

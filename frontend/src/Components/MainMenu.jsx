@@ -1,46 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import decodeToken from "../utils/jwtHelper";
+import generateInvite from "../utils/api"
 
 const MainMenu = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
-  const user = token ? decodeToken(token) : null;
+  const role = localStorage.getItem("role")
 
   const [showInviteSection, setShowInviteSection] = useState(false);
-  const [inviteLink, setInviteLink] = useState("");
+  const [inviteLink, setInviteLink] = useState();
 
-  // Function to generate invite link
-  const generateInvite = async () => {
-    if (!token) return;
-
+  const genInvite = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/generate-invite/",
-        {
-          userid: decodeToken(token).id,
-          role: decodeToken(token).role,
-        }
-      );
-
-      const role = decodeToken(token).role === "Admin" ? "sup" : "stu";
-      setInviteLink(
-        `${window.location.origin}/register?role=${role}&code=${response.data.code}`
-      );
+      const link = await generateInvite(); // Wait for the promise to resolve
+      setInviteLink(link);
     } catch (error) {
       console.error("Error generating invite link:", error);
     }
   };
 
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
-
   // Determine invite message based on user role
   const inviteMessage =
-    user?.role === "Admin"
+    role === "Admin"
       ? "Send this to a supervisor:"
       : "Share this link with students:";
 
@@ -51,7 +33,7 @@ const MainMenu = () => {
       </h1>
 
       <div className="flex flex-col items-center mt-12 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
-        {user?.role === "Student Teacher" && (
+        {role === "Student Teacher" && (
           <>
             <button
               className="w-full p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
@@ -68,7 +50,7 @@ const MainMenu = () => {
           </>
         )}
 
-        {["Supervisor", "Admin"].includes(user?.role) && (
+        {["Supervisor", "Admin"].includes(role) && (
           <>
             <button
               className="w-3/4 p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
@@ -89,7 +71,7 @@ const MainMenu = () => {
               <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <button
                   className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  onClick={generateInvite}
+                  onClick={genInvite}
                 >
                   Generate Invite Link
                 </button>
