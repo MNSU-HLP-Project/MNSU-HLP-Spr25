@@ -1,6 +1,31 @@
-# MNSU-HLP-Spr25
+# TeachTrack Platform
 
-## Setting Up the Project
+## Environment Setup
+
+1. Create appropriate .env file:
+   - For development: Copy `.env.example` to `.env.development`
+   - For production: Copy `.env.example` to `.env.production`
+
+2. Generate secure keys:
+   ```python
+   # Using Python to generate secure keys
+   python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+   ```
+
+3. Update the environment variables in your .env file:
+   - Set appropriate ALLOWED_HOSTS
+   - Configure CORS_ALLOWED_ORIGINS
+   - Set DEBUG=True for development, DEBUG=False for production
+   - Configure database settings if using something other than SQLite
+
+## Security Notes
+
+- Never commit .env files containing real credentials
+- Always use HTTPS in production
+- Regularly rotate secret keys
+- Keep DEBUG=False in production
+
+## Development Setup
 
 1. Clone the repository. If you have GitHub Desktop it should be as easy as pressing the clone button. If you want to do it through command line, the link is [here](https://github.com/MNSU-HLP-Project/MNSU-HLP-Spr25).
 

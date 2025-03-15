@@ -1,12 +1,34 @@
+# Virtual Environment
 venv/
+env/
+
+# Environment Variables
 .env
+.env.*
+!.env.example
+
+# Database
 db.sqlite3
 *.sqlite3
+
+# Media and Static files
 /media/
 staticfiles/
+
+# Python
 *.log
 *.pot
 *.pyc
 __pycache__/
 *.py[cod]
 *$py.class
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

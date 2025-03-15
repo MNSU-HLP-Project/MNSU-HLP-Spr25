@@ -8,8 +8,8 @@ class SignupSerializer(serializers.ModelSerializer):
     lastName = serializers.CharField(source='last_name')
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    organization = serializers.CharField(source='org')
-    role = serializers.CharField()
+    organization = serializers.CharField(write_only=True)
+    role = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
@@ -17,25 +17,25 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         if User.objects.filter(email=validated_data['email']).exists():
-            raise serializers.ValidationError({"email": "A user with this email already exists."})
-        org = validated_data.pop('org')
-        role = validated_data.pop('role')
+            raise serializers.ValidationError("A user with this email already exists.")
         
-        print(org)
+        organization = validated_data.pop('organization', '')
+        role = validated_data.pop('role', '')
+        
         user = User.objects.create_user(
-            username=validated_data['email'],  # Use email as the username
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+            username=validated_data['email'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
         )
         
-        if not hasattr(user, 'extend_user'):
-            ExtendUser.objects.create(
-                user=user,
-                org=org,
-                role=role
-            )
+        ExtendUser.objects.create(
+            user=user,
+            org=organization,
+            role=role
+        )
+        
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -46,4 +46,4 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(username=data['email'], password=data['password'])
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Invalid credentials.")
+        raise serializers.ValidationError({"message": "Invalid email or password."})
