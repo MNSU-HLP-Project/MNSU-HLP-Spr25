@@ -20,6 +20,6 @@ from .views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include ('user_auth.urls')),
-    path('', home, name='home'),  # Main page
+    path('api/', include('user_auth.urls')),  # This line should already exist
+    path('', home, name='home'),
 ]

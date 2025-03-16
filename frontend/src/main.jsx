@@ -1,13 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom"; // Import BrowserRouter
-import App from "./App"; // Import the main App component
-import "./index.css"; // Import global styles (optional)
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import App from './App'
+import './index.css'
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    {" "}
-    {/* Wrap everything inside BrowserRouter */}
-    <App />
-  </BrowserRouter>
-);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+)

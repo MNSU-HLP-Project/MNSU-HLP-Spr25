@@ -1,218 +1,138 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from "axios";
-import { decodeToken } from "../utils/jwtHelper";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { motion } from 'framer-motion';
 
-function Auth() {
+const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    organization: "",
-    confirmPassword: "",
-    role: "Student Teacher",
+    username: '',
+    email: '',
+    password: '',
+    role: 'student',
+    org: ''
   });
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { login, api } = useAuth();
 
-  const handleChange = (form) => {
-    const { name, value } = form.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', {
-        email: formData.email.trim(),
-        password: formData.password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
-        
-        toast.success('Logged in successfully!');
-        setTimeout(() => {
-          navigate('/mainmenu');
-        }, 1500);
+      if (isLogin) {
+        const userData = await login({
+          username: formData.username,
+          password: formData.password
+        });
+        navigate(userData.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard');
       } else {
-        toast.error('Login failed - Invalid response from server');
+        // Changed endpoint to match backend
+        const response = await api.post('/register/', formData);
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        
+        // After registration, log the user in
+        const userData = await login({
+          username: formData.username,
+          password: formData.password
+        });
+        navigate(userData.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard');
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      toast.error(errorMessage);
-      console.error('Login error:', error.response?.data);
-    }
-  };
-
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
-    try {
-      await axios.post('http://localhost:8000/api/signup/', {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        organization: formData.organization,
-        role: formData.role,
-      });
-
-      toast.success('Account created successfully!');
-      setIsLogin(true);
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 
-                          Object.values(error.response?.data || {})[0] || 
-                          'Signup failed';
-      toast.error(errorMessage);
+      console.error('Auth error:', error.response?.data || error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <ToastContainer position="top-right" autoClose={3000} />
-      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          {isLogin ? "Login" : "Sign Up"}
-        </h2>
-
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="w-full max-w-md mx-auto"
+    >
+      <h2 className="text-3xl font-bold text-center mb-8">
+        {isLogin ? 'Welcome Back!' : 'Create Account'}
+      </h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full px-4 py-2 rounded-lg border"
+            value={formData.username}
+            onChange={(e) => setFormData({...formData, username: e.target.value})}
+          />
+        </div>
+        
         {!isLogin && (
           <>
-            <div className="mt-4 flex gap-2">
+            <div>
               <input
-                name="firstName"
-                type="text"
-                placeholder="First Name"
-                className="w-1/2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                onChange={handleChange}
+                type="email"
+                placeholder="Email"
+                className="w-full px-4 py-2 rounded-lg border"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
               />
-              {errors.firstName && (
-                <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-              )}
-              <input
-                name="lastName"
-                type="text"
-                placeholder="Last Name"
-                className="w-1/2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                onChange={handleChange}
-              />
-              {errors.lastName && (
-                <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-              )}
             </div>
-            <div className="mt-4">
+            
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className={`flex-1 py-2 rounded-lg ${formData.role === 'student' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                onClick={() => setFormData({...formData, role: 'student'})}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                className={`flex-1 py-2 rounded-lg ${formData.role === 'teacher' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                onClick={() => setFormData({...formData, role: 'teacher'})}
+              >
+                Teacher
+              </button>
+            </div>
+            
+            <div>
               <input
-                name="organization"
                 type="text"
                 placeholder="Organization"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border"
+                value={formData.org}
+                onChange={(e) => setFormData({...formData, org: e.target.value})}
               />
-              {errors.organization && (
-                <p className="text-red-500 text-sm mt-1">{errors.organization}</p>
-              )}
-            </div>
-            <div className="mt-4 flex items-center gap-2">
-              <label className="text-gray-700 font-medium">Role:</label>
-              <select
-                name="role"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                onChange={handleChange}
-              >
-                <option value="" disabled>
-                  Select an option...
-                </option>
-                <option value="Student Teacher">Student Teacher</option>
-                <option value="Supervisor">Supervisor</option>
-                <option value="Admin">Admin</option>
-              </select>
-              {errors.role && (
-                <p className="text-red-500 text-sm mt-1">{errors.role}</p>
-              )}
             </div>
           </>
         )}
-
-        <div className="mt-4">
+        
+        <div>
           <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            onChange={handleChange}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-          )}
-        </div>
-
-        <div className="mt-4">
-          <input
-            name="password"
             type="password"
             placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            onChange={handleChange}
+            className="w-full px-4 py-2 rounded-lg border"
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-          )}
         </div>
-
-        {!isLogin && (
-          <div className="mt-4">
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              onChange={handleChange}
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmPassword}
-              </p>
-            )}
-          </div>
-        )}
-
-        {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
-
-        <p className="mt-4 text-center text-gray-600">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <button
-            className="text-blue-500 hover:underline"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ? "Sign Up" : "Login"}
-          </button>
-        </p>
+        
         <button
-          className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          onClick={isLogin ? handleLogin : handleSignup}
+          type="submit"
+          className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
-          {isLogin ? "Login" : "Create Account"}
+          {isLogin ? 'Login' : 'Sign Up'}
         </button>
-      </div>
-    </div>
+      </form>
+      
+      <p className="text-center mt-4">
+        {isLogin ? "Don't have an account? " : "Already have an account? "}
+        <button
+          className="text-blue-500 hover:underline"
+          onClick={() => setIsLogin(!isLogin)}
+        >
+          {isLogin ? 'Sign Up' : 'Login'}
+        </button>
+      </p>
+    </motion.div>
   );
-}
+};
 
 export default Auth;

@@ -1,40 +1,40 @@
 from django.contrib import admin
-from .models import ExtendUser
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from .models import ExtendUser, Announcement
 
-
-# Define an inline admin descriptor for Employee model
-# which acts a bit like a singleton
-class EmployeeInline(admin.StackedInline):
+class ExtendUserInline(admin.StackedInline):
     model = ExtendUser
     can_delete = False
-    verbose_name_plural = "employee"
+    verbose_name_plural = 'Extended User Info'
 
+class CustomUserAdmin(UserAdmin):
+    inlines = (ExtendUserInline,)
+    list_display = ('email', 'username', 'get_role', 'get_organization', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
 
-# Define a new User admin
-class UserAdmin(BaseUserAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'email', 'role', 'org')
-
-    # Custom method to fetch the role from the related ExtendUser
-    def role(self, obj):
+    def get_role(self, obj):
         try:
-            return obj.extend_user.role  # Access the ExtendUser's role
+            return obj.extend_user.role
         except ExtendUser.DoesNotExist:
-            return None  # Return None if no related ExtendUser exists
+            return '-'
+    get_role.short_description = 'Role'
 
-    # Custom method to fetch the org from the related ExtendUser
-    def org(self, obj):
+    def get_organization(self, obj):
         try:
-            return obj.extend_user.org  # Access the ExtendUser's org
+            return obj.extend_user.org
         except ExtendUser.DoesNotExist:
-            return None  # Return None if no related ExtendUser exists
-    inlines = [EmployeeInline]
+            return '-'
+    get_organization.short_description = 'Organization'
 
+# Unregister the default User admin
+admin.site.unregister(User)
+# Register User with our custom admin
+admin.site.register(User, CustomUserAdmin)
 
-# Re-register UserAdmin
-try:
-    admin.site.unregister(User)
-except:
-    print('Didnt work')
-admin.site.register(User, UserAdmin)
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at', 'updated_at')
+    search_fields = ('title', 'content', 'author__username')
+    list_filter = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')

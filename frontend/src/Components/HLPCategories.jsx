@@ -12,8 +12,8 @@ export default function HLPCategories() {
 
   const handleBackClick = () => {
     console.log('Back button clicked');
-    navigate('/mainmenu/')
-};
+    navigate('/mainmenu'); // Remove the trailing slash
+  };
   const handleMenuClick = () => alert('Menu button clicked');
   const handleCategoryClick = (name) => console.log(`${name} clicked`);
 
