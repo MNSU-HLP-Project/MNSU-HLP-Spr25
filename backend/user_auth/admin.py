@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ExtendUser
+from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor, GradeLevel
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -32,9 +32,19 @@ class UserAdmin(BaseUserAdmin):
     inlines = [EmployeeInline]
 
 
+# Register Invitation
+@admin.register(Invitation)
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = ('code', 'teacher', 'max_uses','use_count', 'created_at')
+    search_fields = ('code', 'teacher__username')
 # Re-register UserAdmin
 try:
     admin.site.unregister(User)
 except:
     print('Didnt work')
 admin.site.register(User, UserAdmin)
+
+admin.site.register(StudentTeacher)
+admin.site.register(Supervisor)
+admin.site.register(Organization)
+admin.site.register(GradeLevel)
