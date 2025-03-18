@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,9 +12,9 @@ function InviteLink() {
             token: token
         });
         if (response.data.role == 'Admin') {
-            setInviteLink(`${window.location.origin}/register?role=sup&code=${response.data.inviation.code}`);
+            setInviteLink(`${window.location.origin}/register?role=sup&code=${response.data.invitation.code}`);
         } else {
-            setInviteLink(`${window.location.origin}/register?role=stu&code=${response.data.inviation.code}`);
+            setInviteLink(`${window.location.origin}/register?role=stu&code=${response.data.invitation.code}`);
         }
     };
 

@@ -15,8 +15,8 @@ class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     # organization = serializers.CharField(source='org')
     invitation_code = serializers.UUIDField(required=True)
-    grade_level = serializers.CharField(source='grade_levels')
-    type_of_educator = serializers.CharField(source='type_of_teacher')
+    grade_level = serializers.CharField(required=False, allow_blank=True)
+    type_of_educator = serializers.CharField(source='type_of_teacher', required=False, allow_blank=True)
     
     class Meta:
         model = User
@@ -55,7 +55,7 @@ class SignupSerializer(serializers.ModelSerializer):
         invitation.save()
         if role == 'Student Teacher':
             stuteach = StudentTeacher.objects.create(user=user, type_of_teacher=validated_data['type_of_teacher'])
-            stuteach.grade_levels.add(GradeLevel.objects.get(gradelevel=validated_data['grade_levels']))
+            stuteach.grade_levels.add(GradeLevel.objects.get(gradelevel=validated_data['grade_level']))
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             if sup:
                 sup.student_teachers.add(StudentTeacher.objects.get(user=user))

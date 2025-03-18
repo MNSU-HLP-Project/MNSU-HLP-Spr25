@@ -85,8 +85,8 @@ const HLPSelection = () => {
             className={`${color} text-white p-4 w-full md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(color)} transition`}
             onClick={() => handleClick(`HLP ${embeddedId}`)}
           >
-            <strong className="text-xl">HLP {embeddedId}</strong>:{" "}
-            {HLP_LookFors[embeddedId]?.title}
+            <strong className="text-xl">HLP {embeddedId}</strong>
+            <p>{HLP_LookFors[embeddedId]?.title}</p>
           </div>
         ))}
       </div>
