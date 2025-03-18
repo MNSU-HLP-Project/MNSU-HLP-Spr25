@@ -23,7 +23,14 @@ class GradeLevel(models.Model):
     def __str__(self):
         return self.gradelevel
     
+class SupervisorClass(models.Model):
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    students = models.ManyToManyField(User, related_name='students') 
     
+    def __str__(self):
+        return self.name
+
 class StudentTeacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_teacher') 
 
@@ -55,6 +62,7 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     max_uses = models.PositiveIntegerField(null=True, blank=True)  # Optional limit
     use_count = models.PositiveIntegerField(default=0)  # Track registrations
+    class_name = models.ForeignKey(SupervisorClass, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
         return self.teacher.username

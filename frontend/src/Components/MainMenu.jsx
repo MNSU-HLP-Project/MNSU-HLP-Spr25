@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import generateInvite from "../utils/api"
+import {generateInvite, generateClass, getClasses} from "../utils/api"
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -9,16 +9,54 @@ const MainMenu = () => {
   const role = localStorage.getItem("role")
 
   const [showInviteSection, setShowInviteSection] = useState(false);
-  const [inviteLink, setInviteLink] = useState();
+  const [inviteLink, setInviteLink] = useState(null);
+  const [showClassSection, setShowClassSection] = useState(false)
+  const [class_data, setClassData] = useState({})
+  const [errors, setErrors] = useState({});
+  const [classList, setClassList] = useState([]);
+
+  const handleChange = (form) => {
+    const { name, value } = form.target;
+    setClassData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {getClass()},[])
+  const getClass = async () => {
+    const classes = await getClasses();
+    setClassList(classes)
+    console.log(classes)
+  }
 
   const genInvite = async () => {
+    if (class_data.name == '') {
+      setErrors({class: 'Must select a class'})
+    }
+   else {
+    setErrors({})
     try {
-      const link = await generateInvite(); // Wait for the promise to resolve
+      const link = await generateInvite(class_data.name); // Wait for the promise to resolve
       setInviteLink(link);
     } catch (error) {
       console.error("Error generating invite link:", error);
     }
+  }
   };
+
+  const genClass = async () => {
+    try {
+      if (class_data['class_name']) {
+        setErrors({})
+        await generateClass(class_data);
+      } else {
+        setErrors({ class_name: 'Need a class name' })
+      }
+    } catch (error) {
+      console.error("Error generating class")
+    }
+  }
 
   // Determine invite message based on user role
   const inviteMessage =
@@ -61,16 +99,35 @@ const MainMenu = () => {
 
             {/* Invite Link Section */}
             <button
-              className="w-3/4 p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              className="w-3/4 p-3 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
               onClick={() => setShowInviteSection(!showInviteSection)}
             >
               🔗 Invite Link
             </button>
 
             {showInviteSection && (
-              <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
+              <div className="mt-1 w-3/4 p-3 bg-gray-100 rounded-lg shadow-lg">
+                {classList && (
+                  <div className="mt-1">
+                    <label className="text-gray-700 font-medium">Choose a Class:</label>
+                    <select
+                      name="name"
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      onChange={handleChange}
+                    >
+                      <option value="">Select a class</option> {/* Default empty option */}
+                      {classList.map((object) => (
+                        <option key={object.id} value={object.name}>
+                          {object.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>)}
+                {errors.class && (
+                  <p className="text-red-500 text-sm mt-1">{errors.class}</p>
+                )}
                 <button
-                  className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                   onClick={genInvite}
                 >
                   Generate Invite Link
@@ -100,6 +157,32 @@ const MainMenu = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+            <button
+              className="w-3/4 p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => setShowClassSection(!showClassSection)}
+            >
+              Create Class
+            </button>
+            {showClassSection && (
+              <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <input
+                  name="class_name"
+                  type="class_name"
+                  placeholder="Class Name"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  onChange={handleChange}
+                />
+                {errors.class_name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.class_name}</p>
+                )}
+                <button
+                  className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  onClick={genClass}
+                >
+                  Generate Class
+                </button>
               </div>
             )}
           </>

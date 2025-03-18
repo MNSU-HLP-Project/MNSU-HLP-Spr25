@@ -2,16 +2,40 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const generateInvite = async () => {
+export const generateInvite = async (class_name) => {
     const token = localStorage.getItem('jwtToken');  
+    console.log(class_name)
     const response = await axios.post('http://localhost:8000/api/generate-invite/', {
-        token: token
+        token: token,
+        class_name: class_name
     });
-    if (response.data.role == 'Supervisor') {
-        return(`${window.location.origin}/register?role=sup&code=${response.data.code}`);
+    console.log(response)
+    if (response.data.invitation.role == 'Supervisor') {
+        return(`${window.location.origin}/register?role=sup&code=${response.data.invitation.code}`);
     } else {
-        return(`${window.location.origin}/register?role=stu&code=${response.data.code}`);
+        return(`${window.location.origin}/register?role=stu&code=${response.data.invitation.code}`);
     }
 };
 
-export default generateInvite;
+export const generateClass = async (form_data) => {
+    const token = localStorage.getItem('jwtToken')
+    console.log (form_data)
+    const response = await axios.post('http://localhost:8000/api/generate-class/',
+        {
+            token: token,
+            form_data: form_data
+        }
+    )
+    console.log(response)
+    return (true)
+}
+export const getClasses = async () => {
+    const token = localStorage.getItem('jwtToken')
+    const response = await axios.post('http://localhost:8000/api/get-classes/',
+        {
+            token: token
+        }
+    )
+    console.log(response)
+    return (response.data)
+}
