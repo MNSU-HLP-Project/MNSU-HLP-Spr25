@@ -1,21 +1,40 @@
 from rest_framework import serializers
-from .models import Announcement, User, Submission
+from django.contrib.auth.models import User
+from .models import Submission, Announcement, ExtendUser
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
 
-class AnnouncementSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+class SubmissionSerializer(serializers.ModelSerializer):
+    student = UserSerializer(read_only=True)
     
     class Meta:
-        model = Announcement
-        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'is_active']
-        read_only_fields = ['author', 'created_at', 'updated_at']
-
-class SubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
         model = Submission
-        fields = ['id', 'title', 'content', 'feedback', 'status', 'created_at']
-        read_only_fields = ['feedback', 'status']
+        fields = [
+            'id',
+            'student',
+            'title',
+            'content',
+            'status',
+            'feedback',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['student', 'status', 'feedback']
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = [
+            'id',
+            'title',
+            'content',
+            'author',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['author']

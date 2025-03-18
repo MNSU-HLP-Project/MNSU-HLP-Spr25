@@ -9,6 +9,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 const AuthContext = createContext(null);
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
-      api.get('/user/profile/', {
+      api.get('/profile/', {
         headers: { Authorization: `Bearer ${accessToken}` }
       })
       .then(response => {
@@ -56,15 +57,29 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await api.post('/login/', credentials);
+      
+      // Debug logging
+      console.log('Login API response:', response.data);
+      
       const { access, refresh } = response.data;
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       
-      const userResponse = await api.get('/user/profile/', {
-        headers: { Authorization: `Bearer ${access}` }
+      const userResponse = await api.get('/profile/', {
+        headers: { 
+          'Authorization': `Bearer ${access}`,
+          'Content-Type': 'application/json',
+        },
       });
+      
+      // Debug logging
+      console.log('User profile response:', userResponse.data);
+      
       setUser(userResponse.data);
-      return userResponse.data;
+      return {
+        ...userResponse.data,
+        role: response.data.role // Ensure role is included from login response
+      };
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);
       throw error;

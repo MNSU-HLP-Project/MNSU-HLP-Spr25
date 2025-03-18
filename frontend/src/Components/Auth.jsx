@@ -23,19 +23,42 @@ const Auth = () => {
           username: formData.username,
           password: formData.password
         });
-        navigate(userData.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard');
+        
+        // Debug logging
+        console.log('Login response:', userData);
+        console.log('User role:', userData.role);
+        
+        // Strict role checking
+        if (userData.role === 'teacher') {
+          console.log('Navigating to teacher dashboard');
+          navigate('/teacher-dashboard');
+        } else {
+          console.log('Navigating to student dashboard');
+          navigate('/student-dashboard');
+        }
       } else {
-        // Changed endpoint to match backend
         const response = await api.post('/register/', formData);
+        
+        // Debug logging
+        console.log('Registration response:', response.data);
+        
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
         
-        // After registration, log the user in
         const userData = await login({
           username: formData.username,
           password: formData.password
         });
-        navigate(userData.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard');
+        
+        // Debug logging
+        console.log('Post-registration login response:', userData);
+        console.log('User role after registration:', userData.role);
+        
+        if (userData.role === 'teacher') {
+          navigate('/teacher-dashboard');
+        } else {
+          navigate('/student-dashboard');
+        }
       }
     } catch (error) {
       console.error('Auth error:', error.response?.data || error);

@@ -1,76 +1,98 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 from .models import ExtendUser, Announcement, Submission
-from .serializers import AnnouncementSerializer, SubmissionSerializer
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from .serializers import UserSerializer, AnnouncementSerializer, SubmissionSerializer
+
+class UserProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            username = request.data.get('username')
+            password = request.data.get('password')
+
+            if not username or not password:
+                return Response({
+                    'error': 'Please provide both username and password'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            user = authenticate(username=username, password=password)
+
+            if not user:
+                return Response({
+                    'error': 'Invalid credentials'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Get the user's role explicitly
+            user_role = user.extenduser.role if hasattr(user, 'extenduser') else 'student'
+            
+            # Add debug logging
+            print(f"User {username} logging in with role: {user_role}")
+
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'username': user.username,
+                'role': user_role  # Make sure role is included in response
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print(f"Login error: {str(e)}")  # Add debug logging
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         try:
-            # Extract data from request
-            username = request.data.get('username')
-            email = request.data.get('email')
-            password = request.data.get('password')
-            role = request.data.get('role')
-            org = request.data.get('org')
-
-            # Validate password
-            try:
-                validate_password(password)
-            except ValidationError as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
             # Create user
             user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
+                username=request.data['username'],
+                email=request.data['email'],
+                password=request.data['password']
             )
 
             # Create extended user profile
             ExtendUser.objects.create(
                 user=user,
-                role=role,
-                org=org
+                role=request.data['role'],
+                org=request.data['org']
             )
 
-            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'username': user.username,
+                'role': request.data['role']
+            }, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class UserProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        try:
-            extend_user = ExtendUser.objects.get(user=user)
             return Response({
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'role': extend_user.role,
-                'org': extend_user.org
-            })
-        except ExtendUser.DoesNotExist:
-            return Response({
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'role': None,
-                'org': None
-            })
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 class AnnouncementListCreateView(generics.ListCreateAPIView):
-    queryset = Announcement.objects.filter(is_active=True)
+    queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -82,37 +104,5 @@ class AnnouncementDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AnnouncementSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
-
-class SubmissionListCreateView(generics.ListCreateAPIView):
-    serializer_class = SubmissionSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Submission.objects.filter(student=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(student=self.request.user)
-
-class LoginView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-
-        user = authenticate(username=username, password=password)
-        
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-            })
-        else:
-            return Response(
-                {'error': 'Invalid credentials'}, 
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+    def perform_update(self, serializer):
+        serializer.save(author=self.request.user)
