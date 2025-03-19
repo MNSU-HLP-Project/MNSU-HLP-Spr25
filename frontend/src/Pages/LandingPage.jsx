@@ -8,11 +8,14 @@ function LandingPage() {
     <div className="min-h-screen flex flex-col items-center bg-white text-gray-900">
       {/* ✅ Hero Section */}
       <section className="w-full px-6 py-12 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white">
-        <h1 className="text-5xl font-bold mb-4">TeachTrack</h1>
-        <p className="text-lg mb-6">
-          We take care of your learning journey, providing an easy journaling
-          experience.
-        </p>
+        <h1 className="font-sans text-5xl font-bold mb-8">TeachTrack</h1>
+        <h2 className="text-2xl mb-8">
+          Master your High-Leverage Practices (HLPs) with ease!{" "}
+        </h2>
+        {/* <p className="text-xl mb-6">
+          TeachTrack is your all-in-one platform for tracking progress,
+          reflecting on experiences, and receiving valuable feedback.
+        </p> */}
         <button
           className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-md hover:bg-gray-200"
           onClick={() => setShowAuth(true)}
@@ -27,24 +30,23 @@ function LandingPage() {
         <div className="grid grid-cols-2 gap-6">
           <div className="flex flex-col items-center">
             <span className="text-4xl">📊</span>
-            <p className="text-sm mt-2">Track & Score HLPs</p>
+            <p className="text-lg mt-2">Track & Score HLPs</p>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl">📝</span>
-            <p className="text-sm mt-2">Easy Journaling</p>
+            <p className="text-lg mt-2">Easy Journaling</p>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl">📈</span>
-            <p className="text-sm mt-2">Insights & Progress</p>
+            <p className="text-lg mt-2">Insights & Progress</p>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl">🤝</span>
-            <p className="text-sm mt-2">Collaborate & Share</p>
+            <p className="text-lg mt-2">Collaborate & Share</p>
           </div>
         </div>
       </section>
-
-    
+      
 
       {/* ✅ Auth Modal */}
       {showAuth && (

@@ -5,9 +5,10 @@ import Auth from "./Components/Login"; // Updated import to the new component
 import MainMenu from "./Components/MainMenu";
 import HLPCategories from "./Components/HLPCategories";
 import StudentRegister from "./Components/StudentReg";
-import InviteLink from "./Components/InviteLink";
-import Collaboration from "./Components/HLP Pages/CollaborationPage";
 import AdminPage from "./dashboard/adminpanel";
+
+// import InviteLink from "./Components/InviteLink";
+import HLPSelection from "./Components/HLPSelection";
 
 function App() {
   return (
@@ -16,9 +17,9 @@ function App() {
       <Route path="/mainmenu/" element={<MainMenu />} />
       <Route path='/hlpcategories/' element={<HLPCategories />} />
       <Route path='/register/' element={<StudentRegister />} />
-      <Route path='/link/' element={<InviteLink />} />
-      <Route path='/collaboration/' element={<Collaboration />} />
       <Route path='/dashboard/' element = {<AdminPage/>}/>
+      {/* <Route path='/link/' element={<InviteLink />} /> */}
+      <Route path='/hlpselection/' element={<HLPSelection />} />
     </Routes>
   );
 }

@@ -7,16 +7,65 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel
-from .serializers import ExtendUserSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer, GradeLevelSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
+def check_token(token):
+    """Checks Token and returns a token dictionary
+
+    Args:
+        token (_type_): A JWT token
+    """
+    decoded = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.JWT_ALGORITHM)
+    if decoded:
+        return decoded
+    else:
+        return None
+    
+@api_view(['GET'])
+def get_grade_levels(request):
+    grade_levels = GradeLevel.objects.all()
+    serializer = GradeLevelSerializer(grade_levels, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def get_class_names(request):
+    token = check_token(request.data['token'])
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    classes = SupervisorClass.objects.filter(user=user)
+    serializer = SuperClassSerializer(classes, many=True)
+    return Response(serializer.data)
+    
+@api_view(['POST'])
+def generate_class(request):
+    data = request.data['form_data']
+    class_name = data['class_name']
+    token = check_token(request.data['token'])
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
+    if sup_class:
+        return Response({'error': "Name already exists"}, status=400)
+    else:
+        sup_class = SupervisorClass.objects.create(name=class_name, user=user)
+        return Response({ class_name: SuperClassSerializer(sup_class).data})
+    
 @api_view(['POST'])
 def generate_invitation(request):
-    max_uses = request.data.get('max_uses', None) 
-    role = request.data.get('role')
-    userid = request.data.get('userid')
+    max_uses = 50
+    token = check_token(request.data['token'])
+    print(request.data)
+    class_name = request.data['class_name']
+    
+    if not token:
+        return Response({'error': 'User not authenticated'}, status=400)
+    
+    role = token['role']
+    userid = token['id']
+    
     if not userid:
         return Response({'error': 'User ID is required'}, status=400)
 
@@ -26,22 +75,32 @@ def generate_invitation(request):
     except User.DoesNotExist:
         return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    org = ExtendUser.objects.get(user=teacher).org
+
     # Check if user is authorized
     if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin']).exists() is False:
         return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
     # Check if invitation already exists
-    invitation = Invitation.objects.filter(teacher=teacher).first()
-    if invitation:
-        return Response(InvitationSerializer(invitation).data)
-    
     if role == 'Supervisor':
+        invitation = Invitation.objects.filter(teacher=teacher, class_name=SupervisorClass.objects.get(name=class_name, user=teacher)).first()
+        if invitation and invitation.use_count < invitation.max_uses:
+            return Response({'invitation':InvitationSerializer(invitation).data})
+        elif invitation and invitation.use_count >= invitation.max_uses:
+            invitation.delete()
         newrole = 'Student Teacher'
+        sup_class = SupervisorClass.objects.get(name=class_name, user=teacher)
     else: 
+        invitation = Invitation.objects.filter(teacher=teacher).first()
+        if invitation and invitation.use_count < invitation.max_uses:
+            return Response({'invitation':InvitationSerializer(invitation).data})
+        elif invitation and invitation.use_count >= invitation.max_uses:
+            invitation.delete()
         newrole = 'Supervisor'
+        sup_class = None
         
-    invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses)
-    return Response(InvitationSerializer(invitation).data)
+    invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org, class_name=sup_class)
+    return Response({'invitation': InvitationSerializer(invitation).data})
 
 class SignupView(APIView):
     def post(self, request):
@@ -61,9 +120,9 @@ class LoginView(APIView):
                 'id': user.username, 
                 'firstname': user.first_name, 
                 'lastname': user.last_name,
-                'org': ExtendUser.objects.get(user=user).org
+                'org': ExtendUser.objects.get(user=user).org.name
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-            return Response({"token": token}, status=status.HTTP_200_OK)
+            return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
