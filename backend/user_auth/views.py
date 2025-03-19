@@ -4,8 +4,9 @@ from rest_framework import status
 from django.contrib.auth import login
 from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from django.conf import settings
-from .models import ExtendUser, Invitation
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
@@ -123,3 +124,77 @@ class LoginView(APIView):
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+def get_extend_users(request):
+    extend_users = ExtendUser.objects.all()
+    serializer = ExtendUserSerializer(extend_users, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_organizations(request):
+    organizations = Organization.objects.all()
+    serializer = OrganizationSerializer(organizations, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_student_teachers(request):
+    student_teachers = StudentTeacher.objects.all()
+    serializer = StudentTeacherSerializer(student_teachers, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_supervisors(request):
+    supervisors = Supervisor.objects.all()
+    serializer = SupervisorSerializer(supervisors, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_grade_levels(request):
+    grade_levels = GradeLevel.objects.all()
+    serializer = GradeLevelSerializer(grade_levels, many=True)
+    return Response(serializer.data)
+
+@api_view(["POST"])
+def create_student_teacher(request):
+    serializer = StudentTeacherSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(["POST"])
+def create_supervisor(request):
+    serializer = SupervisorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(["POST"])
+def create_grade_levels(request):
+    serializer = GradeLevelSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(["GET"])
+def get_users_by_role(request):
+    """Retrieve a user's role based on their username"""
+    username = request.GET.get("username", "").strip()
+
+    if not username:
+        return Response({"error": "username parameter is required"}, status=400)
+
+    # Find user in ExtendUser model
+    try:
+        user = ExtendUser.objects.select_related('user').get(user__username=username)
+    except ExtendUser.DoesNotExist:
+        return Response({"error": f"User '{username}' not found"}, status=404)
+
+    # Return user's role
+    return Response({"username": username, "The user's role": user.role}, status=200)

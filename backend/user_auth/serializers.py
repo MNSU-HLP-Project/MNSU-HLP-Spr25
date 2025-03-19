@@ -108,6 +108,7 @@ class StudentTeacherSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()  # Display username instead of ID
     org = OrganizationSerializer(read_only=True)  # Nested organization details
 
+
     class Meta:
         model = StudentTeacher
         fields = '__all__'
@@ -119,3 +120,4 @@ class SupervisorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supervisor
         fields = '__all__'
+
