@@ -22,7 +22,7 @@ function StudentRegister() {
   useEffect(() => {
     const fetchGrades = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/getgrades/");
+        const response = await axios.get("http://localhost:8000/user_auth/getgrades/");
         // Sort the grades, handling both numbers and strings
         const sortedGrades = [...response.data].sort((a, b) => {
           // Convert numeric gradelevel strings to numbers, otherwise leave as string
@@ -96,7 +96,7 @@ function StudentRegister() {
     if (Object.keys(newErrors).length > 0) return;
     console.log(formData)
     try {
-        const response = await axios.post("http://localhost:8000/api/signup/", {
+        const response = await axios.post("http://localhost:8000/user_auth/signup/", {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,

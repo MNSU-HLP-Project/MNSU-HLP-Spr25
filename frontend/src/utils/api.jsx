@@ -7,7 +7,7 @@ export const generateInvite = async (class_name) => {
 
     const name = class_name || ''
     console.log(name)
-    const response = await axios.post('http://localhost:8000/api/generate-invite/', {
+    const response = await axios.post('http://localhost:8000/user_auth/generate-invite/', {
         token: token,
         class_name: name
     });
@@ -22,7 +22,7 @@ export const generateInvite = async (class_name) => {
 export const generateClass = async (form_data) => {
     const token = localStorage.getItem('jwtToken')
     console.log (form_data)
-    const response = await axios.post('http://localhost:8000/api/generate-class/',
+    const response = await axios.post('http://localhost:8000/user_auth/generate-class/',
         {
             token: token,
             form_data: form_data
@@ -33,7 +33,7 @@ export const generateClass = async (form_data) => {
 }
 export const getClasses = async () => {
     const token = localStorage.getItem('jwtToken')
-    const response = await axios.post('http://localhost:8000/api/get-classes/',
+    const response = await axios.post('http://localhost:8000/user_auth/get-classes/',
         {
             token: token
         }

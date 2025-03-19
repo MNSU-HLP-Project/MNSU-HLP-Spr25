@@ -31,7 +31,7 @@ function Auth() {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-        const response = await axios.post("http://localhost:8000/api/login/", {
+        const response = await axios.post("http://localhost:8000/user_auth/login/", {
           username: formData.username,
           password: formData.password,
         });
