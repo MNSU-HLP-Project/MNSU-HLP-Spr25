@@ -14,7 +14,7 @@ export default function AdminPage() {
   const fetchEntries = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/entries/");
-      setEntries(response.data);
+      setEntries(response.data.entries);
     } catch (error) {
       console.error("Error fetching entries:", error);
     }
@@ -36,10 +36,11 @@ export default function AdminPage() {
 
   return (
     <div className="container">
-      <h1 className="title">Admin Dashboard</h1>
+      <h1 className="title">StudentTeacher entries submitted</h1>
       <table className="table">
         <thead>
           <tr>
+            <th>StudentTeacher Name</th>
             <th>HLP Number</th>
             <th>Lookfor Number</th>
             <th>Date</th>
@@ -49,20 +50,22 @@ export default function AdminPage() {
           </tr>
         </thead>
         <tbody>
-          {entries.map((entry) => (
-            <tr key={entry.id}>
-              <td>{entry.hlp}</td>
-              <td>{entry.lookfor_number}</td>
-              <td>{entry.date}</td>
-              <td>{entry.score}</td>
-              <td>{entry.comments}</td>
-              <td>
-                <button className="delete-btn" onClick={() => handleDelete(entry.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
+        {Array.isArray(entries) &&
+        entries.map((entry, index) => (
+          <tr key={entry.id}>
+            <td>StudentTeacherUser{index+1}</td>
+            <td>{entry.hlp}</td>
+            <td>{entry.lookfor_number}</td>
+            <td>{entry.date}</td>
+            <td>{entry.score}</td>
+            <td>{entry.comments}</td>
+            <td>
+              <button className="delete-btn" onClick={() => handleDelete(entry.id)}>
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
         </tbody>
       </table>
     </div>

@@ -14,7 +14,7 @@ class Entry(models.Model):
     score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='NA')
 
     date = models.DateField(default=date.today)
-    comments = models.TextField()
+    comments = models.TextField(default="")
     # user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     teacher_reply = models.BooleanField(default=False)
 

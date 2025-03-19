@@ -2,7 +2,7 @@ from django.urls import path
 from .views import SignupView, LoginView, generate_invitation
 
 from .views import SignupView, LoginView
-from .views import get_extend_users, get_organizations, get_student_teachers, get_supervisors, get_grade_levels, get_users_by_role
+from .views import get_extend_users, get_organizations, get_student_teachers, get_supervisors, get_grade_levels, get_users_by_role, create_student_teacher, create_grade_levels, create_supervisor
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
@@ -13,6 +13,9 @@ urlpatterns = [
     path('student-teachers/', get_student_teachers, name='student-teachers'),
     path('supervisors/', get_supervisors, name='supervisors'),
     path('grade-levels/', get_grade_levels, name='grade-levels'),
-    path('role-byname/', get_users_by_role, name= "user_names_by_role")
+    path('role-byname/', get_users_by_role, name= "user_names_by_role"),
+    path('create_studentteacher/', create_student_teacher, name= "create_student_teacher"),
+    path('create_supervisor/', create_supervisor, name= "create_supervisor"),
+    path('create_gradelevel/', create_grade_levels ,name= "create_grade-level")
 ]
 

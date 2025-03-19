@@ -10,15 +10,31 @@ from rest_framework.decorators import api_view
 def get_entries(request):
     entries = Entry.objects.all()
     serializer = EntrySerializer(entries, many=True)
-    return Response(serializer.data)
+
+    response_data = {
+        "No of entries found": entries.count(),
+        "entries": serializer.data
+    }
+    
+    return Response(response_data)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import EntrySerializer
+from .models import Entry
 
 @api_view(["POST"])
 def create_entry(request):
     serializer = EntrySerializer(data=request.data)
+    
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+        return Response(
+            {"message": "Entry has been created successfully!", "entry": serializer.data}, 
+            status=201
+        )
+    
+    return Response({"error": "Failed to create entry", "details": serializer.errors}, status=400)
+
 
 
 
@@ -95,7 +111,7 @@ def get_entries_by_lookfor_number(request):
     except ValueError:
         return Response({"error": "lookfor_number must be an integer"}, status=400)
 
-    # Filter entries by hlp
+    # Filter entries by lookfor_number
     entries = Entry.objects.filter(lookfor_number= lookfor_number)
 
     if not entries.exists():
