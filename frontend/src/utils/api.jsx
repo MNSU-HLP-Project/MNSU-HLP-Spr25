@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 export const generateInvite = async (class_name) => {
     const token = localStorage.getItem('jwtToken');  
-    console.log(class_name)
+
+    const name = class_name || ''
+    console.log(name)
     const response = await axios.post('http://localhost:8000/api/generate-invite/', {
         token: token,
-        class_name: class_name
+        class_name: name
     });
     console.log(response)
     if (response.data.invitation.role == 'Supervisor') {

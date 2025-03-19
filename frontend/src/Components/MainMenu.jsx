@@ -87,8 +87,62 @@ const MainMenu = () => {
             </button>
           </>
         )}
+        {["Admin"].includes(role) && (
+          <>
+            <button
+              className="w-3/4 p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => alert("View Reflection button clicked")}
+            >
+              View Reflections
+            </button>
 
-        {["Supervisor", "Admin"].includes(role) && (
+            {/* Invite Link Section */}
+            <button
+              className="w-3/4 p-3 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => setShowInviteSection(!showInviteSection)}
+            >
+              🔗 Invite Link
+            </button>
+
+            {showInviteSection && (
+              <div className="mt-1 w-3/4 p-3 bg-gray-100 rounded-lg shadow-lg">
+                <button
+                  className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  onClick={genInvite}
+                >
+                  Generate Invite Link
+                </button>
+
+                {inviteLink && (
+                  <div className="mt-3 text-center">
+                    <p className="text-gray-700 text-sm font-semibold">
+                      {inviteMessage}
+                    </p>
+                    <div className="flex justify-center items-center mt-2">
+                      <input
+                        type="text"
+                        value={inviteLink}
+                        readOnly
+                        className="border rounded-l-lg px-2 py-1 w-3/4 text-gray-800"
+                      />
+                      <button
+                        className="bg-green-500 text-white px-3 py-1 rounded-r-lg hover:bg-green-600"
+                        onClick={() => {
+                          navigator.clipboard.writeText(inviteLink);
+                          alert("Copied to clipboard");
+                        }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            
+            )}
+          </>
+        )}
+        {["Supervisor"].includes(role) && (
           <>
             <button
               className="w-3/4 p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
