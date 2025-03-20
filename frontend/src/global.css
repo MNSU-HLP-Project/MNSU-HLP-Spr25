@@ -1,0 +1,138 @@
+/* Preloader styles */
+.preloader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0a192f;
+  z-index: 50;
+  overflow: hidden;
+  transition: opacity 1.2s ease-out, visibility 1.2s ease-out;
+}
+
+/* Smoother Fade-out effect */
+.preloader-container.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Animated wave background */
+.wave-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 10%, transparent 70%);
+  animation: wave-motion 10s infinite linear;
+  opacity: 0.5;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+}
+
+/* Gradual Wave Dissolve Effect */
+.preloader-container.hidden .wave {
+  transform: scale(0.9) translateY(15px);
+  opacity: 0;
+}
+
+.wave:nth-child(1) {
+  top: -50%;
+  left: -50%;
+  animation-duration: 12s;
+}
+
+.wave:nth-child(2) {
+  top: -40%;
+  left: -40%;
+  animation-duration: 10s;
+}
+
+.wave:nth-child(3) {
+  top: -30%;
+  left: -30%;
+  animation-duration: 8s;
+}
+
+@keyframes wave-motion {
+  0% {
+    transform: rotate(0deg) translateX(0);
+  }
+  50% {
+    transform: rotate(180deg) translateX(10%);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0);
+  }
+}
+
+/* Loader text */
+.loader-container {
+  text-align: center;
+  z-index: 10;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Soft Text Fade & Scale-out */
+.loader-text {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff6ec7, #ff8a00, #ff6ec7);
+  background-clip: text;
+  color: transparent;
+  animation: gradient-text 2s linear infinite, fade-in 1.5s ease-in-out infinite alternate;
+}
+
+/* Make the text fade out smoothly */
+.preloader-container.hidden .loader-text {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+}
+
+@keyframes gradient-text {
+  0% {
+    background-position: -200%;
+  }
+  50% {
+    background-position: 200%;
+  }
+  100% {
+    background-position: -200%;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* --- App Container Transition for a Soft Reveal --- */
+.app-container {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+/* App Fades in Smoothly */
+.app-container.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

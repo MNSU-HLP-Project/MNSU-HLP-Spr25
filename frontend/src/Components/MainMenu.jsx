@@ -15,6 +15,8 @@ const MainMenu = () => {
   const [errors, setErrors] = useState({});
   const [classList, setClassList] = useState([]);
 
+  
+
   const handleChange = (form) => {
     const { name, value } = form.target;
     setClassData((prevFormData) => ({
