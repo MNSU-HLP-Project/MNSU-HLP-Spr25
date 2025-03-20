@@ -1,17 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
         fields = ['id', 'teacher', 'role', 'code', 'created_at', 'max_uses', 'use_count','class_name']
 
-class SuperClassSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SupervisorClass
-        fields = ['user', 'name']
                
 class SignupSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='first_name')
@@ -63,7 +59,7 @@ class SignupSerializer(serializers.ModelSerializer):
             stuteach.grade_levels.add(GradeLevel.objects.get(gradelevel=validated_data['grade_level']))
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             class_name = invitation.class_name
-            sup_class = SupervisorClass.objects.get(name=class_name, user=invitation.teacher)
+            sup_class = Supervisor.objects.get(name=class_name, user=invitation.teacher)
             sup_class.students.add(user)
             if sup:
                 sup.student_teachers.add(StudentTeacher.objects.get(user=user))
@@ -121,3 +117,5 @@ class SupervisorSerializer(serializers.ModelSerializer):
         model = Supervisor
         fields = '__all__'
 
+
+        
