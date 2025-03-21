@@ -7,8 +7,8 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel
-from .serializers import ExtendUserSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
@@ -35,8 +35,8 @@ def get_class_names(request):
     token = check_token(request.data['token'])
     userid = token['id']
     user = User.objects.get(username=userid)
-    classes = Supervisor.objects.filter(user=user)
-    serializer = Supervisor(classes, many=True)
+    classes = SupervisorClass.objects.filter(user=user)
+    serializer = SuperClassSerializer(classes, many=True)
     return Response(serializer.data)
     
 @api_view(['POST'])
@@ -46,12 +46,12 @@ def generate_class(request):
     token = check_token(request.data['token'])
     userid = token['id']
     user = User.objects.get(username=userid)
-    sup_class = Supervisor.objects.filter(name=class_name, user=user).first()
+    sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
     if sup_class:
         return Response({'error': "Name already exists"}, status=400)
     else:
-        sup_class = Supervisor.objects.create(name=class_name, user=user)
-        return Response({ class_name: Supervisor(sup_class).data})
+        sup_class = SupervisorClass.objects.create(name=class_name, user=user)
+        return Response({ class_name: SuperClassSerializer(sup_class).data})
     
 @api_view(['POST'])
 def generate_invitation(request):
@@ -83,13 +83,13 @@ def generate_invitation(request):
 
     # Check if invitation already exists
     if role == 'Supervisor':
-        invitation = Invitation.objects.filter(teacher=teacher, class_name=Supervisor.objects.get(name=class_name, user=teacher)).first()
+        invitation = Invitation.objects.filter(teacher=teacher, class_name=SupervisorClass.objects.get(name=class_name, user=teacher)).first()
         if invitation and invitation.use_count < invitation.max_uses:
             return Response({'invitation':InvitationSerializer(invitation).data})
         elif invitation and invitation.use_count >= invitation.max_uses:
             invitation.delete()
         newrole = 'Student Teacher'
-        sup_class = Supervisor.objects.get(name=class_name, user=teacher)
+        sup_class = SupervisorClass.objects.get(name=class_name, user=teacher)
     else: 
         invitation = Invitation.objects.filter(teacher=teacher).first()
         if invitation and invitation.use_count < invitation.max_uses:
