@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateInvite, generateClass, getClasses} from "../utils/api"
+import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api"
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -11,9 +11,14 @@ const MainMenu = () => {
   const [showInviteSection, setShowInviteSection] = useState(false);
   const [inviteLink, setInviteLink] = useState(null);
   const [showClassSection, setShowClassSection] = useState(false)
+  const [showOrgSection, setShowOrgSection] = useState(false)
   const [class_data, setClassData] = useState({})
   const [errors, setErrors] = useState({});
   const [classList, setClassList] = useState([]);
+  const [org_data, setOrgData] = useState({
+    org_name: '',
+    admin_email: ''
+  })
 
   const handleChange = (form) => {
     const { name, value } = form.target;
@@ -22,6 +27,14 @@ const MainMenu = () => {
       [name]: value,
     }));
   };
+
+  const handleOrgChange = (form) => {
+    const { name, value } = form.target;
+    setOrgData((prevOrgData) => ({
+      ...prevOrgData,
+      [name]: value
+    }))
+  }
 
   useEffect(() => {getClass()},[])
   const getClass = async () => {
@@ -57,6 +70,20 @@ const MainMenu = () => {
       console.error("Error generating class")
     }
   }
+  
+  const genOrg = async () => {
+    try {
+      if (org_data['org_name'] != '' && org_data['admin_email'] != '') {
+        const link = await generateOrganization(org_data)
+        setInviteLink(link);
+      }
+      else {
+        setErrors({ org: 'Fill out all fields'})
+      }
+    } catch (error) {
+      console.error("Error generating orginization")
+    }
+  }
 
   // Determine invite message based on user role
   const inviteMessage =
@@ -66,11 +93,11 @@ const MainMenu = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 items-center relative">
-      <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mt-12 md:mt-20 tracking-wide drop-shadow-lg">
+      <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mt-6 md:mt-6 tracking-wide drop-shadow-lg">
         TeachTrack
       </h1>
 
-      <div className="flex flex-col items-center mt-12 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
+      <div className="flex flex-col items-center mt-8 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
         {role === "Student Teacher" && (
           <>
             <button
@@ -139,6 +166,69 @@ const MainMenu = () => {
                 )}
               </div>
             
+            )}
+          </>
+        )}
+        {["Superuser"].includes(role) && (
+          <>
+            <button
+              className="w-3/4 p-3 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => setShowOrgSection(!showOrgSection)}
+            >
+              Create Organization
+            </button>
+
+            
+            {showOrgSection && (
+              <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <input
+                  name="org_name"
+                  type="org_name"
+                  placeholder="Organization Name"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  onChange={handleOrgChange}
+                />
+                <input
+                  name="admin_email"
+                  type="admin_email"
+                  placeholder="Admin Email"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  onChange={handleOrgChange}
+                />
+                {errors.org && (
+                  <p className="text-red-500 text-sm mt-1">{errors.org}</p>
+                )}
+                <button
+                  className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  onClick={genOrg}
+                >
+                  Generate Organization
+                </button>
+                {inviteLink && (
+                  <div className="mt-3 text-center">
+                    <p className="text-gray-700 text-sm font-semibold">
+                      {inviteMessage}
+                    </p>
+                    <div className="flex justify-center items-center mt-2">
+                      <input
+                        type="text"
+                        value={inviteLink}
+                        readOnly
+                        className="border rounded-l-lg px-2 py-1 w-3/4 text-gray-800"
+                      />
+                      <button
+                        className="bg-green-500 text-white px-3 py-1 rounded-r-lg hover:bg-green-600"
+                        onClick={() => {
+                          navigator.clipboard.writeText(inviteLink);
+                          alert("Copied to clipboard");
+                        }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </>
         )}

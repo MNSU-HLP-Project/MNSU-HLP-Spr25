@@ -21,6 +21,9 @@ class Entry(models.Model):
     def __str__(self):
         return f"Entry {self.id}: {self.comments[:20]}..."  # Shows first 20 characters
 
+class Prompt(models.Model):
+    prompt = models.CharField(max_length=200)
+    
 class TeacherComment(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
     comment = models.TextField()

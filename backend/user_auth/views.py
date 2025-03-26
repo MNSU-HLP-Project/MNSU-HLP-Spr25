@@ -52,6 +52,20 @@ def generate_class(request):
     else:
         sup_class = SupervisorClass.objects.create(name=class_name, user=user)
         return Response({ class_name: SuperClassSerializer(sup_class).data})
+
+@api_view(['POST'])
+def generate_org(request):
+    token = check_token(request.data['token'])
+    if token['role'] != 'Superuser':
+        return Response({'error': 'User not authenticated'}, status=400)
+    org_data = request.data['org_data']
+    admin = org_data['admin_email']
+    name = org_data['org_name']
+    if Organization.objects.filter(name=name).first():
+        return Response(status=status.HTTP_200_OK)
+    Organization.objects.create(name=name, admin_email=admin)
+    return Response(status=status.HTTP_200_OK)
+    
     
 @api_view(['POST'])
 def generate_invitation(request):
@@ -78,7 +92,7 @@ def generate_invitation(request):
     org = ExtendUser.objects.get(user=teacher).org
 
     # Check if user is authorized
-    if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin']).exists() is False:
+    if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin','Superuser']).exists() is False:
         return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
     # Check if invitation already exists
@@ -96,7 +110,11 @@ def generate_invitation(request):
             return Response({'invitation':InvitationSerializer(invitation).data})
         elif invitation and invitation.use_count >= invitation.max_uses:
             invitation.delete()
-        newrole = 'Supervisor'
+        if role == 'Superuser':
+            newrole = 'Admin'
+            org = None
+        else:
+            newrole = 'Supervisor'
         sup_class = None
         
     invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org, class_name=sup_class)
@@ -119,8 +137,7 @@ class LoginView(APIView):
                 'role': ExtendUser.objects.get(user=user).role, 
                 'id': user.username, 
                 'firstname': user.first_name, 
-                'lastname': user.last_name,
-                'org': ExtendUser.objects.get(user=user).org.name
+                'lastname': user.last_name
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

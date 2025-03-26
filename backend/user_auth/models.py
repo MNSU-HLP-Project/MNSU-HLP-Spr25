@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from entries.models import Prompt
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Organization Name Instead of User
     members = models.ManyToManyField(User, related_name='organizations')  # Users linked to an Organization
-
+    admin_email = models.CharField(max_length=50)
+    prompt_list = models.ManyToManyField(Prompt)
+    email_check = models.CharField(max_length=50)
+    
     def __str__(self):
         return self.name
 
