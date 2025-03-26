@@ -46,7 +46,13 @@ class SignupSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=validated_data['email'].lower()).exists():
             raise serializers.ValidationError({"email": "A user with this email already exists."})
         org = invitation.org
-
+        if role == 'Admin':
+            admin_org = Organization.objects.get(admin_email=validated_data['email'].lower())
+            if not admin_org:
+                raise serializers.ValidationError("No Authorized Orginization")
+            else:
+                org = admin_org
+                
         user = User.objects.create_user(
             username=validated_data['email'].lower(),  # Use email as the username
             first_name=validated_data['first_name'],

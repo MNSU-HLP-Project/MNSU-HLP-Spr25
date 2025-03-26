@@ -14,7 +14,7 @@ function StudentRegister() {
           setFormData((prev) => ({ ...prev, searchParams: code }));
       }
       const role = searchParams.get('role')
-      if (role == 'sup') {
+      if (role == 'sup' || role=='admin') {
           setFormData((prev) => ({ ...prev, student_teacher: false}))
       }
   }, [searchParams]);

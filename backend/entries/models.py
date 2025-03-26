@@ -42,6 +42,9 @@ class Answer(models.Model):
     def __str__(self):
         return f"Answer to Entry {self.entry.id}"
 
+class Prompt(models.Model):
+    prompt = models.CharField(max_length=200)
+    
 class TeacherComment(models.Model):
     """Comments left by supervisors on student-teacher entries."""
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, null=True, blank=True)  # Entry being commented on
