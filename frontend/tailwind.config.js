@@ -13,3 +13,11 @@ export default {
   },
   plugins: [],
 };
+
+module.exports = {
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./index.html"], // Make sure the paths match your project
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};

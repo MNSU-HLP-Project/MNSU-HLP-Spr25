@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass, Prompt
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +12,12 @@ class SuperClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupervisorClass
         fields = ['user', 'name']
+
+class PromptClassSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Prompt
+        fields = '__all__'
                
 class SignupSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='first_name')

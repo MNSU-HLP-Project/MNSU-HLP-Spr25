@@ -1,23 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from user_auth.models import Supervisor, Prompt
 
-class HLP(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True)
-    prompt = models.ManyToManyField('Prompt', blank=True)  # HLP-specific prompts
-
-    def __str__(self):
-        return self.name
-
-class Prompt(models.Model):
-    prompt = models.TextField()
-
-    def __str__(self):
-        return self.prompt  
 
 class Entry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # person who is going to write the entry
-    hlp = models.ForeignKey(HLP, on_delete=models.CASCADE, null=True, blank=True)  # Selected HLP
+    hlp = models.TextField()
     lookfor_number = models.IntegerField(default=0)
     
     SCORE_CHOICES = [
@@ -31,18 +20,12 @@ class Entry(models.Model):
     comments = models.TextField(default="")
     teacher_reply = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"Entry {self.id} - {self.user.username}"
+    
+    class Meta:
+        verbose_name = "Entry"  # Ensures the singular name is used in admin
+        verbose_name_plural = "Entries"  # Explicitly set plural form
 
-class SupervisorClass(models.Model):
-    name = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    students = models.ManyToManyField(User, related_name='students')
-    prompt_override = models.BooleanField(default=False)
-    prompt_list = models.ManyToManyField('Prompt', blank=True)
 
-    def __str__(self):
-        return self.name
 
 class Answer(models.Model):
     """The Answer is what a student writes in response to an Entry."""
@@ -62,7 +45,7 @@ class Answer(models.Model):
 class TeacherComment(models.Model):
     """Comments left by supervisors on student-teacher entries."""
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, null=True, blank=True)  # Entry being commented on
-    supervisor = models.ForeignKey(SupervisorClass, on_delete=models.CASCADE, null=True, blank=True)  # Supervisor who wrote the comment
+    supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True, blank=True)  # Supervisor who wrote the comment
     comment = models.TextField()
     score = models.IntegerField()
     date = models.DateField(default=date.today)

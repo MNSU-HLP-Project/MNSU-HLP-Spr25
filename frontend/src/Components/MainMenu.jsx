@@ -15,7 +15,7 @@ const MainMenu = () => {
   const [errors, setErrors] = useState({});
   const [classList, setClassList] = useState([]);
 
-  
+
 
   const handleChange = (form) => {
     const { name, value } = form.target;
@@ -67,7 +67,8 @@ const MainMenu = () => {
       : "Share this link with students:";
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 items-center relative">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 pb-16 items-center relative">
+
       <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mt-12 md:mt-20 tracking-wide drop-shadow-lg">
         TeachTrack
       </h1>
@@ -246,12 +247,14 @@ const MainMenu = () => {
       </div>
 
       {/* Logout Button */}
-      <button
-        className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
-        onClick={() => navigate("/")}
-      >
-        Log Out
-      </button>
+  <div className="mt-8">  {/* Increase spacing */}
+  <button 
+    className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl z-50"
+    onClick={() => navigate("/")}>
+    Log Out
+  </button>
+</div>
+
     </div>
   );
 };

@@ -23,13 +23,21 @@ class GradeLevel(models.Model):
     def __str__(self):
         return self.gradelevel
     
+
+class Prompt(models.Model):
+    prompt = models.TextField()
+
+    def __str__(self):
+        return self.prompt 
+    
 class SupervisorClass(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    students = models.ManyToManyField(User, related_name='students') 
-    
-    def __str__(self):
-        return self.name
+    students = models.ManyToManyField(User, related_name='students')
+
+    class Meta:
+        verbose_name = "Supervisor Class"  # Ensures the singular name is used in admin
+        verbose_name_plural = "Supervisor Classes"  # Explicitly set plural form
 
 class StudentTeacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_teacher') 
@@ -49,6 +57,8 @@ class StudentTeacher(models.Model):
 class Supervisor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='supervisor')  # Unique related_name
     student_teachers = models.ManyToManyField(StudentTeacher)  # Allow supervising multiple student teachers
+    prompt_override = models.BooleanField(default=False)
+    prompt_list = models.ManyToManyField('Prompt', blank=True)
     
     def __str__(self):
         return self.user.username
