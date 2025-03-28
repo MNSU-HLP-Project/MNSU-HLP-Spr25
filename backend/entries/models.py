@@ -26,24 +26,20 @@ class Entry(models.Model):
         verbose_name_plural = "Entries"  # Explicitly set plural form
 
 
-
 class Answer(models.Model):
     """The Answer is what a student writes in response to an Entry."""
     entry = models.OneToOneField(Entry, on_delete=models.CASCADE)  # One Answer per Entry
     prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)  # Explicitly store the prompt
     text = models.TextField()  # What the student writes in response
 
-    def save(self, *args, **kwargs):
-        if not self.prompt:
-            self.prompt = self.entry.prompt  # Ensure the prompt is taken from Entry
+    # def save(self, *args, **kwargs):
+    #     if not self.prompt:
+    #         self.prompt = self.entry.prompt  # Ensure the prompt is taken from Entry
 
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Answer to Entry {self.entry.id}"
-
-class Prompt(models.Model):
-    prompt = models.CharField(max_length=200)
     
 class TeacherComment(models.Model):
     """Comments left by supervisors on student-teacher entries."""

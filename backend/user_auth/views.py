@@ -46,7 +46,9 @@ def generate_class(request):
     token = check_token(request.data['token'])
     userid = token['id']
     user = User.objects.get(username=userid)
-    sup_class = Supervisor.objects.filter(name=class_name, user=user).first()
+    # changed 50 to 51 coz creating a class was giving me error field name
+    # sup_class = Supervisor.objects.filter(name=class_name, user=user).first()
+    sup_class = Supervisor.objects.filter(user_username=class_name,user=user).first()
     if sup_class:
         return Response({'error': "Name already exists"}, status=400)
     else:

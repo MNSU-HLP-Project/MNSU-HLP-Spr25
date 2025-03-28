@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-from entries.models import Prompt
+# from entries.models import Prompt
+
+class Prompt(models.Model):
+    prompt = models.CharField(max_length=200)
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Organization Name Instead of User
@@ -26,13 +29,6 @@ class GradeLevel(models.Model):
     
     def __str__(self):
         return self.gradelevel
-    
-
-class Prompt(models.Model):
-    prompt = models.TextField()
-
-    def __str__(self):
-        return self.prompt 
     
 class SupervisorClass(models.Model):
     name = models.CharField(max_length=100)
@@ -62,7 +58,7 @@ class Supervisor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='supervisor')  # Unique related_name
     student_teachers = models.ManyToManyField(StudentTeacher)  # Allow supervising multiple student teachers
     prompt_override = models.BooleanField(default=False)
-    prompt_list = models.ManyToManyField('Prompt', blank=True)
+    prompt_list = models.ManyToManyField(Prompt, blank=True)
     
     def __str__(self):
         return self.user.username
