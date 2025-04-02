@@ -48,19 +48,41 @@ const UserProfile = () => {
   const fetchUserData = async () => {
     setLoading(true);
     try {
+      // Get the current role from localStorage
+      const currentRole = localStorage.getItem("role") || "Student Teacher";
+      console.log("Current role from localStorage:", currentRole);
+
       // In a real implementation, this would fetch from the backend
-      // For now, we'll use mock data
-      const mockUser = {
-        id: 1,
-        username: "user123",
-        first_name: "John",
-        last_name: "Doe",
-        email: "john.doe@example.com",
-        bio: "I am a student teacher passionate about special education.",
-        role: role,
-        joined_date: "2023-01-15",
-        profile_image: null
-      };
+      // For now, we'll use mock data based on the user's role
+      let mockUser;
+
+      // Create different mock data based on role
+      if (currentRole === "Teacher" || currentRole === "Supervisor") {
+        mockUser = {
+          id: 1,
+          username: "teacher123",
+          first_name: "Jane",
+          last_name: "Smith",
+          email: "jane.smith@example.com",
+          bio: "Experienced teacher with a passion for helping student teachers grow.",
+          role: currentRole, // Use the role from localStorage
+          joined_date: "2022-08-10",
+          profile_image: null
+        };
+      } else {
+        // Default to student teacher
+        mockUser = {
+          id: 2,
+          username: "student123",
+          first_name: "John",
+          last_name: "Doe",
+          email: "john.doe@example.com",
+          bio: "I am a student teacher passionate about special education.",
+          role: currentRole, // Use the role from localStorage
+          joined_date: "2023-01-15",
+          profile_image: null
+        };
+      }
 
       setUser(mockUser);
       setLoading(false);
@@ -199,8 +221,16 @@ const UserProfile = () => {
     setFormErrors({});
   };
 
-  // Navigate back to main menu
-  const handleBackClick = () => navigate("/mainmenu/");
+  // Navigate back based on user role
+  const handleBackClick = () => {
+    // Get the current role from localStorage
+    const currentRole = localStorage.getItem("role") || "Student Teacher";
+    console.log("Navigating back with role:", currentRole);
+
+    // Always navigate back to main menu
+    // The MainMenu component will display the appropriate content based on the role
+    navigate("/mainmenu/");
+  };
 
   // Format date for display
   const formatDate = (dateString) => {
