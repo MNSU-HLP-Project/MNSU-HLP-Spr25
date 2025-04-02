@@ -50,7 +50,14 @@ const UserProfile = () => {
     try {
       // Get the current role from localStorage
       const currentRole = localStorage.getItem("role") || "Student Teacher";
-      console.log("Current role from localStorage:", currentRole);
+      console.log("[UserProfile] Current role from localStorage:", currentRole);
+
+      // Log all localStorage items for debugging
+      console.log("[UserProfile] All localStorage items:");
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        console.log(`${key}: ${localStorage.getItem(key)}`);
+      }
 
       // In a real implementation, this would fetch from the backend
       // For now, we'll use mock data based on the user's role
@@ -225,7 +232,14 @@ const UserProfile = () => {
   const handleBackClick = () => {
     // Get the current role from localStorage
     const currentRole = localStorage.getItem("role") || "Student Teacher";
-    console.log("Navigating back with role:", currentRole);
+    console.log("[UserProfile] Navigating back with role:", currentRole);
+
+    // Log all localStorage items for debugging
+    console.log("[UserProfile] All localStorage items before navigation:");
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      console.log(`${key}: ${localStorage.getItem(key)}`);
+    }
 
     // Always navigate back to main menu
     // The MainMenu component will display the appropriate content based on the role

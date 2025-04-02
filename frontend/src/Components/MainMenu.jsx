@@ -9,6 +9,14 @@ const MainMenu = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
   const role = localStorage.getItem("role")
+  console.log("[MainMenu] Current role from localStorage:", role);
+
+  // Log all localStorage items for debugging
+  console.log("[MainMenu] All localStorage items:");
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    console.log(`${key}: ${localStorage.getItem(key)}`);
+  }
 
   const [showInviteSection, setShowInviteSection] = useState(false);
   const [inviteLink, setInviteLink] = useState(null);
