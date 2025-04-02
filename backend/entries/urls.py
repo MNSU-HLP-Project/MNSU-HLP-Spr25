@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_entries, create_entry, delete_entry, get_entries_by_lookfor_number, get_entries_by_date, get_entries_by_hlp, get_user_entries, get_entry_comments
+from .views import get_entries, create_entry, delete_entry, get_entries_by_lookfor_number, get_entries_by_date, get_entries_by_hlp, get_user_entries, get_entry_comments, add_comment
 
 urlpatterns = [
     path("entries/", get_entries, name="entries-list"),  # GET all entries
@@ -10,4 +10,5 @@ urlpatterns = [
     path("entries/by-hlp/", get_entries_by_hlp, name= "get_entries_by_hlp"),
     path("entries/by-lookfor_number/", get_entries_by_lookfor_number, name = "get_entries_by_lookfor_number"),
     path("entry-comments/<int:entry_id>/", get_entry_comments, name="entry-comments"),
+    path("add-comment/<int:entry_id>/", add_comment, name="add-comment"),
 ]

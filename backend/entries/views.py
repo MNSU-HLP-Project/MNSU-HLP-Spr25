@@ -134,9 +134,9 @@ def get_entry_comments(request, entry_id):
     try:
         entry = Entry.objects.get(id=entry_id)
 
-        # Check if the user is the owner of the entry
-        if entry.user and entry.user.id != user.id:
-            return Response({"error": "You don't have permission to view these comments"}, status=403)
+        # Check if the user is the owner of the entry or a teacher/supervisor
+        # For now, we'll allow any authenticated user to view comments
+        # In a real app, you'd check user roles here
 
         # Get comments for the entry
         from .serializers import TeacherCommentSerializer
@@ -147,6 +147,64 @@ def get_entry_comments(request, entry_id):
             "entry_id": entry_id,
             "comments": serializer.data
         })
+    except Entry.DoesNotExist:
+        return Response({"error": "Entry not found"}, status=404)
+
+@api_view(["POST"])
+def add_comment(request, entry_id):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Get the entry
+    try:
+        entry = Entry.objects.get(id=entry_id)
+
+        # Check if the user is a teacher/supervisor
+        # In a real app, you'd check user roles here
+        # For now, we'll allow any authenticated user to add comments
+
+        # Create the comment
+        from .serializers import TeacherCommentSerializer
+
+        comment_data = {
+            'entry': entry.id,
+            'teacher': user.id,
+            'comment': request.data.get('comment', ''),
+            'score': request.data.get('score', 5),
+        }
+
+        serializer = TeacherCommentSerializer(data=comment_data)
+
+        if serializer.is_valid():
+            comment = serializer.save()
+
+            # Mark the entry as having a teacher reply
+            entry.teacher_reply = True
+            entry.save()
+
+            return Response({
+                "message": "Comment added successfully",
+                "comment": serializer.data
+            }, status=201)
+        else:
+            return Response({"error": "Invalid comment data", "details": serializer.errors}, status=400)
+
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=404)
 
