@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api";
 import Notifications from "./Notifications";
+import RoleIndicator from "./RoleIndicator";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -100,6 +101,9 @@ const MainMenu = () => {
         </h1>
         {token && <Notifications />}
       </div>
+
+      {/* Role Indicator */}
+      {token && <RoleIndicator />}
 
       <div className="flex flex-col items-center mt-8 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
         {role === "Student Teacher" && (

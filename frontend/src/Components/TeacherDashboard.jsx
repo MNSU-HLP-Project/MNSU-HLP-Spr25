@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaSearch, FaFilter } from "react-icons/fa";
+import RoleIndicator from "./RoleIndicator";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -84,30 +85,30 @@ const TeacherDashboard = () => {
   // Filter entries based on search term and filter options
   const filteredEntries = entries.filter(entry => {
     // Search term filter
-    const searchMatch = 
-      searchTerm === "" || 
+    const searchMatch =
+      searchTerm === "" ||
       entry.comments.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (entry.user_details && 
+      (entry.user_details &&
         (entry.user_details.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
          entry.user_details.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
          entry.user_details.last_name.toLowerCase().includes(searchTerm.toLowerCase())));
-    
+
     // HLP filter
-    const hlpMatch = 
-      filterOptions.hlp === "" || 
+    const hlpMatch =
+      filterOptions.hlp === "" ||
       entry.hlp.toString() === filterOptions.hlp;
-    
+
     // Date filter
-    const dateMatch = 
-      filterOptions.date === "" || 
+    const dateMatch =
+      filterOptions.date === "" ||
       entry.date === filterOptions.date;
-    
+
     // Has reply filter
-    const replyMatch = 
-      filterOptions.hasReply === "" || 
+    const replyMatch =
+      filterOptions.hasReply === "" ||
       (filterOptions.hasReply === "yes" && entry.teacher_reply) ||
       (filterOptions.hasReply === "no" && !entry.teacher_reply);
-    
+
     return searchMatch && hlpMatch && dateMatch && replyMatch;
   });
 
@@ -133,6 +134,9 @@ const TeacherDashboard = () => {
         <div className="w-8"></div> {/* Empty div for spacing */}
       </div>
 
+      {/* Role Indicator */}
+      <RoleIndicator />
+
       {/* Search and Filter Bar */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4 items-center">
@@ -147,7 +151,7 @@ const TeacherDashboard = () => {
             />
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
-          
+
           {/* Filter Toggle Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -176,7 +180,7 @@ const TeacherDashboard = () => {
                 ))}
               </select>
             </div>
-            
+
             {/* Date Filter */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">Date</label>
@@ -188,7 +192,7 @@ const TeacherDashboard = () => {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            
+
             {/* Has Reply Filter */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">Has Teacher Reply</label>
@@ -203,7 +207,7 @@ const TeacherDashboard = () => {
                 <option value="no">Without Reply</option>
               </select>
             </div>
-            
+
             {/* Reset Button */}
             <div className="md:col-span-3 flex justify-end">
               <button
@@ -237,7 +241,7 @@ const TeacherDashboard = () => {
             <h2 className="text-2xl font-semibold text-gray-800">Student Entries</h2>
             <span className="text-gray-600">{filteredEntries.length} entries found</span>
           </div>
-          
+
           {filteredEntries.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-gray-600 text-lg">No entries match your search criteria.</p>
@@ -269,7 +273,7 @@ const TeacherDashboard = () => {
                   </span>
                 </div>
                 <p className="text-gray-700 mt-2 line-clamp-2">{entry.comments}</p>
-                
+
                 {/* Teacher Reply Status */}
                 <div className="mt-3 flex justify-end">
                   {entry.teacher_reply ? (

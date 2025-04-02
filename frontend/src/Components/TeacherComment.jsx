@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import RoleIndicator from "./RoleIndicator";
 
 const TeacherComment = () => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ const TeacherComment = () => {
   const location = useLocation();
   const { entry } = location.state || {};
   const token = localStorage.getItem("jwtToken");
-  
+
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,32 +55,32 @@ const TeacherComment = () => {
   // Submit new comment
   const handleSubmitComment = async (e) => {
     e.preventDefault();
-    
+
     if (!newComment.comment.trim()) {
       alert("Please enter a comment");
       return;
     }
-    
+
     setSubmitting(true);
-    
+
     try {
       const response = await axios.post(`http://localhost:8000/api/add-comment/${entryId}/`, {
         token: token,
         comment: newComment.comment,
         score: newComment.score
       });
-      
+
       // Refresh comments list
       fetchComments();
-      
+
       // Reset form
       setNewComment({
         comment: "",
         score: "5"
       });
-      
+
       setSubmitting(false);
-      
+
       // Show success message
       alert("Comment added successfully!");
     } catch (error) {
@@ -125,6 +126,9 @@ const TeacherComment = () => {
         </h1>
         <div className="w-8"></div> {/* Empty div for spacing */}
       </div>
+
+      {/* Role Indicator */}
+      <RoleIndicator />
 
       {/* Entry Information */}
       {entry && (
@@ -210,7 +214,7 @@ const TeacherComment = () => {
       {!loading && !error && (
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Previous Feedback</h2>
-          
+
           {comments.length === 0 ? (
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
               <p className="text-yellow-700">No previous feedback for this entry.</p>
@@ -220,8 +224,8 @@ const TeacherComment = () => {
               <div key={comment.id} className="bg-white rounded-lg shadow-md p-4">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-semibold text-green-700">
-                    {comment.teacher_details ? 
-                      `${comment.teacher_details.first_name} ${comment.teacher_details.last_name}` : 
+                    {comment.teacher_details ?
+                      `${comment.teacher_details.first_name} ${comment.teacher_details.last_name}` :
                       "Teacher"}
                   </h3>
                   <span className="text-sm text-gray-500">{formatDate(comment.date)}</span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import RoleIndicator from "./RoleIndicator";
 
 const UserEntries = () => {
   const navigate = useNavigate();
@@ -67,6 +68,9 @@ const UserEntries = () => {
         </h1>
         <div className="w-8"></div> {/* Empty div for spacing */}
       </div>
+
+      {/* Role Indicator */}
+      <RoleIndicator />
 
       {/* Loading and Error States */}
       {loading && (

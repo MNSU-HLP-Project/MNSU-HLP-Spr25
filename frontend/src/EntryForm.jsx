@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import RoleIndicator from "./Components/RoleIndicator";
 
 const EntryForm = () => {
   const location = useLocation();
@@ -75,6 +76,9 @@ const EntryForm = () => {
         </h1>
         <div className="w-8"></div> {/* Empty div for spacing */}
       </div>
+
+      {/* Role Indicator */}
+      <RoleIndicator />
 
       {/* HLP Information */}
       <div className="bg-blue-100 p-4 rounded-lg mb-6 shadow-md">

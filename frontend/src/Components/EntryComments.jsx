@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import RoleIndicator from "./RoleIndicator";
 
 const EntryComments = () => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ const EntryComments = () => {
   const location = useLocation();
   const { entry } = location.state || {};
   const token = localStorage.getItem("jwtToken");
-  
+
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,6 +61,9 @@ const EntryComments = () => {
         <div className="w-8"></div> {/* Empty div for spacing */}
       </div>
 
+      {/* Role Indicator */}
+      <RoleIndicator />
+
       {/* Entry Information */}
       {entry && (
         <div className="bg-blue-100 p-4 rounded-lg mb-6 shadow-md">
@@ -91,7 +95,7 @@ const EntryComments = () => {
       {!loading && !error && (
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Teacher Comments</h2>
-          
+
           {comments.length === 0 ? (
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
               <p className="text-yellow-700">No teacher comments yet.</p>
@@ -101,8 +105,8 @@ const EntryComments = () => {
               <div key={comment.id} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-semibold text-green-700">
-                    {comment.teacher_details ? 
-                      `${comment.teacher_details.first_name} ${comment.teacher_details.last_name}` : 
+                    {comment.teacher_details ?
+                      `${comment.teacher_details.first_name} ${comment.teacher_details.last_name}` :
                       "Teacher"}
                   </h3>
                   <span className="text-sm text-gray-500">{formatDate(comment.date)}</span>
