@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const HLPSelection = () => {
-
+  // Setting default values
   const [pillars, setPillars] = useState([]);
   const [embedded, setEmbedded] = useState([]);
   const [groupTitle, setGroupTitle] = useState("");
@@ -16,19 +16,23 @@ const HLPSelection = () => {
   const handleBackClick = () => navigate("/hlpcategories/");
   const handleMenuClick = () => alert("Menu button clicked");
   const handleLogout = () => navigate("/");
+
+  // Getting the darker shade to hover TODO: Look into making this a default somehow
   const getDarkerShade = (color) => {
-    const colorBase = color.replace(/-\d+$/, ''); // Remove the `bg-` and add `hover:bg-`
+    const colorBase = color.replace(/-\d+$/, ''); // Remove the `bg-`
     return `${colorBase}-800`; // Adding -800 for a darker shade
   };
 
+  // Get the collaboration that was set in HLPCategories
   useEffect(() => {
     setGroupTitle(location.state.name)
   },[])
 
+  // Get the group data from the HLP_LookFors file
   useEffect(() => {
     if (groupTitle) {
       const groupData = HLP_LookFors.groups[groupTitle];
-
+      // If receiving group data set the group data to display
       if (groupData) {
         setPillars(groupData.Pillars);
         setEmbedded(groupData.Embedded);
