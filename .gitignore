@@ -1,5 +1,6 @@
 venv/
 .env
+.env.development
 db.sqlite3
 *.sqlite3
 /media/
@@ -10,3 +11,7 @@ staticfiles/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Temporary files
+token.txt
+frontend/src/test-role.js
