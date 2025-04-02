@@ -7,6 +7,8 @@ import HLPCategories from "./Components/HLPCategories";
 import StudentRegister from "./Components/StudentReg";
 import AdminPage from "./dashboard/adminpanel";
 import EntryForm from "./EntryForm";
+import UserEntries from "./Components/UserEntries";
+import EntryComments from "./Components/EntryComments";
 
 // import InviteLink from "./Components/InviteLink";
 import HLPSelection from "./Components/HLPSelection";
@@ -22,6 +24,8 @@ function App() {
       {/* <Route path='/link/' element={<InviteLink />} /> */}
       <Route path='/hlpselection/' element={<HLPSelection />} />
       <Route path='/entryform/' element={<EntryForm />} />
+      <Route path='/my-entries/' element={<UserEntries />} />
+      <Route path='/entry-comments/:entryId' element={<EntryComments />} />
     </Routes>
   );
 }

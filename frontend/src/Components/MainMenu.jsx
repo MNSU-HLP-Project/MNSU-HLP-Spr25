@@ -70,7 +70,7 @@ const MainMenu = () => {
       console.error("Error generating class")
     }
   }
-  
+
   const genOrg = async () => {
     try {
       if (org_data['org_name'] != '' && org_data['admin_email'] != '') {
@@ -105,6 +105,12 @@ const MainMenu = () => {
               onClick={() => navigate("/hlpcategories/")}
             >
               📚 HLP Categories
+            </button>
+            <button
+              className="w-full p-4 md:p-5 border-2 border-purple-700 text-white bg-purple-700 rounded-lg hover:bg-purple-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => navigate("/my-entries/")}
+            >
+              📝 My Entries
             </button>
             <button
               className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
@@ -165,7 +171,7 @@ const MainMenu = () => {
                   </div>
                 )}
               </div>
-            
+
             )}
           </>
         )}
@@ -178,7 +184,7 @@ const MainMenu = () => {
               Create Organization
             </button>
 
-            
+
             {showOrgSection && (
               <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <input

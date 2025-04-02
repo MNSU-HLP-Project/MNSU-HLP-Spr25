@@ -1,6 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+import jwt
+from django.conf import settings
 from .models import Entry
 from .serializers import EntrySerializer
 
@@ -17,14 +20,63 @@ def get_entries(request):
     return Response(response_data)
 
 @api_view(["POST"])
+def get_user_entries(request):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Get entries for the authenticated user
+    entries = Entry.objects.filter(user=user).order_by('-date')
+    serializer = EntrySerializer(entries, many=True)
+
+    response_data = {
+        "count": entries.count(),
+        "entries": serializer.data
+    }
+
+    return Response(response_data)
+
+# Imports already at the top of the file
+
+@api_view(["POST"])
 def create_entry(request):
     # Extract token if provided for user authentication
     token = request.data.get('token', None)
+    user = None
 
     # Create a copy of the data without the token
     entry_data = request.data.copy()
     if 'token' in entry_data:
         del entry_data['token']
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            # If token is invalid or user doesn't exist, continue without user
+            pass
 
     # Create serializer with the cleaned data
     serializer = EntrySerializer(data=entry_data)
@@ -33,10 +85,13 @@ def create_entry(request):
         # Save the entry
         entry = serializer.save()
 
-        # TODO: Associate with user when authentication is implemented
-        # if token and user:
-        #     entry.user = user
-        #     entry.save()
+        # Associate with user if authenticated
+        if user:
+            entry.user = user
+            entry.save()
+
+            # Update the serializer data to include user info
+            serializer = EntrySerializer(entry)
 
         return Response(
             {"message": "Entry has been created successfully!", "entry": serializer.data},
@@ -53,6 +108,47 @@ def delete_entry(request, id):
     entry = get_object_or_404(Entry, id=id)  # Correct function name
     entry.delete()
     return Response({"message": "Entry deleted successfully!"}, status=204)
+
+@api_view(["POST"])
+def get_entry_comments(request, entry_id):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Get the entry
+    try:
+        entry = Entry.objects.get(id=entry_id)
+
+        # Check if the user is the owner of the entry
+        if entry.user and entry.user.id != user.id:
+            return Response({"error": "You don't have permission to view these comments"}, status=403)
+
+        # Get comments for the entry
+        from .serializers import TeacherCommentSerializer
+        comments = entry.teacher_comments.all().order_by('-date')
+        serializer = TeacherCommentSerializer(comments, many=True)
+
+        return Response({
+            "entry_id": entry_id,
+            "comments": serializer.data
+        })
+    except Entry.DoesNotExist:
+        return Response({"error": "Entry not found"}, status=404)
 
 
 @api_view(["GET"])

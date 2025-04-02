@@ -1,6 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import date
-# from .models import User 
 
 class Entry(models.Model):
     hlp = models.IntegerField(default = 0)
@@ -15,7 +15,7 @@ class Entry(models.Model):
 
     date = models.DateField(default=date.today)
     comments = models.TextField(default="")
-    # user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     teacher_reply = models.BooleanField(default=False)
 
     def __str__(self):
@@ -23,9 +23,10 @@ class Entry(models.Model):
 
 class Prompt(models.Model):
     prompt = models.CharField(max_length=200)
-    
+
 class TeacherComment(models.Model):
-    entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='teacher_comments')
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     comment = models.TextField()
     score = models.IntegerField()
     date = models.DateField(default=date.today)
