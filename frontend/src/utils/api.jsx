@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
+/**
+ * Generates an Organization and returns back invitation link for supervisors
+ * @param {{org_name: string, admin_email: string}} org_data
+ * @returns {Response}
+ */
 export const generateOrganization = async (org_data) => {
     const token = localStorage.getItem('jwtToken'); 
     console.log(org_data)
@@ -12,6 +15,11 @@ export const generateOrganization = async (org_data) => {
     return(generateInvite(''))
 }
 
+/**
+ * Generates an invite given the token and class_name if a supervisor is generating
+ * @param {string} class_name=''
+ * @returns {any}
+ */
 export const generateInvite = async (class_name='') => {
     const token = localStorage.getItem('jwtToken');  
 
@@ -31,6 +39,11 @@ export const generateInvite = async (class_name='') => {
     }
 };
 
+/**
+ * Generates class for a supervisor
+ * @param {any} form_data
+ * @returns {any}
+ */
 export const generateClass = async (form_data) => {
     const token = localStorage.getItem('jwtToken')
     console.log (form_data)

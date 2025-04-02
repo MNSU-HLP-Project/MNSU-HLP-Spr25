@@ -8,17 +8,23 @@ import { useSearchParams } from "react-router-dom";
 function Register() {
   const [searchParams] = useSearchParams();
   const [gradelevels, setGradeLevels] = useState([])
+
+  // Used to get the role that will be filled out as well as invitation code
   useEffect(() => {
       const code = searchParams.get('code');
+      // Pull invitation code from search params
       if (code) {
           setFormData((prev) => ({ ...prev, searchParams: code }));
       }
+      // pull role form search params
       const role = searchParams.get('role')
       if (role == 'sup' || role=='admin') {
+        // Set student_teacher to false to display different options
           setFormData((prev) => ({ ...prev, student_teacher: false}))
       }
   }, [searchParams]);
 
+  // Used to get grade levels when loading and then sort into correct order
   useEffect(() => {
     const fetchGrades = async () => {
       try {
@@ -31,7 +37,6 @@ function Register() {
   
           // If both gradelevels are numbers, compare numerically
           if (typeof gradeA === 'string' && typeof gradeB === 'string') {
-            // "Kindergarten" or any non-numeric text should come first
             return gradeA < gradeB ? -1 : 1;
           }
   
@@ -51,7 +56,7 @@ function Register() {
 
     fetchGrades();
   }, []);
-
+// Default form data
   const [formData, setFormData] = useState({
     student_teacher: true,
     firstName: "",
@@ -67,6 +72,7 @@ function Register() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Handle change of the form, based on name of input
   const handleChange = (form) => {
     const { name, value } = form.target;
     setFormData((prevFormData) => ({
@@ -75,9 +81,11 @@ function Register() {
     }));
   };
 
+  // Main submit function
   const buttonPress = async () => {
     const newErrors = {};
-    
+
+    // Error checks
     if (!formData.email) newErrors.email = "Email is required.";
     if (!formData.password) newErrors.password = "Password is required.";
     if (!formData.firstName) newErrors.firstName = "First name is required.";
@@ -89,24 +97,25 @@ function Register() {
     if (formData.student_teacher && !formData.grade_level) newErrors.grade_level = "Grade level is required."
     // if (!formData.role) newErrors.role = "Role is required.";
     
-
+    // Set the errors to display
     setErrors(newErrors);
 
     // If any errors exist, stop execution
     if (Object.keys(newErrors).length > 0) return;
     console.log(formData)
     try {
+        // Posting to backend for signup, all these are required
         const response = await axios.post("http://localhost:8000/user_auth/signup/", {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
-        //   organization: formData.organization,
           invitation_code: formData.searchParams,
           grade_level: formData.grade_level,
           type_of_educator: formData.type_of_educator
         });
-
+        // On success navigate to login page
+        // TODO: Need to give an indication of succesful signup
         if (response.status === 201) {
           console.log("Signup Successful:", response.data);
           navigate('/')
@@ -115,6 +124,7 @@ function Register() {
       console.error("Error:", error);
 
       if (error.response && error.response.data) {
+        // Update errors based on what is given in response
         const apiErrors = error.response.data;
         const updatedErrors = { ...newErrors };
 
@@ -161,6 +171,7 @@ function Register() {
               <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
             )}
           </div>
+          {/* Only shown with Student Teacher registrations */}
           {formData.student_teacher && (
           <div className="mt-4">
             <label className="text-gray-700 font-medium">Grade Level:</label>

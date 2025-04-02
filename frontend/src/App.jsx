@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
+import EditOrg from "./Components/EditOrg.jsx";
 import Auth from "./Pages/Login";
 import MainMenu from "./dashboard/MainMenu";
 import HLPCategories from "./Components/HLPCategories";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/hlpselection/" element={<HLPSelection />} />
           <Route path="/classes/" element={<SupervisorClassView />} />
           <Route path="/students/" element={<StudentDetailsPage />} />
+          <Route path='/edit_organization/' element={<EditOrg />} />
         </Routes>
       </div>
     </>

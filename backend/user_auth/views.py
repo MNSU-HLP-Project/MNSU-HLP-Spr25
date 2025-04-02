@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 
 
+from entries.models import Prompt
 
 def check_token(token):
     """Checks Token and returns a token dictionary
@@ -71,7 +72,50 @@ def generate_org(request):
     Organization.objects.create(name=name, admin_email=admin)
     return Response(status=status.HTTP_200_OK)
     
+@api_view(['POST'])
+def get_org_details(request):
+    token = check_token(request.data['token'])
+    if token['role'] != 'Admin':
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)   
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    org =  Organization.objects.filter(admin_email = user.email).first()
+    if org:
+        prompt_list = org.prompt_list
+        prompts = []
+        for prompt in prompt_list.all():
+            prompts.append(prompt.prompt)
+            
+        return Response({ 'org_details': OrganizationSerializer(org).data,
+                         'prompts': prompts})
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
     
+@api_view(['POST'])
+def edit_org(request):
+    token = check_token(request.data['token'])
+    if token['role'] != 'Admin':
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    org =  Organization.objects.filter(admin_email = user.email).first()
+    if org:
+        org_details = request.data['org_details']
+        prompts = request.data['prompts']
+        name = org_details['name']
+        org.name = name
+        print(prompts)
+        prompt_list = org.prompt_list
+        prompt_list.clear()
+        for prompt in prompts:
+            print(prompt)
+            prompt_data = Prompt.objects.filter(prompt=prompt).first()
+            if not prompt_data:
+               prompt_data = Prompt.objects.create(prompt=prompt) 
+            prompt_list.add(prompt_data)
+        return Response('Orginization Updated Succesfully')      
+            
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+   
 @api_view(['POST'])
 def generate_invitation(request):
     max_uses = 50
