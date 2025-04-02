@@ -37,8 +37,20 @@ const HLPSelection = () => {
     }
   }, [groupTitle]);
 
-  const handleClick = (hlp) => {
-    alert(`Clicked on ${hlp}`);
+  // Navigate to entry form with selected HLP data
+  const handleClick = (hlpId) => {
+    // Get the HLP data from the lookfors
+    const hlpData = HLP_LookFors[hlpId];
+
+    // Navigate to entry form with HLP data and group information
+    navigate("/entryform", {
+      state: {
+        hlpId: hlpId,
+        hlpTitle: hlpData.title,
+        hlpGroup: groupTitle,
+        lookFors: hlpData.lookFors
+      }
+    });
   };
 
   return (
@@ -68,7 +80,7 @@ const HLPSelection = () => {
           <div
             key={pillarId}
             className={`text-white ${color} p-6 w-full md:w-40 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(color)} transition`}
-            onClick={() => handleClick(`HLP ${pillarId}`)}
+            onClick={() => handleClick(pillarId)}
           >
             <strong className="text-xl">HLP {pillarId}</strong>
             <p>{HLP_LookFors[pillarId].title}</p>
@@ -83,7 +95,7 @@ const HLPSelection = () => {
           <div
             key={embeddedId}
             className={`${color} text-white p-4 w-full md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(color)} transition`}
-            onClick={() => handleClick(`HLP ${embeddedId}`)}
+            onClick={() => handleClick(embeddedId)}
           >
             <strong className="text-xl">HLP {embeddedId}</strong>
             <p>{HLP_LookFors[embeddedId]?.title}</p>
@@ -101,6 +113,6 @@ const HLPSelection = () => {
       </div>
     </div>
   );
-};    
+};
 
 export default HLPSelection;

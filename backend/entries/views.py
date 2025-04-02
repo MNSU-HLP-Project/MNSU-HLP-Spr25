@@ -1,10 +1,8 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from .models import Entry
 from .serializers import EntrySerializer
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
 
 @api_view(["GET"])
 def get_entries(request):
@@ -15,24 +13,36 @@ def get_entries(request):
         "No of entries found": entries.count(),
         "entries": serializer.data
     }
-    
+
     return Response(response_data)
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import EntrySerializer
-from .models import Entry
 
 @api_view(["POST"])
 def create_entry(request):
-    serializer = EntrySerializer(data=request.data)
-    
+    # Extract token if provided for user authentication
+    token = request.data.get('token', None)
+
+    # Create a copy of the data without the token
+    entry_data = request.data.copy()
+    if 'token' in entry_data:
+        del entry_data['token']
+
+    # Create serializer with the cleaned data
+    serializer = EntrySerializer(data=entry_data)
+
     if serializer.is_valid():
-        serializer.save()
+        # Save the entry
+        entry = serializer.save()
+
+        # TODO: Associate with user when authentication is implemented
+        # if token and user:
+        #     entry.user = user
+        #     entry.save()
+
         return Response(
-            {"message": "Entry has been created successfully!", "entry": serializer.data}, 
+            {"message": "Entry has been created successfully!", "entry": serializer.data},
             status=201
         )
-    
+
     return Response({"error": "Failed to create entry", "details": serializer.errors}, status=400)
 
 
@@ -87,7 +97,7 @@ def get_entries_by_hlp(request):
 
     if not entries.exists():
         return Response({"error": f"No entries found for hlp '{hlp}'"}, status=404)
-    
+
     serializer = EntrySerializer(entries, many=True)
 
     response_data = {
@@ -116,7 +126,7 @@ def get_entries_by_lookfor_number(request):
 
     if not entries.exists():
         return Response({"error": f"No entries found for lookfor_number '{lookfor_number}'"}, status=404)
-    
+
     serializer = EntrySerializer(entries, many=True)
 
     response_data = {

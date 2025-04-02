@@ -6,6 +6,7 @@ import MainMenu from "./Components/MainMenu";
 import HLPCategories from "./Components/HLPCategories";
 import StudentRegister from "./Components/StudentReg";
 import AdminPage from "./dashboard/adminpanel";
+import EntryForm from "./EntryForm";
 
 // import InviteLink from "./Components/InviteLink";
 import HLPSelection from "./Components/HLPSelection";
@@ -20,6 +21,7 @@ function App() {
       <Route path='/dashboard/' element = {<AdminPage/>}/>
       {/* <Route path='/link/' element={<InviteLink />} /> */}
       <Route path='/hlpselection/' element={<HLPSelection />} />
+      <Route path='/entryform/' element={<EntryForm />} />
     </Routes>
   );
 }
