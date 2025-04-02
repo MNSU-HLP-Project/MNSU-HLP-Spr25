@@ -307,6 +307,68 @@ def mark_all_notifications_read(request):
 
     return Response({"message": "All notifications marked as read"})
 
+@api_view(["POST"])
+def get_classes(request):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Return mock classes for testing
+    mock_classes = [
+        {"id": 1, "name": "Special Education 101", "students_count": 15},
+        {"id": 2, "name": "Advanced Teaching Methods", "students_count": 12},
+        {"id": 3, "name": "Inclusive Classroom Strategies", "students_count": 18}
+    ]
+
+    return Response({"classes": mock_classes})
+
+@api_view(["POST"])
+def get_class_students(request, class_id):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Return mock students for testing
+    mock_students = [
+        {"id": 1, "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"},
+        {"id": 2, "first_name": "Jane", "last_name": "Smith", "email": "jane.smith@example.com"},
+        {"id": 3, "first_name": "Michael", "last_name": "Johnson", "email": "michael.johnson@example.com"},
+        {"id": 4, "first_name": "Emily", "last_name": "Williams", "email": "emily.williams@example.com"},
+        {"id": 5, "first_name": "David", "last_name": "Brown", "email": "david.brown@example.com"}
+    ]
+
+    return Response({"students": mock_students})
+
 
 @api_view(["GET"])
 def get_entries_by_date(request):

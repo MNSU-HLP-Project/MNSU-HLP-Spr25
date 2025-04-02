@@ -254,6 +254,12 @@ const MainMenu = () => {
             >
               📝 Student Entries
             </button>
+            <button
+              className="w-3/4 p-4 md:p-5 border-2 border-purple-700 text-white bg-purple-700 rounded-lg hover:bg-purple-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => navigate("/class-dashboard/")}
+            >
+              🎓 Class Dashboard
+            </button>
 
             {/* Invite Link Section */}
             <button
@@ -347,13 +353,21 @@ const MainMenu = () => {
         )}
       </div>
 
-      {/* Logout Button */}
-      <button
-        className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
-        onClick={() => navigate("/")}
-      >
-        Log Out
-      </button>
+      {/* Profile and Logout Buttons */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4">
+        <button
+          className="w-32 md:w-36 p-3 md:p-4 bg-gray-600 text-white rounded-lg shadow-lg hover:bg-gray-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
+          onClick={() => navigate("/profile/")}
+        >
+          Profile
+        </button>
+        <button
+          className="w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
+          onClick={() => navigate("/")}
+        >
+          Log Out
+        </button>
+      </div>
     </div>
   );
 };

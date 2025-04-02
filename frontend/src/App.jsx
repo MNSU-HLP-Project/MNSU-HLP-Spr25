@@ -12,6 +12,9 @@ import EntryComments from "./Components/EntryComments";
 import TeacherDashboard from "./Components/TeacherDashboard";
 import TeacherComment from "./Components/TeacherComment";
 import StudentProgress from "./Components/StudentProgress";
+import ClassDashboard from "./Components/ClassDashboard";
+import StudentDetail from "./Components/StudentDetail";
+import UserProfile from "./Components/UserProfile";
 
 // import InviteLink from "./Components/InviteLink";
 import HLPSelection from "./Components/HLPSelection";
@@ -32,6 +35,9 @@ function App() {
       <Route path='/teacher-dashboard/' element={<TeacherDashboard />} />
       <Route path='/teacher-comment/:entryId' element={<TeacherComment />} />
       <Route path='/progress/' element={<StudentProgress />} />
+      <Route path='/class-dashboard/' element={<ClassDashboard />} />
+      <Route path='/student-detail/:studentId' element={<StudentDetail />} />
+      <Route path='/profile/' element={<UserProfile />} />
     </Routes>
   );
 }
