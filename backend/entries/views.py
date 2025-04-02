@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 import jwt
 from django.conf import settings
-from .models import Entry
-from .serializers import EntrySerializer
+from .models import Entry, TeacherComment, Notification
+from .serializers import EntrySerializer, TeacherCommentSerializer, NotificationSerializer
 
 @api_view(["GET"])
 def get_entries(request):
@@ -198,6 +198,17 @@ def add_comment(request, entry_id):
             entry.teacher_reply = True
             entry.save()
 
+            # Create notification for the entry owner
+            if entry.user:
+                notification = Notification.objects.create(
+                    user=entry.user,
+                    notification_type=Notification.COMMENT,
+                    title="New Comment on Your Entry",
+                    message=f"A teacher has commented on your entry about HLP {entry.hlp}.",
+                    entry=entry,
+                    comment=comment
+                )
+
             return Response({
                 "message": "Comment added successfully",
                 "comment": serializer.data
@@ -207,6 +218,94 @@ def add_comment(request, entry_id):
 
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=404)
+
+@api_view(["POST"])
+def get_notifications(request):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Get notifications for the user
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')
+    serializer = NotificationSerializer(notifications, many=True)
+
+    return Response({
+        "count": notifications.count(),
+        "unread_count": notifications.filter(read=False).count(),
+        "notifications": serializer.data
+    })
+
+@api_view(["POST"])
+def mark_notification_read(request, notification_id):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Get the notification
+    try:
+        notification = Notification.objects.get(id=notification_id, user=user)
+        notification.read = True
+        notification.save()
+
+        return Response({"message": "Notification marked as read"})
+    except Notification.DoesNotExist:
+        return Response({"error": "Notification not found"}, status=404)
+
+@api_view(["POST"])
+def mark_all_notifications_read(request):
+    # Extract token from request
+    token = request.data.get('token', None)
+    user = None
+
+    # Attempt to get user from token
+    if token:
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+
+            # Get the user
+            if user_id:
+                user = User.objects.get(id=user_id)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+            return Response({"error": "Invalid token or user not found"}, status=401)
+    else:
+        return Response({"error": "Authentication token required"}, status=401)
+
+    # Mark all notifications as read
+    Notification.objects.filter(user=user, read=False).update(read=True)
+
+    return Response({"message": "All notifications marked as read"})
 
 
 @api_view(["GET"])

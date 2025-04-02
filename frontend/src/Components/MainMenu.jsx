@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api"
+import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api";
+import Notifications from "./Notifications";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -93,9 +94,12 @@ const MainMenu = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 items-center relative">
-      <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mt-6 md:mt-6 tracking-wide drop-shadow-lg">
-        TeachTrack
-      </h1>
+      <div className="flex justify-between items-center w-full max-w-xs md:max-w-md mt-6 md:mt-6">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-wide drop-shadow-lg">
+          TeachTrack
+        </h1>
+        {token && <Notifications />}
+      </div>
 
       <div className="flex flex-col items-center mt-8 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
         {role === "Student Teacher" && (
@@ -114,9 +118,9 @@ const MainMenu = () => {
             </button>
             <button
               className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
-              onClick={() => alert("Resource button clicked")}
+              onClick={() => navigate("/progress/")}
             >
-              Resources
+              📈 My Progress
             </button>
           </>
         )}
