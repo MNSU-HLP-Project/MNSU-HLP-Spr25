@@ -1,14 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
-from user_auth.models import Supervisor, Prompt
 
+class Prompt(models.Model):
+    prompt = models.CharField(max_length=200)
+    is_default = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    organization = models.ForeignKey(
+        'user_auth.Organization', on_delete=models.CASCADE, null=True, blank=True, related_name='custom_prompts'
+    )
+
+    def __str__(self):
+        return f"{self.prompt} ({'Default' if self.is_default else 'Custom'})"
 
 class Entry(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # person who is going to write the entry
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     hlp = models.TextField()
     lookfor_number = models.IntegerField(default=0)
-    
     SCORE_CHOICES = [
         ('0', '0'),
         ('1', '1'),
@@ -20,35 +28,26 @@ class Entry(models.Model):
     comments = models.TextField(default="")
     teacher_reply = models.BooleanField(default=False)
 
-    
     class Meta:
-        verbose_name = "Entry"  # Ensures the singular name is used in admin
-        verbose_name_plural = "Entries"  # Explicitly set plural form
-
-
+        verbose_name = "Entry"
+        verbose_name_plural = "Entries"
 
 class Answer(models.Model):
-    """The Answer is what a student writes in response to an Entry."""
-    entry = models.OneToOneField(Entry, on_delete=models.CASCADE)  # One Answer per Entry
-    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)  # Explicitly store the prompt
-    text = models.TextField()  # What the student writes in response
+    entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+    text = models.TextField()
 
     def save(self, *args, **kwargs):
         if not self.prompt:
-            self.prompt = self.entry.prompt  # Ensure the prompt is taken from Entry
-
+            self.prompt = self.entry.prompt
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Answer to Entry {self.entry.id}"
 
-class Prompt(models.Model):
-    prompt = models.CharField(max_length=200)
-    
 class TeacherComment(models.Model):
-    """Comments left by supervisors on student-teacher entries."""
-    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, null=True, blank=True)  # Entry being commented on
-    supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True, blank=True)  # Supervisor who wrote the comment
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, null=True, blank=True)
+    supervisor = models.ForeignKey('user_auth.Supervisor', on_delete=models.CASCADE, null=True, blank=True)
     comment = models.TextField()
     score = models.IntegerField()
     date = models.DateField(default=date.today)

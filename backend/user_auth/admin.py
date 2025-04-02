@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor, GradeLevel, SupervisorClass, Prompt
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor, GradeLevel, SupervisorClass
+from entries.models import Prompt
+
+
 
 
 # Define an inline admin descriptor for Employee model

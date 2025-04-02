@@ -8,6 +8,8 @@ import StudentRegister from "./Components/StudentReg";
 import AdminPage from "./dashboard/adminpanel";
 import HLPSelection from "./Components/HLPSelection";
 import "./global.css"; // Import styles
+import ClassDetailsPage from "./classes/page";
+import StudentDetailsPage from "./students/page";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -44,6 +46,9 @@ function App() {
           <Route path="/register/" element={<StudentRegister />} />
           <Route path="/dashboard/" element={<AdminPage />} />
           <Route path="/hlpselection/" element={<HLPSelection />} />
+          <Route path="/classes/" element={<ClassDetailsPage />}/>
+
+          <Route path = '/students/' element = {<StudentDetailsPage/>}/>
         </Routes>
       </div>
     </>
