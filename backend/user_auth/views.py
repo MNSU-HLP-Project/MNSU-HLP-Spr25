@@ -102,7 +102,7 @@ def generate_invitation(request):
 
     # Check if invitation already exists
     if role == 'Supervisor':
-        invitation = Invitation.objects.filter(teacher=teacher, class_name=Supervisor.objects.get(name=class_name, user=teacher)).first()
+        invitation = Invitation.objects.filter(teacher=teacher, class_name=SupervisorClass.objects.get(name=class_name, user=teacher)).first()
         if invitation and invitation.use_count < invitation.max_uses:
             return Response({'invitation':InvitationSerializer(invitation).data})
         elif invitation and invitation.use_count >= invitation.max_uses:
