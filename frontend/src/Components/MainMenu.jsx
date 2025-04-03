@@ -38,7 +38,7 @@ const MainMenu = () => {
     }))
   }
 
-  useEffect(() => {getClass()},[])
+  useEffect(() => {getClass()},[class_data])
   const getClass = async () => {
     const classes = await getClasses();
     setClassList(classes)

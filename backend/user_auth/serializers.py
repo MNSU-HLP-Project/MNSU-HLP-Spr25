@@ -8,7 +8,7 @@ class InvitationSerializer(serializers.ModelSerializer):
         model = Invitation
         fields = ['id', 'teacher', 'role', 'code', 'created_at', 'max_uses', 'use_count','class_name']
 
-class SuperClassSerializer(serializers.ModelSerializer):
+class SupervisorClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupervisorClass
         fields = ['user', 'name']

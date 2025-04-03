@@ -7,8 +7,8 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, Supervisor
-from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .serializers import ExtendUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
@@ -35,23 +35,29 @@ def get_class_names(request):
     token = check_token(request.data['token'])
     userid = token['id']
     user = User.objects.get(username=userid)
-    classes = Supervisor.objects.filter(user=user)
-    serializer = SuperClassSerializer(classes, many=True)
+    classes = SupervisorClass.objects.filter(user=user)
+    serializer = SupervisorClassSerializer(classes, many=True)
     return Response(serializer.data)
     
 @api_view(['POST'])
 def generate_class(request):
-    data = request.data['form_data']
-    class_name = data['class_name']
-    token = check_token(request.data['token'])
-    userid = token['id']
-    user = User.objects.get(username=userid)
-    sup_class = Supervisor.objects.filter(name=class_name, user=user).first()
-    if sup_class:
-        return Response({'error': "Name already exists"}, status=400)
-    else:
-        sup_class = Supervisor.objects.create(name=class_name, user=user)
-        return Response({ class_name: SuperClassSerializer(sup_class).data})
+    print("Incoming data:", request.data)
+    try:
+        data = request.data['form_data']
+        class_name = data['class_name']
+        token = check_token(request.data['token'])
+        user_id = token['id']
+        user = User.objects.get(id=user_id)
+
+        existing_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
+        if existing_class:
+            return Response({'error': "Name already exists"}, status=400)
+
+        new_class = SupervisorClass.objects.create(name=class_name, user=user)
+        return Response(SupervisorClassSerializer(new_class).data, status=201)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
 
 @api_view(['POST'])
 def generate_org(request):
@@ -215,3 +221,21 @@ def get_users_by_role(request):
 
     # Return user's role
     return Response({"username": username, "The user's role": user.role}, status=200)
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+@api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+def get_classes_by_loggedin_supervisor(request):
+    user = request.user
+    if hasattr(user, 'supervisor'):
+        classes = SupervisorClass.objects.filter(user=user)
+        serializer = SupervisorClassSerializer(classes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
+
+
