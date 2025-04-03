@@ -41,22 +41,17 @@ def get_class_names(request):
     
 @api_view(['POST'])
 def generate_class(request):
-    print("Incoming data:", request.data)
-    try:
-        data = request.data['form_data']
-        class_name = data['class_name']
-        token = check_token(request.data['token'])
-        user_id = token['id']
-        user = User.objects.get(id=user_id)
-
-        existing_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
-        if existing_class:
-            return Response({'error': "Name already exists"}, status=400)
-
-        new_class = SupervisorClass.objects.create(name=class_name, user=user)
-        return Response(SupervisorClassSerializer(new_class).data, status=201)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
+    data = request.data['form_data']
+    class_name = data['class_name']
+    token = check_token(request.data['token'])
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
+    if sup_class:
+        return Response({'error': "Name already exists"}, status=400)
+    else:
+        sup_class = SupervisorClass.objects.create(name=class_name, user=user)
+        return Response({ class_name: SupervisorClassSerializer(sup_class).data})
 
 
 @api_view(['POST'])
