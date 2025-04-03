@@ -38,7 +38,8 @@ const MainMenu = () => {
     }))
   }
 
-  useEffect(() => {getClass()},[])
+  useEffect(() => {getClass()},[class_data])
+
   const getClass = async () => {
     const classes = await getClasses();
     setClassList(classes)
@@ -65,6 +66,7 @@ const MainMenu = () => {
       if (class_data['class_name']) {
         setErrors({})
         await generateClass(class_data);
+        setClassData({})
       } else {
         setErrors({ class_name: 'Need a class name' })
       }

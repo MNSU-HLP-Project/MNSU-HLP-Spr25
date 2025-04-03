@@ -7,7 +7,7 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, Supervisor
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -35,7 +35,7 @@ def get_class_names(request):
     token = check_token(request.data['token'])
     userid = token['id']
     user = User.objects.get(username=userid)
-    classes = Supervisor.objects.filter(user=user)
+    classes = SupervisorClass.objects.filter(user=user)
     serializer = SuperClassSerializer(classes, many=True)
     return Response(serializer.data)
     
@@ -47,12 +47,12 @@ def generate_class(request):
     userid = token['id']
     user = User.objects.get(username=userid)
     # changed 50 to 51 coz creating a class was giving me error field name
-    # sup_class = Supervisor.objects.filter(name=class_name, user=user).first()
-    sup_class = Supervisor.objects.filter(user_username=class_name,user=user).first()
+    sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
+    #sup_class = Supervisor.objects.filter(user_username=class_name,user=user).first()
     if sup_class:
         return Response({'error': "Name already exists"}, status=400)
     else:
-        sup_class = Supervisor.objects.create(name=class_name, user=user)
+        sup_class = SupervisorClass.objects.create(name=class_name, user=user)
         return Response({ class_name: SuperClassSerializer(sup_class).data})
 
 @api_view(['POST'])
