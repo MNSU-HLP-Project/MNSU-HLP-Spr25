@@ -5,12 +5,16 @@ from django.contrib.auth import login
 from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 from .serializers import ExtendUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+
+
 
 def check_token(token):
     """Checks Token and returns a token dictionary
@@ -223,7 +227,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_classes_by_loggedin_supervisor(request):
     user = request.user
     if hasattr(user, 'supervisor'):
@@ -233,4 +237,20 @@ def get_classes_by_loggedin_supervisor(request):
     else:
         return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
 
-
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def get_students_under_supervisor(request):
+    try:
+        user = request.user
+        if not hasattr(user, 'supervisor'):
+            return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
+        supervisor = user.supervisor
+        students = supervisor.student_teachers.all()
+        serializer = StudentTeacherSerializer(students, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(f"Error: {e}") #add more detailed logging here.
+        return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    

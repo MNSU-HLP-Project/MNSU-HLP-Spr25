@@ -39,7 +39,9 @@ class SupervisorClass(models.Model):
     class Meta:
         verbose_name = "Supervisor Class"
         verbose_name_plural = "Supervisor Classes"
-
+    def __str__(self):
+        return self.name
+    
 class StudentTeacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_teacher')
 
