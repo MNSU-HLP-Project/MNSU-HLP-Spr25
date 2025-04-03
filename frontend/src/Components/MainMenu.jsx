@@ -19,7 +19,7 @@ const MainMenu = () => {
     org_name: '',
     admin_email: ''
   })
-
+  const [madeClass, setMadeClass] = useState(false)
 
 
   const handleChange = (form) => {
@@ -38,7 +38,7 @@ const MainMenu = () => {
     }))
   }
 
-  useEffect(() => {getClass()},[class_data])
+  useEffect(() => {getClass()},[madeClass])
   const getClass = async () => {
     const classes = await getClasses();
     setClassList(classes)
@@ -65,6 +65,7 @@ const MainMenu = () => {
       if (class_data['class_name']) {
         setErrors({})
         await generateClass(class_data);
+        setMadeClass(!madeClass)
       } else {
         setErrors({ class_name: 'Need a class name' })
       }
@@ -326,7 +327,7 @@ const MainMenu = () => {
                 )}
                 <button
                   className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  onClick={genClass}
+                  onClick={() => {genClass(); setShowClassSection(!showClassSection)}}
                 >
                   Generate Class
                 </button>
