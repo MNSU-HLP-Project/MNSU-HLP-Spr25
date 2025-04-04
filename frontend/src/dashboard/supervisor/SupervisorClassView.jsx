@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getClasses } from "../../utils/api"; //getStudentsForClass
+import { getClasses, getStudentsForClass } from "../../utils/api"; //getStudentsForClass
 import Sidebar from "./Sidebar"; // new Sidebar component
 
 const SupervisorClassView = () => {
@@ -21,15 +21,16 @@ const SupervisorClassView = () => {
   }, []);
 
   // Fetch students when a class is clicked
-//   const handleClassClick = async (classObj) => {
+  const handleClassClick = async (classObj) => {
     
-//     try {
-//         const data = await getStudentsForClass(classObj.id);
-//       setStudents(data);
-//     } catch (error) {
-//       console.error("Failed to fetch students", error);
-//     }
-//   };
+    try {
+        const data = await getStudentsForClass(classObj);
+      setStudents(data);
+      console.log(data)
+    } catch (error) {
+      console.error("Failed to fetch students", error);
+    }
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -56,7 +57,7 @@ const SupervisorClassView = () => {
           {classes.map((cls) => (
             <div
               key={cls.id}
-              onClick={() => handleClassClick(cls)}
+              onClick={() => {console.log(cls);handleClassClick(cls)}}
               className="border p-4 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
             >
               <h2 className="text-xl font-semibold">{cls.name}</h2>
