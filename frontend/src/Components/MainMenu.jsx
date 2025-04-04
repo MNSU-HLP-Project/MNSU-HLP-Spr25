@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api"
+import {generateInvite, generateClass, getClasses, generateOrganization} from "../utils/api";
+import Notifications from "./Notifications";
+import RoleIndicator from "./RoleIndicator";
 
 const MainMenu = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
   const role = localStorage.getItem("role")
+  console.log("[MainMenu] Current role from localStorage:", role);
+
+  // Log all localStorage items for debugging
+  console.log("[MainMenu] All localStorage items:");
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    console.log(`${key}: ${localStorage.getItem(key)}`);
+  }
 
   const [showInviteSection, setShowInviteSection] = useState(false);
   const [inviteLink, setInviteLink] = useState(null);
@@ -70,7 +80,7 @@ const MainMenu = () => {
       console.error("Error generating class")
     }
   }
-  
+
   const genOrg = async () => {
     try {
       if (org_data['org_name'] != '' && org_data['admin_email'] != '') {
@@ -93,9 +103,15 @@ const MainMenu = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 items-center relative">
-      <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mt-6 md:mt-6 tracking-wide drop-shadow-lg">
-        TeachTrack
-      </h1>
+      <div className="flex justify-between items-center w-full max-w-xs md:max-w-md mt-6 md:mt-6">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-wide drop-shadow-lg">
+          TeachTrack
+        </h1>
+        {token && <Notifications />}
+      </div>
+
+      {/* Role Indicator */}
+      {token && <RoleIndicator />}
 
       <div className="flex flex-col items-center mt-8 md:mt-16 space-y-6 w-full max-w-xs md:max-w-md">
         {role === "Student Teacher" && (
@@ -107,10 +123,16 @@ const MainMenu = () => {
               📚 HLP Categories
             </button>
             <button
-              className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
-              onClick={() => alert("Resource button clicked")}
+              className="w-full p-4 md:p-5 border-2 border-purple-700 text-white bg-purple-700 rounded-lg hover:bg-purple-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => navigate("/my-entries/")}
             >
-              Resources
+              📝 My Entries
+            </button>
+            <button
+              className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => navigate("/progress/")}
+            >
+              📈 My Progress
             </button>
           </>
         )}
@@ -165,7 +187,7 @@ const MainMenu = () => {
                   </div>
                 )}
               </div>
-            
+
             )}
           </>
         )}
@@ -178,7 +200,7 @@ const MainMenu = () => {
               Create Organization
             </button>
 
-            
+
             {showOrgSection && (
               <div className="mt-1 w-3/4 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <input
@@ -236,9 +258,15 @@ const MainMenu = () => {
           <>
             <button
               className="w-3/4 p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
-              onClick={() => alert("View Reflection button clicked")}
+              onClick={() => navigate("/teacher-dashboard/")}
             >
-              View Reflections
+              📝 Student Entries
+            </button>
+            <button
+              className="w-3/4 p-4 md:p-5 border-2 border-purple-700 text-white bg-purple-700 rounded-lg hover:bg-purple-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+              onClick={() => navigate("/class-dashboard/")}
+            >
+              🎓 Class Dashboard
             </button>
 
             {/* Invite Link Section */}
@@ -333,13 +361,21 @@ const MainMenu = () => {
         )}
       </div>
 
-      {/* Logout Button */}
-      <button
-        className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
-        onClick={() => navigate("/")}
-      >
-        Log Out
-      </button>
+      {/* Profile and Logout Buttons */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4">
+        <button
+          className="w-32 md:w-36 p-3 md:p-4 bg-gray-600 text-white rounded-lg shadow-lg hover:bg-gray-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
+          onClick={() => navigate("/profile/")}
+        >
+          Profile
+        </button>
+        <button
+          className="w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl"
+          onClick={() => navigate("/")}
+        >
+          Log Out
+        </button>
+      </div>
     </div>
   );
 };
