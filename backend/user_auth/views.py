@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
-from .serializers import ExtendUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
@@ -126,46 +126,46 @@ def generate_invitation(request):
     return Response({'invitation': InvitationSerializer(invitation).data})
 
 
-# class SignupView(APIView):
-#     def post(self, request):
-#         serializer = SignupSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# """Updated the Signup view as students are not being assigned to class... didn't work :("""
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-
-            invitation_code = request.data.get("invitation_code")
-            if invitation_code:
-                try: 
-                    invitation = Invitation.objects.get(code=invitation_code)
-                except Invitation.DoesNotExist:
-                    return Response({"error": "Invalid invitation code"}, status=400)
-                
-                # Assign role and org from the invitation
-                extend_user = ExtendUser.objects.get(user=user)
-                extend_user.role = invitation.role
-                extend_user.org = invitation.org
-                extend_user.save()
-
-                # If this is a student teacher, assign them to the class
-                if invitation.role == "Student Teacher" and invitation.class_name:
-                    StudentTeacher.objects.create(
-                        user=user,
-                        class_name=invitation.class_name,
-                        grade_levels=request.data.get("grade_level"),
-                        type_of_teacher=request.data.get("type_of_educator")
-                    )
-
+            serializer.save()
             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# """Updated the Signup view as students are not being assigned to class... didn't work :("""
+# class SignupView(APIView):
+#     def post(self, request):
+#         serializer = SignupSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+
+#             invitation_code = request.data.get("invitation_code")
+#             if invitation_code:
+#                 try: 
+#                     invitation = Invitation.objects.get(code=invitation_code)
+#                 except Invitation.DoesNotExist:
+#                     return Response({"error": "Invalid invitation code"}, status=400)
+                
+#                 # Assign role and org from the invitation
+#                 extend_user = ExtendUser.objects.get(user=user)
+#                 extend_user.role = invitation.role
+#                 extend_user.org = invitation.org
+#                 extend_user.save()
+
+#                 # If this is a student teacher, assign them to the class
+#                 if invitation.role == "Student Teacher" and invitation.class_name:
+#                     StudentTeacher.objects.create(
+#                         user=user,
+#                         class_name=invitation.class_name,
+#                         grade_levels=request.data.get("grade_level"),
+#                         type_of_teacher=request.data.get("type_of_educator")
+#                     )
+
+#             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 
 
 
@@ -302,7 +302,7 @@ def get_students_in_class(request):
     try:
         sup_class = SupervisorClass.objects.get(name=class_name, user=user)
         students = sup_class.students
-        serializer = StudentTeacherSerializer(students, many=True)
+        serializer = CurrentUserSerializer(students, many=True)
         return Response(serializer.data, status=200)
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)

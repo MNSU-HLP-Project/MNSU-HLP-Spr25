@@ -24,9 +24,9 @@ const SupervisorClassView = () => {
   const handleClassClick = async (classObj) => {
     
     try {
+      setSelectedClassId(classObj.name)
         const data = await getStudentsForClass(classObj);
       setStudents(data);
-      console.log(data)
     } catch (error) {
       console.error("Failed to fetch students", error);
     }
@@ -61,7 +61,7 @@ const SupervisorClassView = () => {
               className="border p-4 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
             >
               <h2 className="text-xl font-semibold">{cls.name}</h2>
-              {selectedClassId === cls.id && (
+              {selectedClassId && (
                 <div className="mt-4">
                   <div className="flex space-x-6 mb-4 border-b">
                     <button className="pb-2 border-b-2 border-black font-semibold">
@@ -75,9 +75,9 @@ const SupervisorClassView = () => {
                         key={student.id}
                         className="border p-3 rounded shadow"
                       >
-                        <p className="font-semibold">{student.name}</p>
-                        <p className="text-sm text-gray-500">{student.email}</p>
-                        <p className="text-sm">Type: {student.type}</p>
+                        <p className="font-semibold">{student.last_name}, {student.first_name}</p>
+                        <p className="text-sm text-gray-500">{student.username}</p>
+                        {/* <p className="text-sm">Type: {student.type}</p> */}
                       </div>
                     ))}
                   </div>
