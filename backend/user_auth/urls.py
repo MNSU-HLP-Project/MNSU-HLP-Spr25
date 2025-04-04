@@ -23,5 +23,6 @@ urlpatterns = [
     path('generate-org/', generate_org, name='generate-org'),
     path('my-classes/', get_classes_by_loggedin_supervisor, name ='get_classes_supervisor'),
     path('my-students/', get_students_under_supervisor),
+    # path('students-in-class/', get_students_in_class),
 ]
 

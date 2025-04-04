@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
+import {useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
 
-function StudentRegister() {
+function Register() {
   const [searchParams] = useSearchParams();
   const [gradelevels, setGradeLevels] = useState([])
   useEffect(() => {
@@ -258,4 +258,4 @@ function StudentRegister() {
 }
 
 
-export default StudentRegister;
+export default Register;

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
-import Auth from "./Components/Login";
-import MainMenu from "./Components/MainMenu";
+import Auth from "./Pages/Login";
+import MainMenu from "./dashboard/MainMenu";
 import HLPCategories from "./Components/HLPCategories";
-import StudentRegister from "./Components/StudentReg";
-import AdminPage from "./dashboard/adminpanel";
+import Register from "./Pages/Register.jsx";
 import HLPSelection from "./Components/HLPSelection";
 import "./global.css"; // Import styles
-import ClassDetailsPage from "./classes/page";
 import StudentDetailsPage from "./students/page";
+import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -43,12 +42,10 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/mainmenu/" element={<MainMenu />} />
           <Route path="/hlpcategories/" element={<HLPCategories />} />
-          <Route path="/register/" element={<StudentRegister />} />
-          <Route path="/dashboard/" element={<AdminPage />} />
+          <Route path="/register/" element={<Register />} />
           <Route path="/hlpselection/" element={<HLPSelection />} />
-          <Route path="/classes/" element={<ClassDetailsPage />}/>
-
-          <Route path = '/students/' element = {<StudentDetailsPage/>}/>
+          <Route path="/classes/" element={<SupervisorClassView />} />
+          <Route path="/students/" element={<StudentDetailsPage />} />
         </Routes>
       </div>
     </>

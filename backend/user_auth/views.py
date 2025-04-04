@@ -52,7 +52,7 @@ def generate_class(request):
     user = User.objects.get(username=userid)
     sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
     if sup_class:
-        return Response({'error': "Name already exists"}, status=400)
+        return Response({'error': "Class already exists"}, status=400)
     else:
         sup_class = SupervisorClass.objects.create(name=class_name, user=user)
         return Response({ class_name: SupervisorClassSerializer(sup_class).data})
@@ -108,7 +108,7 @@ def generate_invitation(request):
         elif invitation and invitation.use_count >= invitation.max_uses:
             invitation.delete()
         newrole = 'Student Teacher'
-        sup_class = Supervisor.objects.get(name=class_name, user=teacher)
+        sup_class = SupervisorClass.objects.get(name=class_name, user=teacher)
     else: 
         invitation = Invitation.objects.filter(teacher=teacher).first()
         if invitation and invitation.use_count < invitation.max_uses:
@@ -125,6 +125,7 @@ def generate_invitation(request):
     invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org, class_name=sup_class)
     return Response({'invitation': InvitationSerializer(invitation).data})
 
+
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -132,6 +133,41 @@ class SignupView(APIView):
             serializer.save()
             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""Updated the Signup view as students are not being assigned to class... didn't work :("""
+# class SignupView(APIView):
+#     def post(self, request):
+#         serializer = SignupSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+
+#             invitation_code = request.data.get("invitation_code")
+#             if invitation_code:
+#                 try: 
+#                     invitation = Invitation.objects.get(code=invitation_code)
+#                 except Invitation.DoesNotExist:
+#                     return Response({"error": "Invalid invitation code"}, status=400)
+                
+#                 # Assign role and org from the invitation
+#                 extend_user = ExtendUser.objects.get(user=user)
+#                 extend_user.role = invitation.role
+#                 extend_user.org = invitation.org
+#                 extend_user.save()
+
+#                 # If this is a student teacher, assign them to the class
+#                 if invitation.role == "Student Teacher" and invitation.class_name:
+#                     StudentTeacher.objects.create(
+#                         user=user,
+#                         class_name=invitation.class_name,
+#                         grade_level=request.data.get("grade_level"),
+#                         type_of_educator=request.data.get("type_of_educator")
+#                     )
+
+#             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -253,4 +289,19 @@ def get_students_under_supervisor(request):
     except Exception as e:
         print(f"Error: {e}") #add more detailed logging here.
         return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+# """Added this to get students from specific class"""  
+# @api_view(["POST"])
+# def get_students_in_class(request):
+#     class_id = request.data.get("class_id")  # Or class_name if you prefer
+
+#     if not class_id:
+#         return Response({"error": "Class ID is required"}, status=400)
+
+#     try:
+#         sup_class = SupervisorClass.objects.get(id=class_id)
+#         students = StudentTeacher.objects.filter(class_name=sup_class)
+#         serializer = StudentTeacherSerializer(students, many=True)
+#         return Response(serializer.data, status=200)
+#     except SupervisorClass.DoesNotExist:
+#         return Response({"error": "Class not found"}, status=404)

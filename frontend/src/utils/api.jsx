@@ -55,3 +55,12 @@ export const getClasses = async () => {
     console.log(response)
     return (response.data)
 }
+
+// export const getStudentsForClass = async (className) => {
+//   const token = localStorage.getItem('jwtToken');
+//   const response = await axios.post('http://localhost:8000/user_auth/get-students/', {
+//     token,
+//     class_id: classId,
+//   });
+//   return response.data;
+// };
