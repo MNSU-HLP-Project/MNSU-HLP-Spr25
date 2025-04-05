@@ -13,7 +13,7 @@ export default function AdminPage() {
 
   const fetchEntries = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/entries/");
+      const response = await API.get("/api/entries/");
       setEntries(response.data.entries);
     } catch (error) {
       console.error("Error fetching entries:", error);
@@ -22,7 +22,7 @@ export default function AdminPage() {
 
   const handleDelete = async (id) => {
     try {
-        const response = await axios.delete(`http://127.0.0.1:8000/api/delete-entry/${id}/`);
+        const response = await API.delete(`/api/delete-entry/${id}/`);
         console.log("Delete Response:", response);
         alert("Entry deleted successfully!");
         fetchEntries(); // Refresh the list after deletion

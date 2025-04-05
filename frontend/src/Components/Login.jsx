@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API from "../utils/axios";
 
 function Auth() {
   // Set for data and defaults
@@ -34,7 +35,7 @@ function Auth() {
 
     try {
       // Post username and password to backend
-        const response = await axios.post("http://localhost:8000/user_auth/login/", {
+        const response = await API.post("/user_auth/login/", {
           username: formData.username,
           password: formData.password,
         });
