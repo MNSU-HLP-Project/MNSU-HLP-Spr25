@@ -7,6 +7,7 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
+from datetime import datetime, timedelta, timezone
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
@@ -222,7 +223,8 @@ class LoginView(APIView):
                 'role': ExtendUser.objects.get(user=user).role, 
                 'id': user.username, 
                 'firstname': user.first_name, 
-                'lastname': user.last_name
+                'lastname': user.last_name,
+                'exp': datetime.now(tz=timezone.utc) + timedelta(hours=2) 
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

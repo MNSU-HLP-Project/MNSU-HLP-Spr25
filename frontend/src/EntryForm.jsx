@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import API from "./utils/axios";
 
 const EntryForm = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ const EntryForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/create-entry/", formData);
+      const response = await API.post("/api/create-entry/", formData);
       console.log("Entry created:", response.data);
       alert("Entry submitted successfully!");
       setFormData({ hlp_number: "", date: "", score: "", comments: "" });

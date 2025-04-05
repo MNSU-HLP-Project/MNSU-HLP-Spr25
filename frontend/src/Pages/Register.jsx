@@ -3,6 +3,7 @@ import {useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
+import API from "../utils/axios";
 
 
 function Register() {
@@ -28,7 +29,7 @@ function Register() {
   useEffect(() => {
     const fetchGrades = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/user_auth/getgrades/");
+        const response = await API.get("/user_auth/getgrades/");
         // Sort the grades, handling both numbers and strings
         const sortedGrades = [...response.data].sort((a, b) => {
           // Convert numeric gradelevel strings to numbers, otherwise leave as string
@@ -105,7 +106,7 @@ function Register() {
     console.log(formData)
     try {
         // Posting to backend for signup, all these are required
-        const response = await axios.post("http://localhost:8000/user_auth/signup/", {
+        const response = await API.post("/user_auth/signup/", {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,

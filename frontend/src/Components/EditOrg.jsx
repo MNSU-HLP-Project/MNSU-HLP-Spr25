@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import API from "../utils/axios";
 
 
 const EditOrg = () => {
@@ -15,7 +16,7 @@ const EditOrg = () => {
 
     const getOrg = async () => {
         const token = localStorage.getItem('jwtToken')
-        const response = await axios.post('http://localhost:8000/user_auth/get-org-details/',
+        const response = await API.post('/user_auth/get-org-details/',
         {
             token: token
         })
@@ -27,7 +28,7 @@ const EditOrg = () => {
 
     const updateOrg = async () => {
       const token = localStorage.getItem('jwtToken')
-      const response = await axios.post('http://localhost:8000/user_auth/edit_org/',
+      const response = await API.post('/user_auth/edit_org/',
         {
           token:token,
           org_details: orgDetails,
