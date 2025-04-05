@@ -1,10 +1,12 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.response import Response
 from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 
 @api_view(["GET"])
 def get_entries(request):
@@ -125,3 +127,22 @@ def get_entries_by_lookfor_number(request):
     }
 
     return Response(response_data, status=200)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def get_entries_by_supervisor_students(request):
+    user = request.user
+
+    # Check if user is a supervisor
+    if not hasattr(user, 'supervisor'):
+        return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
+
+    supervisor = user.supervisor
+    student_teachers = supervisor.student_teachers.all()
+    student_users = [st.user for st in student_teachers]
+
+    entries = Entry.objects.filter(user__in=student_users)
+    serializer = EntrySerializer(entries, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)

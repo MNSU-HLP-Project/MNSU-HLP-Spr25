@@ -8,11 +8,12 @@ class InvitationSerializer(serializers.ModelSerializer):
         model = Invitation
         fields = ['id', 'teacher', 'role', 'code', 'created_at', 'max_uses', 'use_count','class_name']
 
-class SuperClassSerializer(serializers.ModelSerializer):
+class SupervisorClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupervisorClass
         fields = ['user', 'name']
-               
+
+
 class SignupSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='first_name')
     lastName = serializers.CharField(source='last_name')
@@ -112,13 +113,24 @@ class ExtendUserSerializer(serializers.ModelSerializer):
 
 class StudentTeacherSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()  # Display username instead of ID
-    org = OrganizationSerializer(read_only=True)  # Nested organization details
+    # org = OrganizationSerializer(read_only=True)  # Nested organization details
 
 
     class Meta:
         model = StudentTeacher
-        fields = '__all__'
+        fields = ['user']
 
+class CurrentUserSerializer(serializers.Serializer):
+    id = serializers.StringRelatedField()
+    username = serializers.StringRelatedField()
+    first_name = serializers.StringRelatedField()
+    last_name = serializers.StringRelatedField()
+    email = serializers.StringRelatedField()
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'id', 'first_name', 'last_name')
+        
 class SupervisorSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()  # Show username instead of ID
     student_teachers = StudentTeacherSerializer(many=True, read_only=True)  # Show student teachers

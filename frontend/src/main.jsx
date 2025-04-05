@@ -9,5 +9,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     {" "}
     {/* Wrap everything inside BrowserRouter */}
     <App />
+    
   </BrowserRouter>
 );

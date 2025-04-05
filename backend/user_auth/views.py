@@ -5,12 +5,16 @@ from django.contrib.auth import login
 from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
-from .serializers import ExtendUserSerializer, SuperClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+
+
 
 def check_token(token):
     """Checks Token and returns a token dictionary
@@ -36,7 +40,7 @@ def get_class_names(request):
     userid = token['id']
     user = User.objects.get(username=userid)
     classes = SupervisorClass.objects.filter(user=user)
-    serializer = SuperClassSerializer(classes, many=True)
+    serializer = SupervisorClassSerializer(classes, many=True)
     return Response(serializer.data)
     
 @api_view(['POST'])
@@ -48,10 +52,11 @@ def generate_class(request):
     user = User.objects.get(username=userid)
     sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
     if sup_class:
-        return Response({'error': "Name already exists"}, status=400)
+        return Response({'error': "Class already exists"}, status=400)
     else:
         sup_class = SupervisorClass.objects.create(name=class_name, user=user)
-        return Response({ class_name: SuperClassSerializer(sup_class).data})
+        return Response({ class_name: SupervisorClassSerializer(sup_class).data})
+
 
 @api_view(['POST'])
 def generate_org(request):
@@ -120,6 +125,7 @@ def generate_invitation(request):
     invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org, class_name=sup_class)
     return Response({'invitation': InvitationSerializer(invitation).data})
 
+
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -127,6 +133,41 @@ class SignupView(APIView):
             serializer.save()
             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# """Updated the Signup view as students are not being assigned to class... didn't work :("""
+# class SignupView(APIView):
+#     def post(self, request):
+#         serializer = SignupSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+
+#             invitation_code = request.data.get("invitation_code")
+#             if invitation_code:
+#                 try: 
+#                     invitation = Invitation.objects.get(code=invitation_code)
+#                 except Invitation.DoesNotExist:
+#                     return Response({"error": "Invalid invitation code"}, status=400)
+                
+#                 # Assign role and org from the invitation
+#                 extend_user = ExtendUser.objects.get(user=user)
+#                 extend_user.role = invitation.role
+#                 extend_user.org = invitation.org
+#                 extend_user.save()
+
+#                 # If this is a student teacher, assign them to the class
+#                 if invitation.role == "Student Teacher" and invitation.class_name:
+#                     StudentTeacher.objects.create(
+#                         user=user,
+#                         class_name=invitation.class_name,
+#                         grade_levels=request.data.get("grade_level"),
+#                         type_of_teacher=request.data.get("type_of_educator")
+#                     )
+
+#             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -215,3 +256,53 @@ def get_users_by_role(request):
 
     # Return user's role
     return Response({"username": username, "The user's role": user.role}, status=200)
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_classes_by_loggedin_supervisor(request):
+    user = request.user
+    if hasattr(user, 'supervisor'):
+        classes = SupervisorClass.objects.filter(user=user)
+        serializer = SupervisorClassSerializer(classes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def get_students_under_supervisor(request):
+    try:
+        user = request.user
+        if not hasattr(user, 'supervisor'):
+            return Response({'error': 'You are not a supervisor.'}, status=status.HTTP_403_FORBIDDEN)
+        supervisor = user.supervisor
+        students = supervisor.student_teachers.all()
+        serializer = StudentTeacherSerializer(students, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(f"Error: {e}") #add more detailed logging here.
+        return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+"""Added this to get students from specific class"""  
+@api_view(["POST"])
+def get_students_in_class(request):
+    class_obj = request.data.get("class_obj")  # Or class_name if you prefer
+
+    if not class_obj:
+        return Response({"error": "Class ID is required"}, status=400)
+    user = User.objects.get(id=class_obj['user'])
+    class_name = class_obj['name']
+    try:
+        sup_class = SupervisorClass.objects.get(name=class_name, user=user)
+        students = sup_class.students
+        serializer = CurrentUserSerializer(students, many=True)
+        return Response(serializer.data, status=200)
+    except SupervisorClass.DoesNotExist:
+        return Response({"error": "Class not found"}, status=404)

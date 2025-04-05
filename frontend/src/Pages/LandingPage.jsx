@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Auth from "../Components/Login";
+import Auth from "./Login";
 
 function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);
@@ -46,7 +46,6 @@ function LandingPage() {
           </div>
         </div>
       </section>
-      
 
       {/* ✅ Auth Modal */}
       {showAuth && (
