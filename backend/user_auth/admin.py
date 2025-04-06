@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor, GradeLevel, SupervisorClass
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from .models import ExtendUser, Invitation, StudentTeacher, Organization, Supervisor, GradeLevel, SupervisorClass
+from entries.models import Prompt
+
+
 
 
 # Define an inline admin descriptor for Employee model
@@ -42,9 +45,11 @@ try:
     admin.site.unregister(User)
 except:
     print('Didnt work')
+    
 admin.site.register(User, UserAdmin)
 admin.site.register(SupervisorClass)
 admin.site.register(StudentTeacher)
 admin.site.register(Supervisor)
 admin.site.register(Organization)
 admin.site.register(GradeLevel)
+admin.site.register(Prompt)
