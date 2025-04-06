@@ -46,6 +46,14 @@ def get_class_names(request):
     return Response(serializer.data)
     
 @api_view(['POST'])
+def update_grades(request):
+    grades = request.data['grades']
+    GradeLevel.objects.all().delete()
+    for grade in grades:
+        GradeLevel.objects.create(gradelevel = grade)
+    return Response('Grades Updated Successfully')
+    
+@api_view(['POST'])
 def generate_class(request):
     data = request.data['form_data']
     class_name = data['class_name']

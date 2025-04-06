@@ -45,7 +45,7 @@ const SupervisorMainView = () => {
         <ClassGenerator
           onClassCreated={() => {
             setRefreshClasses((prev) => !prev); // refresh invite class list
-            setShowInviteSection(true); // auto-show invite section
+            // setShowInviteSection(true); // auto-show invite section
           }}
         />
       )}
