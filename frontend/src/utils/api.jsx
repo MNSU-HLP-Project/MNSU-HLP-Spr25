@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
+import API from './axios';
+/**
+ * Generates an Organization and returns back invitation link for supervisors
+ * @param {{org_name: string, admin_email: string}} org_data
+ * @returns {Response}
+ */
 export const generateOrganization = async (org_data) => {
     const token = localStorage.getItem('jwtToken'); 
     console.log(org_data)
-    const response = await axios.post('http://localhost:8000/user_auth/generate-org/', {
+    const response = await API.post('/user_auth/generate-org/', {
         token: token,
         org_data: org_data
     });
     return(generateInvite(''))
 }
 
+/**
+ * Generates an invite given the token and class_name if a supervisor is generating
+ * @param {string} class_name=''
+ * @returns {any}
+ */
 export const generateInvite = async (class_name='') => {
     const token = localStorage.getItem('jwtToken');  
 
     const name = class_name
     console.log(name)
-    const response = await axios.post('http://localhost:8000/user_auth/generate-invite/', {
+    const response = await API.post('/user_auth/generate-invite/', {
         token: token,
         class_name: name
     });
@@ -31,10 +39,15 @@ export const generateInvite = async (class_name='') => {
     }
 };
 
+/**
+ * Generates class for a supervisor
+ * @param {any} form_data
+ * @returns {any}
+ */
 export const generateClass = async (form_data) => {
     const token = localStorage.getItem('jwtToken')
     console.log (form_data)
-    const response = await axios.post('http://localhost:8000/user_auth/generate-class/',
+    const response = await API.post('/user_auth/generate-class/',
         {
             token: token,
             form_data: form_data
@@ -47,7 +60,7 @@ export const generateClass = async (form_data) => {
 
 export const getClasses = async () => {
     const token = localStorage.getItem('jwtToken')
-    const response = await axios.post('http://localhost:8000/user_auth/get-classes/',
+    const response = await API.post('/user_auth/get-classes/',
         {
             token: token
         }

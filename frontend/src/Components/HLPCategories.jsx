@@ -2,19 +2,24 @@ import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function HLPCategories() {
+  // Categories of HLPs
   const categories = [
     { name: "Collaboration", color: "bg-collab", textColor: "text-white" },
     { name: "Data-Driven Planning", color: "bg-data", textColor: "text-white" },
     { name: "Instruction in Behavior and Academics", color: "bg-instr", textColor: "text-white" },
     { name: "Intensify and Intervene as Needed", color: "bg-itens", textColor: "text-white" },
   ];
-
+  // Setting up default values
   const navigate = useNavigate();
   const handleBackClick = () => navigate("/mainmenu/");
   const handleMenuClick = () => alert("Menu button clicked");
+
+  // Navigate and change state to correct category
   const handleCategoryClick = (name) => navigate("/hlpselection/", {
     state: {name}
   });
+
+  // Logout on pressing log out
   const handleLogout = () => navigate("/");
 
   return (

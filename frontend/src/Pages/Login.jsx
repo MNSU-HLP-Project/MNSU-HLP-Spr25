@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API from "../utils/axios";
 
 function Auth() {
+  // Set for data and defaults
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -11,6 +12,7 @@ function Auth() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Handle change for the form, important that the name of the element matches what formData is expecting
   const handleChange = (form) => {
     const { name, value } = form.target;
     setFormData((prevFormData) => ({
@@ -19,9 +21,10 @@ function Auth() {
     }));
   };
 
+  // On button press, start an async function
   const buttonPress = async () => {
     const newErrors = {};
-    
+    // Set errors if not filled out
     if (!formData.username) newErrors.username = "username is required.";
     if (!formData.password) newErrors.password = "Password is required.";
 
@@ -31,11 +34,12 @@ function Auth() {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-        const response = await axios.post("http://localhost:8000/user_auth/login/", {
+      // Post username and password to backend
+        const response = await API.post("/user_auth/login/", {
           username: formData.username,
           password: formData.password,
         });
-
+        // On correct login store the data and role, navigate to main menu
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("jwtToken", token);
@@ -46,6 +50,7 @@ function Auth() {
       
       
     } catch (error) {
+      // On error update error with the information from the error response code
       console.error("Error:", error);
 
       if (error.response && error.response.data) {

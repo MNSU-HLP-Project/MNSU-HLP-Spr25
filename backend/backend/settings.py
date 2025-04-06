@@ -29,8 +29,8 @@ ALLOWED_HOSTS = []
 
 #TODO Create a secret key mechanism
 SECRET_KEY = 'secret'
-JWT_ALGORITHM = 'HS256'  # HMAC-SHA256 is a common choice
-JWT_EXP_DELTA_SECONDS = 3600  # Token expiry in seconds
+JWT_ALGORITHM = 'HS256'  
+JWT_EXP_DELTA_SECONDS = 3600  
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'auth_middleware.TokenAuthMiddleware'
 ]
 
 # Allow requests from your React frontend

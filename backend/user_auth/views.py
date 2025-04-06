@@ -7,6 +7,7 @@ import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
+from datetime import datetime, timedelta, timezone
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
@@ -15,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 
 
+from entries.models import Prompt
 
 def check_token(token):
     """Checks Token and returns a token dictionary
@@ -44,6 +46,14 @@ def get_class_names(request):
     return Response(serializer.data)
     
 @api_view(['POST'])
+def update_grades(request):
+    grades = request.data['grades']
+    GradeLevel.objects.all().delete()
+    for grade in grades:
+        GradeLevel.objects.create(gradelevel = grade)
+    return Response('Grades Updated Successfully')
+    
+@api_view(['POST'])
 def generate_class(request):
     data = request.data['form_data']
     class_name = data['class_name']
@@ -71,7 +81,50 @@ def generate_org(request):
     Organization.objects.create(name=name, admin_email=admin)
     return Response(status=status.HTTP_200_OK)
     
+@api_view(['POST'])
+def get_org_details(request):
+    token = check_token(request.data['token'])
+    if token['role'] != 'Admin':
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)   
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    org =  Organization.objects.filter(admin_email = user.email).first()
+    if org:
+        prompt_list = org.prompt_list
+        prompts = []
+        for prompt in prompt_list.all():
+            prompts.append(prompt.prompt)
+            
+        return Response({ 'org_details': OrganizationSerializer(org).data,
+                         'prompts': prompts})
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
     
+@api_view(['POST'])
+def edit_org(request):
+    token = check_token(request.data['token'])
+    if token['role'] != 'Admin':
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+    userid = token['id']
+    user = User.objects.get(username=userid)
+    org =  Organization.objects.filter(admin_email = user.email).first()
+    if org:
+        org_details = request.data['org_details']
+        prompts = request.data['prompts']
+        name = org_details['name']
+        org.name = name
+        print(prompts)
+        prompt_list = org.prompt_list
+        prompt_list.clear()
+        for prompt in prompts:
+            print(prompt)
+            prompt_data = Prompt.objects.filter(prompt=prompt).first()
+            if not prompt_data:
+               prompt_data = Prompt.objects.create(prompt=prompt) 
+            prompt_list.add(prompt_data)
+        return Response('Orginization Updated Succesfully')      
+            
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+   
 @api_view(['POST'])
 def generate_invitation(request):
     max_uses = 50
@@ -178,7 +231,8 @@ class LoginView(APIView):
                 'role': ExtendUser.objects.get(user=user).role, 
                 'id': user.username, 
                 'firstname': user.first_name, 
-                'lastname': user.last_name
+                'lastname': user.last_name,
+                'exp': datetime.now(tz=timezone.utc) + timedelta(hours=2) 
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

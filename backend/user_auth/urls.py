@@ -2,7 +2,7 @@ from django.urls import path
 from .views import SignupView, LoginView, generate_invitation, get_grade_levels, generate_class, get_class_names
 
 from .views import SignupView, LoginView
-from .views import get_extend_users,get_students_in_class, get_organizations, generate_org, get_student_teachers, get_supervisors, get_grade_levels, get_users_by_role, create_student_teacher, create_grade_levels, create_supervisor, get_classes_by_loggedin_supervisor, get_students_under_supervisor
+from .views import get_extend_users,update_grades,get_students_in_class, edit_org, get_org_details, get_organizations, generate_org, get_student_teachers, get_supervisors, get_grade_levels, get_users_by_role, create_student_teacher, create_grade_levels, create_supervisor, get_classes_by_loggedin_supervisor, get_students_under_supervisor
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
@@ -24,5 +24,9 @@ urlpatterns = [
     path('my-classes/', get_classes_by_loggedin_supervisor, name ='get_classes_supervisor'),
     path('my-students/', get_students_under_supervisor),
     path('students-in-class/', get_students_in_class),
+    path('get-org-details/',get_org_details, name='get-org-details'),
+    path('edit_org/', edit_org, name='edit_org'),
+    path('update_grades/', update_grades, name='update-grades')
+
 ]
 

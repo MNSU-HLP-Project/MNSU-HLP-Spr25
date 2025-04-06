@@ -43,7 +43,7 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   // Determine invite message based on user role
   const inviteMessage =
     userRole === "Admin"
-      ? "Send this to a supervisor:"
+      ? "Send this to a supervisor:" : userRole === "Superuser" ? "Send this to the admin"
       : "Share this link with students:";
 
   return (
@@ -92,6 +92,7 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
               onClick={() => {
                 navigator.clipboard.writeText(inviteLink);
                 alert("Copied to clipboard");
+                setInviteLink('')
               }}
             >
               Copy
