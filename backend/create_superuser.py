@@ -7,7 +7,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
 
 from django.contrib.auth import get_user_model
-from user_auth.models import ExtendUser  # Import your ExtendUser model
+from user_auth.models import ExtendUser 
 
 User = get_user_model()
 

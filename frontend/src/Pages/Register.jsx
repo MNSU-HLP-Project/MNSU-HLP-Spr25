@@ -116,7 +116,6 @@ function Register() {
           type_of_educator: formData.type_of_educator
         });
         // On success navigate to login page
-        // TODO: Need to give an indication of succesful signup
         if (response.status === 201) {
           console.log("Signup Successful:", response.data);
           navigate('/')

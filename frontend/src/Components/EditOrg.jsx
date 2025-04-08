@@ -4,47 +4,44 @@ import API from "../utils/axios";
 
 
 const EditOrg = () => {
+  // Edit Organization Module
   const NewPrompt = ({ text }) => (
+    // Set up prompt
     <div>
       <p className="text-2xl font-bold text-gray-800">{text}</p>
     </div>
   );
+    
     const [orgDetails, setOrgDetails] = useState({})
     const [showEdit, setShowEdit] = useState(false)
     const [prompts, setPrompts] = useState([]);
     const [promptText, setPromptText] = useState('')
 
     const getOrg = async () => {
-        const token = localStorage.getItem('jwtToken')
-        const response = await API.post('/user_auth/get-org-details/',
-        {
-            token: token
-        })
-        console.log(response.data)
+        // This get-org-details returns org_details and prompts, based on the user sending the request
+        const response = await API.get('/user_auth/get-org-details/')
+        // Set variables to the response data
         setOrgDetails(response.data.org_details)
-
         setPrompts(response.data.prompts)
     };
 
     const updateOrg = async () => {
-      const token = localStorage.getItem('jwtToken')
+      // Updates org, errors are handled through axios
       const response = await API.post('/user_auth/edit_org/',
         {
-          token:token,
           org_details: orgDetails,
           prompts: prompts
         }
       )
-      console.log(response)
-
     }
 
     useEffect(() => {
-        getOrg()
-        
+      // Run on start up
+        getOrg()   
     },[])
 
   const handleChange = (form) => {
+    // Function for updating org details when updating
       const { name, value } = form.target;
       setOrgDetails((prevFormData) => ({
         ...prevFormData,
@@ -53,10 +50,12 @@ const EditOrg = () => {
     };
 
   const addComponent = (text) => {
+    // Add to prompts when adding a component
     setPrompts([...prompts, text]);
   };
 
   const removeComponent = (index) => {
+    // Remove components when pressing button
     const updatedComponents = [...prompts];
     updatedComponents.splice(index, 1);
     setPrompts(updatedComponents);
@@ -103,7 +102,9 @@ return (
            onClick={()=> {
             addComponent(promptText);
             setPromptText('')
-          }}>Add Prompt</button>
+          }}>
+            Add Prompt
+            </button>
           {prompts.map((prompt, index) => (
             <div key={index} className="flex items-center justify-between bg-gray-200 p-2 rounded-lg mt-2">
               <NewPrompt text={prompt} />

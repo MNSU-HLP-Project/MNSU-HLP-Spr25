@@ -12,8 +12,8 @@ The frontend is built using React. The steps to set up it correctly on your mach
 
 1. Install Node.js on your machine. If already have node.js installed then move to the next step. If not, go to [this site](https://nodejs.org/en) and install.
 2. Navigate to the ```frontend``` directory in the repo.
-3. Run ```npm install --force``` TODO: Figure out dependencies issues. Not sure whey this is popping up, force is a temporary workaround.
-4. Run ```npm start``` and the current React page should pop up. You will also see this in terminal.
+3. Run ```npm install```
+4. Run ```npm run dev``` and the current React page should pop up. You will also see this in terminal.
 ![alt text](images/image.png)
 
 ### Backend Setup
@@ -30,7 +30,6 @@ WINDOWS: ```venv\Scripts\activate```
 MAC: ```source venv/bin/activate```
 
 
-5. Next run the command ```pip install -r requirements.txt```, this will install all the nessecary packages.
-6. Run ```python manage.py runserver``` to start up the backend server which will be available at ```127.0.0.1:8000```
-
-Changes
+5. Navigate into the backend folder ```cd backend```
+6. Next run the command ```pip install -r requirements.txt```, this will install all the nessecary packages.
+7. Run ```python manage.py runserver``` to start up the backend server which will be available at ```127.0.0.1:8000```

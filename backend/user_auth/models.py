@@ -51,7 +51,6 @@ class StudentTeacher(models.Model):
     ]
     type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES)
     grade_levels = models.ManyToManyField(GradeLevel)
-    """added this coz of an error in the new signupview"""
     class_name = models.ForeignKey(SupervisorClass, on_delete=models.CASCADE, null=True, blank=True)
 
 

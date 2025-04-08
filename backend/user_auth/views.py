@@ -32,22 +32,27 @@ def check_token(token):
     
 @api_view(['GET'])
 def get_grade_levels(request):
+    """Gets grade levels for the whole database
+        Currently grade levels are the same throughout the whole application
+    """
     grade_levels = GradeLevel.objects.all()
     serializer = GradeLevelSerializer(grade_levels, many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def get_class_names(request):
-    token = check_token(request.data['token'])
-    userid = token['id']
-    user = User.objects.get(username=userid)
+    """Get Classes that are under the request's user"""
+    user = request.user
     classes = SupervisorClass.objects.filter(user=user)
     serializer = SupervisorClassSerializer(classes, many=True)
     return Response(serializer.data)
     
 @api_view(['POST'])
 def update_grades(request):
+    """Update the grades list, this should only be accessed by a superuser"""
     grades = request.data['grades']
+    # Currently deletes all of the grade levels but could be fixed to check
+    # I don't think this matters much as it is only going to be accessed by the superusers and very rarely
     GradeLevel.objects.all().delete()
     for grade in grades:
         GradeLevel.objects.create(gradelevel = grade)
@@ -55,11 +60,17 @@ def update_grades(request):
     
 @api_view(['POST'])
 def generate_class(request):
+    """Generate a class for a supervisor
+
+    Args:
+        request (_type_): contains user of supervisor doing the request
+
+    Returns:
+        Response: Either the class name with a 200 status or an error with 400 status
+    """
     data = request.data['form_data']
     class_name = data['class_name']
-    token = check_token(request.data['token'])
-    userid = token['id']
-    user = User.objects.get(username=userid)
+    user = request.user
     sup_class = SupervisorClass.objects.filter(name=class_name, user=user).first()
     if sup_class:
         return Response({'error': "Class already exists"}, status=400)
@@ -70,24 +81,33 @@ def generate_class(request):
 
 @api_view(['POST'])
 def generate_org(request):
-    token = check_token(request.data['token'])
-    if token['role'] != 'Superuser':
-        return Response({'error': 'User not authenticated'}, status=400)
+    """Generates organization for a superuser.
+    
+    Args:
+        request: Should include org_data object that has admin_email and org_name on it
+    """
+    # Get the data for the org
     org_data = request.data['org_data']
     admin = org_data['admin_email']
     name = org_data['org_name']
+    # Check if it exists
     if Organization.objects.filter(name=name).first():
         return Response(status=status.HTTP_200_OK)
+    # Otherwise create
     Organization.objects.create(name=name, admin_email=admin)
     return Response(status=status.HTTP_200_OK)
     
-@api_view(['POST'])
+@api_view(['GET'])
 def get_org_details(request):
-    token = check_token(request.data['token'])
-    if token['role'] != 'Admin':
-        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)   
-    userid = token['id']
-    user = User.objects.get(username=userid)
+    """Get details of the organization
+
+    Args:
+        request (_type_): Normal get request
+
+    Returns:
+        _type_: returns the prompts and organization data that is serialized
+    """
+    user = request.user
     org =  Organization.objects.filter(admin_email = user.email).first()
     if org:
         prompt_list = org.prompt_list
@@ -101,132 +121,106 @@ def get_org_details(request):
     
 @api_view(['POST'])
 def edit_org(request):
-    token = check_token(request.data['token'])
-    if token['role'] != 'Admin':
-        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
-    userid = token['id']
-    user = User.objects.get(username=userid)
+    """Edit an organization"""
+    # Get User
+    user = request.user
+    # Get organization user is under
     org =  Organization.objects.filter(admin_email = user.email).first()
     if org:
+        # Get the org details from request data
         org_details = request.data['org_details']
         prompts = request.data['prompts']
         name = org_details['name']
+        # Update the org
         org.name = name
-        print(prompts)
         prompt_list = org.prompt_list
+        # First clear the prompt list
         prompt_list.clear()
         for prompt in prompts:
-            print(prompt)
+            # See if a prompt exists
             prompt_data = Prompt.objects.filter(prompt=prompt).first()
+            # If not create a new one and add
             if not prompt_data:
                prompt_data = Prompt.objects.create(prompt=prompt) 
             prompt_list.add(prompt_data)
-        return Response('Orginization Updated Succesfully')      
-            
+        return Response('Organization Updated Succesfully')      
+    # If no org exists that means that the user is not associated to an org
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
    
 @api_view(['POST'])
-def generate_invitation(request):
-    max_uses = 50
-    token = check_token(request.data['token'])
-    print(request.data)
+def generate_invitation(request, max=50):
+    """Main invitation code generation"""
+    # Just set to 50 right now, might want to change this in the future
+    max_uses = max
+    # class_name will always be passed but that does not mean that there will always be something there
     class_name = request.data['class_name']
     
-    if not token:
-        return Response({'error': 'User not authenticated'}, status=400)
+    # Get role
+    teacher = request.user
+    role = ExtendUser.objects.get(user=teacher).role
     
-    role = token['role']
-    userid = token['id']
-    
-    if not userid:
-        return Response({'error': 'User ID is required'}, status=400)
-
-    # Ensure user exists before creating invitation
-    try:
-        teacher = User.objects.get(username=userid)
-    except User.DoesNotExist:
-        return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
-    
+    # Get org
     org = ExtendUser.objects.get(user=teacher).org
 
-    # Check if user is authorized
+    # Check if user is one of authorized roles
     if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin','Superuser']).exists() is False:
         return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    # Check if invitation already exists
+    # TODO: Might want to not hard code this
     if role == 'Supervisor':
+        # If supervisor we need to handle classes, check if it exists
         invitation = Invitation.objects.filter(teacher=teacher, class_name=SupervisorClass.objects.get(name=class_name, user=teacher)).first()
+        # If the invitation is valid, pass to serializer and then return it
         if invitation and invitation.use_count < invitation.max_uses:
             return Response({'invitation':InvitationSerializer(invitation).data})
+        # If invitation is valid but has been used to max, delete and recreate later
         elif invitation and invitation.use_count >= invitation.max_uses:
             invitation.delete()
+        # Set up for invitation
         newrole = 'Student Teacher'
         sup_class = SupervisorClass.objects.get(name=class_name, user=teacher)
     else: 
+        # Look for an invitation first
         invitation = Invitation.objects.filter(teacher=teacher).first()
+        # If valid return info
         if invitation and invitation.use_count < invitation.max_uses:
             return Response({'invitation':InvitationSerializer(invitation).data})
+        # If valid and maxed out delete
         elif invitation and invitation.use_count >= invitation.max_uses:
             invitation.delete()
+        # Handle role for invitation
         if role == 'Superuser':
             newrole = 'Admin'
             org = None
         else:
             newrole = 'Supervisor'
         sup_class = None
-        
+    
+    # Create the invitation
     invitation = Invitation.objects.create(teacher=teacher, role=newrole, max_uses=max_uses, org=org, class_name=sup_class)
     return Response({'invitation': InvitationSerializer(invitation).data})
 
 
 class SignupView(APIView):
+    # Class based view, might want to shift
     def post(self, request):
+        # Signup logic is handled in the serializer
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# """Updated the Signup view as students are not being assigned to class... didn't work :("""
-# class SignupView(APIView):
-#     def post(self, request):
-#         serializer = SignupSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-
-#             invitation_code = request.data.get("invitation_code")
-#             if invitation_code:
-#                 try: 
-#                     invitation = Invitation.objects.get(code=invitation_code)
-#                 except Invitation.DoesNotExist:
-#                     return Response({"error": "Invalid invitation code"}, status=400)
-                
-#                 # Assign role and org from the invitation
-#                 extend_user = ExtendUser.objects.get(user=user)
-#                 extend_user.role = invitation.role
-#                 extend_user.org = invitation.org
-#                 extend_user.save()
-
-#                 # If this is a student teacher, assign them to the class
-#                 if invitation.role == "Student Teacher" and invitation.class_name:
-#                     StudentTeacher.objects.create(
-#                         user=user,
-#                         class_name=invitation.class_name,
-#                         grade_levels=request.data.get("grade_level"),
-#                         type_of_teacher=request.data.get("type_of_educator")
-#                     )
-
-#             return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
-        
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-
-
 class LoginView(APIView):
+    """Login function is class based, just validates through a post request and returns a jwt if valid"""
+    # Class based view, might want to shift
     def post(self, request):
+        # Login Serializer takes request data and validates
         serializer = LoginSerializer(data=request.data)
+        # If email/username and password are correct, then return jwt
         if serializer.is_valid():
             user = serializer.validated_data
+            # Set up token here, 'exp' -  pyjwt built in functionality for expiration
             token = jwt.encode({
                 'role': ExtendUser.objects.get(user=user).role, 
                 'id': user.username, 
@@ -234,7 +228,9 @@ class LoginView(APIView):
                 'lastname': user.last_name,
                 'exp': datetime.now(tz=timezone.utc) + timedelta(hours=2) 
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+            # Return token and role as role effects main menu
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
+        # Return error
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])

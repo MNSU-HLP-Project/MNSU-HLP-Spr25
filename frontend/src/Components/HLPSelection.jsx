@@ -42,6 +42,8 @@ const HLPSelection = () => {
   }, [groupTitle]);
 
   const handleClick = (hlp) => {
+    //navigate("/hlpselection/", {state: {hlp}})
+    // use     setHLP(location.state.hlp) in next component
     alert(`Clicked on ${hlp}`);
   };
 

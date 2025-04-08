@@ -9,16 +9,19 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    // Get class list if anything is updated
     getClassList();
   }, [refreshSignal]); // re-run whenever refreshSignal changes
   
 
   const getClassList = async () => {
+    // Get classes, runs on refresh signal changing
     const classes = await getClasses();
     setClassList(classes);
   };
 
   const handleChange = (form) => {
+    // Change class data based on what is entered
     const { name, value } = form.target;
     setClassData((prevFormData) => ({
       ...prevFormData,
@@ -27,11 +30,14 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   };
 
   const genInvite = async () => {
+    // If name is null don't let it continue
     if (class_data.name === "") {
       setErrors({ class: "Must select a class" });
     } else {
+      // Clear errors
       setErrors({});
       try {
+        // Get the invite link
         const link = await generateInvite(class_data.name);
         setInviteLink(link);
       } catch (error) {
@@ -43,7 +49,8 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   // Determine invite message based on user role
   const inviteMessage =
     userRole === "Admin"
-      ? "Send this to a supervisor:" : userRole === "Superuser" ? "Send this to the admin"
+      ? "Send this to a supervisor:" 
+      : userRole === "Superuser" ? "Send this to the admin"
       : "Share this link with students:";
 
   return (

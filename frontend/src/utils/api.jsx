@@ -21,15 +21,11 @@ export const generateOrganization = async (org_data) => {
  * @returns {any}
  */
 export const generateInvite = async (class_name='') => {
-    const token = localStorage.getItem('jwtToken');  
-
     const name = class_name
-    console.log(name)
     const response = await API.post('/user_auth/generate-invite/', {
-        token: token,
         class_name: name
     });
-    console.log(response)
+    // Decide on the role and update the link correctly
     if (response.data.invitation.role == 'Supervisor') {
         return(`${window.location.origin}/register?role=sup&code=${response.data.invitation.code}`);
     } else if (response.data.invitation.role == 'Admin') {
@@ -42,37 +38,25 @@ export const generateInvite = async (class_name='') => {
 /**
  * Generates class for a supervisor
  * @param {any} form_data
- * @returns {any}
+ * @returns true if succesful
  */
 export const generateClass = async (form_data) => {
-    const token = localStorage.getItem('jwtToken')
-    console.log (form_data)
     const response = await API.post('/user_auth/generate-class/',
         {
-            token: token,
             form_data: form_data
         }
     )
-    console.log(response)
     return (true)
 }
 
 
 export const getClasses = async () => {
-    const token = localStorage.getItem('jwtToken')
-    const response = await API.post('/user_auth/get-classes/',
-        {
-            token: token
-        }
-    )
-    console.log(response)
+    const response = await API.get('/user_auth/get-classes/')
     return (response.data)
 }
 
 export const getStudentsForClass = async (class_obj) => {
-  const token = localStorage.getItem('jwtToken');
   const response = await axios.post('http://localhost:8000/user_auth/students-in-class/', {
-    token,
     class_obj: class_obj,
   });
   return response.data;
