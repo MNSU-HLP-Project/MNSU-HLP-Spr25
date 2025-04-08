@@ -25,7 +25,7 @@ const OrganizationGenerator = () => {
       if (org_data.org_name !== "" && org_data.admin_email !== "") {
         // If there is data set link to the correct link
         setErrors({});
-        const link = generateOrganization(org_data);
+        const link = await generateOrganization(org_data);
         setInviteLink(link);
       } else {
         setErrors({ org: "Fill out all fields" });

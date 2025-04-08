@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import login
+from user_auth.auth_backend import IsAdmin, IsStudentTeacher, IsSupervisor, IsSuperuser, IsSupervisorOrAdminOrSuperuser
+from rest_framework.permissions import AllowAny
 from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
 import jwt
 from rest_framework.response import Response
@@ -31,6 +33,7 @@ def check_token(token):
         return None
     
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_grade_levels(request):
     """Gets grade levels for the whole database
         Currently grade levels are the same throughout the whole application
@@ -40,6 +43,7 @@ def get_grade_levels(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsSupervisorOrAdminOrSuperuser])
 def get_class_names(request):
     """Get Classes that are under the request's user"""
     user = request.user
@@ -48,6 +52,7 @@ def get_class_names(request):
     return Response(serializer.data)
     
 @api_view(['POST'])
+@permission_classes([IsSuperuser])
 def update_grades(request):
     """Update the grades list, this should only be accessed by a superuser"""
     grades = request.data['grades']
@@ -59,6 +64,7 @@ def update_grades(request):
     return Response('Grades Updated Successfully')
     
 @api_view(['POST'])
+@permission_classes([IsSupervisor])
 def generate_class(request):
     """Generate a class for a supervisor
 
@@ -80,6 +86,7 @@ def generate_class(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsSuperuser])
 def generate_org(request):
     """Generates organization for a superuser.
     
@@ -98,6 +105,7 @@ def generate_org(request):
     return Response(status=status.HTTP_200_OK)
     
 @api_view(['GET'])
+@permission_classes([IsSuperuser])
 def get_org_details(request):
     """Get details of the organization
 
@@ -120,6 +128,7 @@ def get_org_details(request):
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
+@permission_classes([IsAdmin])
 def edit_org(request):
     """Edit an organization"""
     # Get User
@@ -148,6 +157,7 @@ def edit_org(request):
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
    
 @api_view(['POST'])
+@permission_classes([IsSupervisorOrAdminOrSuperuser])
 def generate_invitation(request, max=50):
     """Main invitation code generation"""
     # Just set to 50 right now, might want to change this in the future
@@ -202,6 +212,7 @@ def generate_invitation(request, max=50):
 
 
 class SignupView(APIView):
+    permission_classes = [AllowAny]
     # Class based view, might want to shift
     def post(self, request):
         # Signup logic is handled in the serializer
@@ -212,6 +223,7 @@ class SignupView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
     """Login function is class based, just validates through a post request and returns a jwt if valid"""
     # Class based view, might want to shift
     def post(self, request):
@@ -255,12 +267,6 @@ def get_student_teachers(request):
 def get_supervisors(request):
     supervisors = Supervisor.objects.all()
     serializer = SupervisorSerializer(supervisors, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def get_grade_levels(request):
-    grade_levels = GradeLevel.objects.all()
-    serializer = GradeLevelSerializer(grade_levels, many=True)
     return Response(serializer.data)
 
 @api_view(["POST"])

@@ -6,10 +6,8 @@ import API from './axios';
  * @returns {Response}
  */
 export const generateOrganization = async (org_data) => {
-    const token = localStorage.getItem('jwtToken'); 
     console.log(org_data)
     const response = await API.post('/user_auth/generate-org/', {
-        token: token,
         org_data: org_data
     });
     return(generateInvite(''))
