@@ -80,7 +80,8 @@ function GradeEdit({onClose}) {
             addComponent(gradeText);
             console.log(gradelevels)
             setGradeText('')
-          }}>Add Prompt</button>
+          }}>Add Grade
+          </button>
         
           {gradelevels.map((grade, index) => (
             <div key={index} className="flex items-center justify-between bg-gray-200 p-2 rounded-lg mt-2">

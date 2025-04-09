@@ -13,7 +13,6 @@ class CustomJWTAuthentication(BaseAuthentication):
         # Allow unauthenticated access to login and signup
         if path.endswith('/login/') or path.endswith('/signup/') or path.endswith('/getgrades/'):
             return None
-
         # Get the token from auth_header
         prefix, token = auth_header.split(' ')
 
@@ -23,7 +22,9 @@ class CustomJWTAuthentication(BaseAuthentication):
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
             user = User.objects.get(username=payload['id'])
             user.role = payload.get('role')
-        except (jwt.DecodeError, jwt.ExpiredSignatureError, User.DoesNotExist):
+        except (jwt.ExpiredSignatureError):
+            raise exceptions.AuthenticationFailed('Token Expired')
+        except (jwt.DecodeError, User.DoesNotExist):
             raise exceptions.AuthenticationFailed('Invalid token')
         # DRF expects a tuple or user and any other auth info
         return (user, None)

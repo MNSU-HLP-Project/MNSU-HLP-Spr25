@@ -152,6 +152,7 @@ def edit_org(request):
             if not prompt_data:
                prompt_data = Prompt.objects.create(prompt=prompt) 
             prompt_list.add(prompt_data)
+        org.save()
         return Response('Organization Updated Succesfully')      
     # If no org exists that means that the user is not associated to an org
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
@@ -244,6 +245,9 @@ class LoginView(APIView):
             return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
         # Return error
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+## I dont think anything under here is getting used right now, we will need to confirm
 
 @api_view(['GET'])
 def get_extend_users(request):
