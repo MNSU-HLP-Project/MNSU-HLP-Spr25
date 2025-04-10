@@ -1,12 +1,18 @@
-venv/
-.env
-db.sqlite3
-*.sqlite3
-/media/
-staticfiles/
-*.log
-*.pot
+# Python
 *.pyc
 __pycache__/
-*.py[cod]
-*$py.class
+env/
+backend/env/
+
+# Node
+node_modules/
+frontend/node_modules/
+dist/
+.cache/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
