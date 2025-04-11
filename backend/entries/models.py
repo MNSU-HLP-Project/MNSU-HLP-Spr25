@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.utils import timezone
 
 class Prompt(models.Model):
     prompt = models.CharField(max_length=200)
@@ -28,9 +29,51 @@ class Entry(models.Model):
     comments = models.TextField(default="")
     teacher_reply = models.BooleanField(default=False)
 
+    # New fields for HLP submission workflow
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('approved', 'Approved'),
+        ('revision', 'Needs Revision'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    week_number = models.PositiveIntegerField(default=1)
+    weekly_goal = models.TextField(blank=True, null=True)
+    criteria_for_mastery = models.TextField(blank=True, null=True)
+    goal_reflection = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         verbose_name = "Entry"
         verbose_name_plural = "Entries"
+
+class PromptResponse(models.Model):
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='prompt_responses')
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+    INDICATOR_CHOICES = [
+        ('always', 'Always'),
+        ('sometimes', 'Sometimes'),
+        ('never', 'Never'),
+        ('na', 'N/A'),
+    ]
+    indicator = models.CharField(max_length=10, choices=INDICATOR_CHOICES, default='na')
+    reflection = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Response to {self.prompt} for Entry {self.entry.id}"
+
+class EvidenceForMastery(models.Model):
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='evidences')
+    text = models.TextField()
+    order = models.PositiveSmallIntegerField(default=1)  # To track which evidence (1, 2, or 3)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Evidence for Mastery"
+        verbose_name_plural = "Evidences for Mastery"
+
+    def __str__(self):
+        return f"Evidence #{self.order} for Entry {self.entry.id}"
 
 class Answer(models.Model):
     entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
@@ -52,6 +95,9 @@ class TeacherComment(models.Model):
     score = models.IntegerField()
     date = models.DateField(default=date.today)
     seen = models.BooleanField(default=False)
+
+    # New field to allow comments on specific prompts
+    prompt_response = models.ForeignKey(PromptResponse, on_delete=models.CASCADE, null=True, blank=True, related_name='teacher_comments')
 
     def __str__(self):
         return f"Comment by {self.supervisor.user.username} on Entry {self.entry.id} - Score: {self.score}"

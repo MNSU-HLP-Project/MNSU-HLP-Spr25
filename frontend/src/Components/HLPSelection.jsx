@@ -42,9 +42,8 @@ const HLPSelection = () => {
   }, [groupTitle]);
 
   const handleClick = (hlp) => {
-    //navigate("/hlpselection/", {state: {hlp}})
-    // use     setHLP(location.state.hlp) in next component
-    alert(`Clicked on ${hlp}`);
+    // Navigate to the reflection form with the selected HLP
+    navigate("/submit-reflection/", {state: {hlp}})
   };
 
   return (
@@ -107,6 +106,6 @@ const HLPSelection = () => {
       </div>
     </div>
   );
-};    
+};
 
 export default HLPSelection;
