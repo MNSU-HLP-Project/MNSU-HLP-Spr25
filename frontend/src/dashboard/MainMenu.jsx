@@ -30,9 +30,14 @@ const MainMenu = () => {
 
       {/* Logout Button */}
       <div className="mt-8">
-        <button 
+        <button
           className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl z-50"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            // Clear localStorage before logging out
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('role');
+            navigate("/");
+          }}
         >
           Log Out
         </button>
