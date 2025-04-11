@@ -1,9 +1,8 @@
 from django.urls import path
 from .views import (
-    SignupView, LoginView, generate_invitation, get_grade_levels, generate_class, get_class_names,
-    get_extend_users, update_grades, get_students_in_class, edit_org, get_org_details,
-    get_organizations, generate_org, get_student_teachers, get_supervisors, get_users_by_role,
-    create_student_teacher, create_grade_levels, create_supervisor,
+    SignupView, LoginView, generate_invitation, generate_class, get_class_names,
+    get_extend_users, get_students_in_class, edit_org, get_org_details,
+    get_organizations, generate_org, get_student_teachers, get_supervisors,
     get_classes_by_loggedin_supervisor, get_students_under_supervisor
 )
 
@@ -18,10 +17,6 @@ urlpatterns = [
     path('organizations/', get_organizations, name='organizations'),
     path('student-teachers/', get_student_teachers, name='student-teachers'),
     path('supervisors/', get_supervisors, name='supervisors'),
-    
-    # Grade Levels
-    path('getgrades/', get_grade_levels, name='get_grades'),
-    path('update_grades/', update_grades, name='update-grades'),
     
     # Class APIs
     path('generate-class/', generate_class, name='generate-class'),

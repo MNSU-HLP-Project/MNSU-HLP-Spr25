@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
-from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass
+from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
@@ -31,16 +31,6 @@ def check_token(token):
         return decoded
     else:
         return None
-    
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_grade_levels(request):
-    """Gets grade levels for the whole database
-        Currently grade levels are the same throughout the whole application
-    """
-    grade_levels = GradeLevel.objects.all()
-    serializer = GradeLevelSerializer(grade_levels, many=True)
-    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsSupervisorOrAdminOrSuperuser])
@@ -50,18 +40,6 @@ def get_class_names(request):
     classes = SupervisorClass.objects.filter(user=user)
     serializer = SupervisorClassSerializer(classes, many=True)
     return Response(serializer.data)
-    
-@api_view(['POST'])
-@permission_classes([IsSuperuser])
-def update_grades(request):
-    """Update the grades list, this should only be accessed by a superuser"""
-    grades = request.data['grades']
-    # Currently deletes all of the grade levels but could be fixed to check
-    # I don't think this matters much as it is only going to be accessed by the superusers and very rarely
-    GradeLevel.objects.all().delete()
-    for grade in grades:
-        GradeLevel.objects.create(gradelevel = grade)
-    return Response('Grades Updated Successfully')
     
 @api_view(['POST'])
 @permission_classes([IsSupervisor])
@@ -105,7 +83,7 @@ def generate_org(request):
     return Response(status=status.HTTP_200_OK)
     
 @api_view(['GET'])
-@permission_classes([IsSuperuser])
+@permission_classes([IsAdmin])
 def get_org_details(request):
     """Get details of the organization
 
@@ -285,15 +263,6 @@ def create_student_teacher(request):
 @api_view(["POST"])
 def create_supervisor(request):
     serializer = SupervisorSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-
-@api_view(["POST"])
-def create_grade_levels(request):
-    serializer = GradeLevelSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)

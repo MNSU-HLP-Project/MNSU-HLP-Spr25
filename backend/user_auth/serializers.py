@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,8 +78,7 @@ class SignupSerializer(serializers.ModelSerializer):
         
         # if student teacher we need to register them with a class
         if role == 'Student Teacher':
-            stuteach = StudentTeacher.objects.create(user=user, type_of_teacher=validated_data['type_of_teacher'])
-            stuteach.grade_levels.add(GradeLevel.objects.get(gradelevel=validated_data['grade_level']))
+            stuteach = StudentTeacher.objects.create(user=user, type_of_teacher=validated_data['type_of_teacher'], grade_level=validated_data['grade_level'])
             # Get info and look for a class
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             class_name = invitation.class_name
@@ -94,10 +93,6 @@ class SignupSerializer(serializers.ModelSerializer):
       
         return user
 
-class GradeLevelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GradeLevel
-        fields = '__all__' 
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
