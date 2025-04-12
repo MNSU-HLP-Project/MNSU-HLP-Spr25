@@ -1,5 +1,6 @@
 
 import API from './axios';
+
 /**
  * Generates an Organization and returns back invitation link for supervisors
  * @param {{org_name: string, admin_email: string}} org_data
@@ -54,8 +55,9 @@ export const getClasses = async () => {
 }
 
 export const getStudentsForClass = async (class_obj) => {
-  const response = await axios.post('http://localhost:8000/user_auth/students-in-class/', {
-    class_obj: class_obj,
-  });
-  return response.data;
-};
+    const response = await API.post('/user_auth/students-in-class/', {
+      class_obj: class_obj,
+    });
+    return response.data;
+  };
+  

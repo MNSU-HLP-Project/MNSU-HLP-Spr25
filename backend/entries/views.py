@@ -12,6 +12,8 @@ from rest_framework.renderers import JSONRenderer
 from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import date
+from user_auth.models import SupervisorClass
+
 
 @api_view(["GET"])
 def get_entries(request):
@@ -377,3 +379,38 @@ def get_prompts(request):
         print(f"Error in get_prompts: {str(e)}")
         # Return empty list instead of error
         return Response([], status=status.HTTP_200_OK)
+    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_entries_by_class(request, class_id, student_id):
+    try:
+        sup_class = SupervisorClass.objects.get(id=class_id)
+        student = User.objects.get(id=student_id)
+        
+        # Check if student belongs to this class
+        if student not in sup_class.students.all():
+            return Response({"error": "Student not in this class"}, status=400)
+            
+        entries = Entry.objects.filter(user=student).order_by('-created_at')
+        serializer = EntrySerializer(entries, many=True)
+        return Response(serializer.data, status=200)
+    except SupervisorClass.DoesNotExist:
+        return Response({"error": "Class not found"}, status=404)
+    except User.DoesNotExist:
+        return Response({"error": "Student not found"}, status=404)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_entries_by_student(request, student_id):
+    from django.contrib.auth.models import User
+    from entries.models import Entry
+    from entries.serializers import EntrySerializer
+
+    try:
+        student = User.objects.get(id=student_id)
+        entries = Entry.objects.filter(user=student).order_by('-created_at')
+        serializer = EntrySerializer(entries, many=True)
+        return Response(serializer.data, status=200)
+    except User.DoesNotExist:
+        return Response({"error": "Student not found"}, status=404)
+
