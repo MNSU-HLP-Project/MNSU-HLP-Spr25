@@ -161,3 +161,7 @@ class SupervisorSerializer(serializers.ModelSerializer):
         model = Supervisor
         fields = '__all__'
 
+class CurrentUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name", "username"]

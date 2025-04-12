@@ -19,6 +19,7 @@ import SupervisorFeedback from "./Components/SupervisorFeedback";
 
 // Protected Route Component
 import ProtectedRoute from "./utils/ProtectedRoute";
+import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -49,6 +50,7 @@ function App() {
       {loading ? <PreLoader isVisible={!fadeOut} /> : null}
       <div className={`app-container ${loading ? "hidden" : "visible"}`}>
         <Routes>
+        <Route path="/classes/" element={<SupervisorClassView />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/mainmenu/" element={
             <ProtectedRoute allowedRoles={["Student Teacher", "Supervisor", "Admin", "Superuser"]}>
@@ -66,7 +68,7 @@ function App() {
               <HLPSelection />
             </ProtectedRoute>
           } />
-          {/* Removed class view route */}
+          
           <Route path="/students/" element={
             <ProtectedRoute allowedRoles={["Supervisor", "Admin", "Superuser"]}>
               <StudentDetailsPage />
@@ -97,11 +99,12 @@ function App() {
           } />
 
           {/* Supervisor Routes */}
-          <Route path="/supervisor/review/" element={
+          <Route path="/supervisor/review/:classId?" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>
               <SupervisorReview />
             </ProtectedRoute>
           } />
+
           <Route path="/supervisor/feedback/:entryId" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>
               <SupervisorFeedback />

@@ -322,16 +322,18 @@ def get_students_under_supervisor(request):
 """Added this to get students from specific class"""  
 @api_view(["POST"])
 def get_students_in_class(request):
-    class_obj = request.data.get("class_obj")  # Or class_name if you prefer
+    class_obj = request.data.get("class_obj")
 
-    if not class_obj:
-        return Response({"error": "Class ID is required"}, status=400)
-    user = User.objects.get(id=class_obj['user'])
-    class_name = class_obj['name']
+    if not class_obj or not class_obj.get("name") or not class_obj.get("user"):
+        return Response({"error": "Class name and user ID are required"}, status=400)
+
     try:
+        user = User.objects.get(id=class_obj['user'])
+        class_name = class_obj['name']
         sup_class = SupervisorClass.objects.get(name=class_name, user=user)
-        students = sup_class.students
+        students = sup_class.students.all()  # ✅ must include .all()
         serializer = CurrentUserSerializer(students, many=True)
         return Response(serializer.data, status=200)
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)
+

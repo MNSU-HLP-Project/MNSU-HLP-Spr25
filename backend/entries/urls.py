@@ -3,8 +3,10 @@ from .views import (
     get_entries, create_entry, delete_entry,
     get_entries_by_lookfor_number, get_entries_by_date, get_entries_by_hlp,
     get_entries_by_supervisor_students, get_student_entries, get_entry_detail,
+    get_entries_by_class, get_entries_by_student,
     add_teacher_comment, update_entry_status, get_prompts
 )
+
 
 urlpatterns = [
     # Basic entry endpoints
@@ -16,6 +18,8 @@ urlpatterns = [
     path("entries/by-date/", get_entries_by_date, name="get_entries_by_date"),
     path("entries/by-hlp/", get_entries_by_hlp, name="get_entries_by_hlp"),
     path("entries/by-lookfor_number/", get_entries_by_lookfor_number, name="get_entries_by_lookfor_number"),
+    path("entries/by-class/", get_entries_by_class),
+    path("by-student/<int:student_id>/", get_entries_by_student),
 
     # HLP submission workflow endpoints
     path("supervisor/student-entries/", get_entries_by_supervisor_students, name="get_entries_by_supervisor_students"),
