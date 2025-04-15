@@ -20,7 +20,8 @@ import SupervisorFeedback from "./Components/SupervisorFeedback";
 
 // Protected Route Component
 import ProtectedRoute from "./utils/ProtectedRoute";
-import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
+import ClassGenerator from "./dashboard/components/shared/ClassGenerator.jsx";
+import ClassEditor from "./dashboard/components/shared/ClassEditor.jsx";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -51,18 +52,19 @@ function App() {
       {loading ? <PreLoader isVisible={!fadeOut} /> : null}
       <div className={`app-container ${loading ? "hidden" : "visible"}`}>
         <Routes>
-        <Route path="/classes/" element={<SupervisorClassView />} />
+        <Route path='/edit-class/' element={<ClassEditor />} />
+        <Route path="/classes/" element={<ClassGenerator />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/mainmenu/" element={
             <ProtectedRoute allowedRoles={["Student Teacher", "Supervisor", "Admin", "Superuser"]}>
               <MainMenu />
             </ProtectedRoute>
           } />
-          <Route path="/classes/" element={
+          {/* <Route path="/classes/" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>
               <SupervisorClassView />
             </ProtectedRoute>
-          } />
+          } /> */}
           <Route path="/hlpcategories/" element={
             <ProtectedRoute allowedRoles={["Student Teacher"]}>
               <HLPCategories />
