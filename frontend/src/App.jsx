@@ -53,18 +53,18 @@ function App() {
       <div className={`app-container ${loading ? "hidden" : "visible"}`}>
         <Routes>
         <Route path='/edit-class/' element={<ClassEditor />} />
-        <Route path="/classes/" element={<ClassGenerator />} />
+        <Route path="/edit-classes/" element={<ClassGenerator />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/mainmenu/" element={
             <ProtectedRoute allowedRoles={["Student Teacher", "Supervisor", "Admin", "Superuser"]}>
               <MainMenu />
             </ProtectedRoute>
           } />
-          {/* <Route path="/classes/" element={
+          <Route path="/classes/" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>
               <SupervisorClassView />
             </ProtectedRoute>
-          } /> */}
+          } />
           <Route path="/hlpcategories/" element={
             <ProtectedRoute allowedRoles={["Student Teacher"]}>
               <HLPCategories />
