@@ -29,6 +29,8 @@ class SupervisorClass(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     students = models.ManyToManyField(User, related_name='students')
+    prompt_override = models.BooleanField(default=False)
+    prompt_list = models.ManyToManyField('entries.Prompt', related_name='class_prompt_lists')
 
     class Meta:
         verbose_name = "Supervisor Class"
