@@ -16,3 +16,5 @@ dist/
 # macOS
 .DS_Store
 
+*.sqlite3
+/venv/
