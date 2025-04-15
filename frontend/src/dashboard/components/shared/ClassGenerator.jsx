@@ -1,6 +1,7 @@
 // components/shared/ClassGenerator.jsx
 import React, { useEffect, useState } from "react";
-import { generateClass, getClasses } from "../../../utils/api";
+import { generateClass, getClasses, removeClass } from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const ClassGenerator = ({ onClassCreated }) => {
   const [class_data, setClassData] = useState({});
@@ -8,15 +9,15 @@ const ClassGenerator = ({ onClassCreated }) => {
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [currentClasses, setCurrentClasses] = useState([])
+  const navigate = useNavigate()
 
   const getCurrClasses = async () => {
     const classes = await getClasses()
     const class_list = []
-    for (class in classes) {
-      
+    for (const c_class of classes) {
+      class_list.push(c_class.name)
     }
-    console.log(classes)
-    setCurrentClasses(classes)
+    setCurrentClasses(class_list)
   }
 
   useEffect(() => {getCurrClasses()},[])
@@ -40,7 +41,7 @@ const ClassGenerator = ({ onClassCreated }) => {
         setSuccessMessage(
           "Class created. You can now invite students to that class."
         );
-        setCurrentClasses([...currentClasses, class_data["class_name"].name])
+        setCurrentClasses([...currentClasses, class_data["class_name"]])
         setClassData({}); // Clear form after successful submission
       } else {
         setErrors({ class_name: "Need a class name" });
@@ -61,11 +62,12 @@ const ClassGenerator = ({ onClassCreated }) => {
     </div>
   );
 
-  const removeClass = (index) => {
+  const removeClassFromList = (index) => {
     // Remove components when pressing button
     const updatedComponents = [...currentClasses];
     const deleted = updatedComponents.splice(index, 1);
-    console.log(deleted)
+    const response = removeClass(deleted[0])
+    console.log(response)
     setCurrentClasses(updatedComponents);
   };
 
@@ -75,10 +77,16 @@ const ClassGenerator = ({ onClassCreated }) => {
         <div key={index} className="flex items-center justify-between bg-gray-200 p-2 rounded-lg mt-2">
           <NewClass text={c_class} />
           <button 
-            onClick={() => removeClass(index)}
+            onClick={() => navigate(`/edit-class?class=${c_class}`)}
+            className="ml-4 px-3 py-1 bg-green-500 text-white rounded hover:bg-red-600"
+          >
+            Edit
+          </button>
+          <button 
+            onClick={() => removeClassFromList(index)}
             className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
-            Remove
+            X
           </button>
         </div>
       )

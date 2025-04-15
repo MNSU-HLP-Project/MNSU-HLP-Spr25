@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from entries.serializers import PromptSerializer
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
 
 class InvitationSerializer(serializers.ModelSerializer):
@@ -9,9 +10,11 @@ class InvitationSerializer(serializers.ModelSerializer):
         fields = ['id', 'teacher', 'role', 'code', 'created_at', 'max_uses', 'use_count','class_name']
 
 class SupervisorClassSerializer(serializers.ModelSerializer):
+    prompt_list = PromptSerializer(many=True)
+    
     class Meta:
         model = SupervisorClass
-        fields = ['user', 'name']
+        fields = ['user', 'name','prompt_override','prompt_list']
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -84,7 +87,9 @@ class SignupSerializer(serializers.ModelSerializer):
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             class_name = invitation.class_name
             sup_class = SupervisorClass.objects.get(name=class_name, user=invitation.teacher)
+            stuteach.class_name = sup_class
             sup_class.students.add(user)
+            stuteach.save()
             # Add student teacher to the supervisor
             if sup:
                 sup.student_teachers.add(StudentTeacher.objects.get(user=user))

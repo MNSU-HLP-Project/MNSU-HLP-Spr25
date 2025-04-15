@@ -34,6 +34,21 @@ export const generateInvite = async (class_name='') => {
     }
 };
 
+export const removeClass = async (class_name) => {
+    const response = await API.post('/user_auth/remove-class/',
+        {
+            class_name: class_name
+        }
+    )
+    return response
+
+}
+
+export const getPrompts = async () => {
+    const response = await API.get('/user_auth/get-prompts-student/')
+    return response
+}
+
 /**
  * Generates class for a supervisor
  * @param {any} form_data
