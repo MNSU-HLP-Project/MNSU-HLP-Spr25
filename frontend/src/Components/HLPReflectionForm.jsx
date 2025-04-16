@@ -43,11 +43,7 @@ const HLPReflectionForm = () => {
     goal_reflection: "",
     week_number: 1,
     prompt_responses: [],
-    evidences: [
-      { text: "", order: 1 },
-      { text: "", order: 2 },
-      { text: "", order: 3 },
-    ],
+    evidences: [],
   });
 
   // Create default prompts
@@ -131,16 +127,7 @@ const HLPReflectionForm = () => {
     }));
   };
 
-  // Handle evidence input changes
-  const handleEvidenceChange = (index, value) => {
-    const updatedEvidences = [...formData.evidences];
-    updatedEvidences[index] = { ...updatedEvidences[index], text: value };
-
-    setFormData((prev) => ({
-      ...prev,
-      evidences: updatedEvidences,
-    }));
-  };
+  // Evidence for Mastery section removed
 
   // Handle prompt response changes
   const handlePromptResponseChange = (promptIndex, field, value) => {
@@ -163,17 +150,7 @@ const HLPReflectionForm = () => {
     setError("");
 
     try {
-      // Filter out empty evidences
-      const validEvidences = formData.evidences.filter(
-        (ev) => ev.text.trim() !== ""
-      );
-
-      // Validate required fields
-      if (validEvidences.length < 3) {
-        setError("Please provide all three evidences for mastery.");
-        setLoading(false);
-        return;
-      }
+      // Evidence for Mastery section removed
 
       if (!formData.weekly_goal.trim()) {
         setError("Weekly goal is required.");
@@ -197,11 +174,8 @@ const HLPReflectionForm = () => {
           indicator: pr.indicator || "na",
           reflection: pr.reflection || "",
         })),
-        // Make sure evidences have all required fields
-        evidences: validEvidences.map((ev, index) => ({
-          text: ev.text,
-          order: index + 1,
-        })),
+        // Evidence for Mastery section removed
+        evidences: [],
         // Add date if not present
         date: formData.date || new Date().toISOString().split("T")[0],
       };
@@ -662,58 +636,7 @@ const HLPReflectionForm = () => {
           </div>
         </div>
 
-        {/* Evidence for Mastery Section */}
-        <div className="mb-6 bg-gradient-to-r from-green-50 to-teal-50 p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-teal-800 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Evidence for Mastery
-          </h2>
-          <p className="text-sm text-teal-700 mb-4 italic">
-            Provide three specific examples that demonstrate your mastery of
-            this HLP.
-          </p>
-
-          <div className="space-y-4">
-            {[0, 1, 2].map((index) => (
-              <div
-                key={index}
-                className="bg-white p-5 rounded-lg border border-teal-200 shadow-sm transition-all duration-300 hover:shadow-md"
-              >
-                <div className="flex items-center mb-3">
-                  <div className="bg-teal-100 text-teal-800 rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
-                    {index + 1}
-                  </div>
-                  <label className="block text-gray-700 font-medium">
-                    Evidence #{index + 1}:
-                  </label>
-                </div>
-                <textarea
-                  className="w-full p-3 border border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                  rows="4"
-                  value={formData.evidences[index]?.text || ""}
-                  onChange={(e) => handleEvidenceChange(index, e.target.value)}
-                  placeholder={`Provide specific evidence #${
-                    index + 1
-                  } for mastery...`}
-                  required
-                ></textarea>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Evidence for Mastery Section removed */}
 
         {/* Weekly Goals Section */}
         <div className="mb-6 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 rounded-xl shadow-md">

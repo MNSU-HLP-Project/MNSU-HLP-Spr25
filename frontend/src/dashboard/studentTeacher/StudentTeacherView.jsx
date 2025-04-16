@@ -1,6 +1,7 @@
 // dashboard/StudentTeacherView.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getPrompts } from "../../utils/api";
 
 const StudentTeacherView = () => {
   const navigate = useNavigate();

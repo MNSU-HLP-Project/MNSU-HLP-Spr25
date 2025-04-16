@@ -1,12 +1,26 @@
 // components/shared/ClassGenerator.jsx
-import React, { useState } from "react";
-import { generateClass } from "../../../utils/api";
+import React, { useEffect, useState } from "react";
+import { generateClass, getClasses, removeClass } from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const ClassGenerator = ({ onClassCreated }) => {
   const [class_data, setClassData] = useState({});
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [currentClasses, setCurrentClasses] = useState([])
+  const navigate = useNavigate()
+
+  const getCurrClasses = async () => {
+    const classes = await getClasses()
+    const class_list = []
+    for (const c_class of classes) {
+      class_list.push(c_class.name)
+    }
+    setCurrentClasses(class_list)
+  }
+
+  useEffect(() => {getCurrClasses()},[])
 
   const handleChange = (form) => {
     const { name, value } = form.target;
@@ -27,6 +41,7 @@ const ClassGenerator = ({ onClassCreated }) => {
         setSuccessMessage(
           "Class created. You can now invite students to that class."
         );
+        setCurrentClasses([...currentClasses, class_data["class_name"]])
         setClassData({}); // Clear form after successful submission
       } else {
         setErrors({ class_name: "Need a class name" });
@@ -40,8 +55,42 @@ const ClassGenerator = ({ onClassCreated }) => {
     }
   };
 
+  const NewClass = ({ text }) => (
+    // Set up class
+    <div>
+      <p className="text-2xl font-bold text-gray-800">{text}</p>
+    </div>
+  );
+
+  const removeClassFromList = (index) => {
+    // Remove components when pressing button
+    const updatedComponents = [...currentClasses];
+    const deleted = updatedComponents.splice(index, 1);
+    const response = removeClass(deleted[0])
+    console.log(response)
+    setCurrentClasses(updatedComponents);
+  };
+
   return (
     <div className="mt-1 w-full p-4 bg-gray-100 rounded-lg shadow-lg">
+      {currentClasses && currentClasses.map((c_class, index) => (
+        <div key={index} className="flex items-center justify-between bg-gray-200 p-2 rounded-lg mt-2">
+          <NewClass text={c_class} />
+          <button 
+            onClick={() => navigate(`/edit-class?class=${c_class}`)}
+            className="ml-4 px-3 py-1 bg-green-500 text-white rounded hover:bg-red-600"
+          >
+            Edit
+          </button>
+          <button 
+            onClick={() => removeClassFromList(index)}
+            className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            X
+          </button>
+        </div>
+      )
+      )}
       <input
         name="class_name"
         type="text"

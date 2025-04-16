@@ -65,7 +65,7 @@ class EntrySerializer(serializers.ModelSerializer):
 # Create Entry with nested objects
 class EntryCreateSerializer(serializers.ModelSerializer):
     prompt_responses = serializers.ListField(child=serializers.JSONField(), required=True)
-    evidences = serializers.ListField(child=serializers.JSONField(), required=True)
+    evidences = serializers.ListField(child=serializers.JSONField(), required=False, default=[])
 
     class Meta:
         model = Entry
