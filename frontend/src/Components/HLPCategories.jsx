@@ -11,7 +11,7 @@ export default function HLPCategories() {
   ];
   // Setting up default values
   const navigate = useNavigate();
-  const handleBackClick = () => navigate("/mainmenu/");
+  const handleBackClick = () => navigate(-1);
   const handleMenuClick = () => alert("Menu button clicked");
 
   // Navigate and change state to correct category

@@ -13,7 +13,7 @@ const HLPSelection = () => {
   const [color, setColor] = useState();
   const navigate = useNavigate();
   const location = useLocation();
-  const handleBackClick = () => navigate("/hlpcategories/");
+  const handleBackClick = () => navigate(-1);
   const handleMenuClick = () => alert("Menu button clicked");
   const handleLogout = () => navigate("/");
 

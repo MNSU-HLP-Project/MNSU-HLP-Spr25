@@ -290,7 +290,7 @@ const HLPReflectionForm = () => {
 
   // Handle back button click
   const handleBackClick = () => {
-    navigate("/hlpselection/", {
+    navigate(-1, {
       state: { name: hlpData?.group || "" },
     });
   };

@@ -99,7 +99,7 @@ const SupervisorFeedback = () => {
       localStorage.setItem('role', 'Supervisor');
     }
 
-    navigate("/supervisor/review/");
+    navigate(-1);
   };
 
   // Handle overall comment change
