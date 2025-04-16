@@ -46,7 +46,7 @@ def create_entry(request):
         print(f"Received data for create_entry: {data}")
 
         # Ensure required fields are present
-        required_fields = ['hlp', 'weekly_goal', 'criteria_for_mastery', 'prompt_responses', 'evidences']
+        required_fields = ['hlp', 'weekly_goal', 'criteria_for_mastery', 'prompt_responses']
         missing_fields = [field for field in required_fields if field not in data or not data[field]]
 
         if missing_fields:
@@ -379,18 +379,18 @@ def get_prompts(request):
         print(f"Error in get_prompts: {str(e)}")
         # Return empty list instead of error
         return Response([], status=status.HTTP_200_OK)
-    
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_entries_by_class(request, class_id, student_id):
     try:
         sup_class = SupervisorClass.objects.get(id=class_id)
         student = User.objects.get(id=student_id)
-        
+
         # Check if student belongs to this class
         if student not in sup_class.students.all():
             return Response({"error": "Student not in this class"}, status=400)
-            
+
         entries = Entry.objects.filter(user=student).order_by('-created_at')
         serializer = EntrySerializer(entries, many=True)
         return Response(serializer.data, status=200)

@@ -530,32 +530,7 @@ const SupervisorFeedback = () => {
         </div>
       )}
 
-      {/* Evidence for Mastery */}
-      {entry.evidences && entry.evidences.length > 0 && (
-        <div className="bg-white p-6 rounded-xl shadow-lg mb-6 border border-teal-100">
-          <h2 className="text-xl font-semibold mb-5 text-teal-800 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Evidence for Mastery
-          </h2>
-          <div className="space-y-4">
-            {entry.evidences.sort((a, b) => a.order - b.order).map((evidence) => (
-              <div key={evidence.id} className="bg-teal-50 p-5 rounded-lg border border-teal-100">
-                <h3 className="font-medium mb-3 text-teal-800 flex items-center">
-                  <div className="bg-teal-100 text-teal-800 rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
-                    {evidence.order}
-                  </div>
-                  Evidence #{evidence.order}:
-                </h3>
-                <div className="bg-white p-4 rounded-lg border border-teal-100">
-                  <p className="text-gray-700">{evidence.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Evidence for Mastery section removed */}
 
       {/* Weekly Goals */}
       <div className="bg-white p-6 rounded-xl shadow-lg mb-6 border border-amber-100">

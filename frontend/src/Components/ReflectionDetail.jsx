@@ -293,20 +293,7 @@ const ReflectionDetail = () => {
         </div>
       )}
 
-      {/* Evidence for Mastery */}
-      {entry.evidences && entry.evidences.length > 0 && (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-4">
-          <h2 className="text-xl font-semibold mb-4">Evidence for Mastery</h2>
-          <div className="space-y-4">
-            {entry.evidences.sort((a, b) => a.order - b.order).map((evidence) => (
-              <div key={evidence.id} className="border-b pb-4 last:border-b-0 last:pb-0">
-                <h3 className="font-medium mb-2">Evidence #{evidence.order}:</h3>
-                <p className="text-gray-700">{evidence.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Evidence for Mastery section removed */}
 
       {/* Weekly Goals */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-4">
