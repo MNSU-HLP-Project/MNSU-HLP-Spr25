@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.response import Response
-from .models import Entry, Prompt, PromptResponse, EvidenceForMastery, TeacherComment
+from .models import Entry, Prompt, PromptResponse, TeacherComment
 from .serializers import (EntrySerializer, EntryCreateSerializer, PromptSerializer,
-                          PromptResponseSerializer, EvidenceForMasterySerializer,
+                          PromptResponseSerializer,
                           TeacherCommentSerializer)
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -46,7 +46,7 @@ def create_entry(request):
         print(f"Received data for create_entry: {data}")
 
         # Ensure required fields are present
-        required_fields = ['hlp', 'weekly_goal', 'criteria_for_mastery', 'prompt_responses']
+        required_fields = ['hlp', 'date', 'prompt_responses']
         missing_fields = [field for field in required_fields if field not in data or not data[field]]
 
         if missing_fields:
