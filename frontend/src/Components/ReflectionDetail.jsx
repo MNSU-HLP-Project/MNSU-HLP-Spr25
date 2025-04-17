@@ -115,7 +115,7 @@ const ReflectionDetail = () => {
       console.error(`Unexpected role: ${role}, expected Student Teacher. Fixing...`);
       localStorage.setItem('role', 'Student Teacher');
     }
-    navigate(-1);
+    navigate("/reflections/");
   };
 
 
@@ -285,6 +285,9 @@ const ReflectionDetail = () => {
           </div>
         </div>
       )}
+      <button onClick={() => navigate("/submit-reflection/", {state: {hlp:entry.hlp,edit:true,detail:entry}})}>
+      Edit Reflection
+      </button>
     </div>
   );
 };

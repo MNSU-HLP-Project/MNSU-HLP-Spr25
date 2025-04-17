@@ -30,6 +30,8 @@ const HLPReflectionForm = () => {
 
   // Get the HLP number from location state
   const hlpNumber = location.state?.hlp?.replace("HLP ", "") || "";
+  const edit = location.state.edit
+  const submitMsg = edit ? "Edit Reflection" : "Submit Reflection"
   const hlpData = hlpNumber ? HLP_LookFors[hlpNumber] : null;
 
   //Getting color form the group
@@ -56,31 +58,17 @@ const HLPReflectionForm = () => {
 
   // Initialize with default prompts
   useEffect(() => {
-    // Set default prompts immediately to avoid "Loading prompts..." message
-    setPrompts(defaultPrompts);
-
-    // Initialize prompt responses with default prompts
-    const defaultPromptResponses = defaultPrompts.map((prompt) => ({
-      prompt: prompt.id,
-      indicator: "na",
-      reflection: "",
-    }));
-
-    setFormData((prev) => ({
-      ...prev,
-      prompt_responses: defaultPromptResponses,
-    }));
-
-    // Skip the test API call since it's failing
-    console.log(
-      "HLPReflectionForm: Skipping API test and proceeding with form initialization"
-    );
+    if (edit){
+      setPrompts(location.state.detail.prompt_responses)
+      setFormData(location.state.detail)
+      console.log(location.state.detail)
+      console.log(location.state.detail.prompt_responses)
+    }
   }, []);
 
   // Fetch prompts from API
   useEffect(() => {
     console.log("Starting to fetch prompts...");
-
     const fetchPrompts = async () => {
       try {
         const response = await getPrompts();
@@ -91,18 +79,20 @@ const HLPReflectionForm = () => {
         // Only update prompts if we got a valid response with data
         if (response.data && response.data.length > 0) {
           setPrompts(response.data);
-
+          let initialPromptResponses
           // Initialize prompt responses with API data
-          const initialPromptResponses = response.data.map((prompt) => ({
+           initialPromptResponses = response.data.map((prompt) => ({
             prompt: prompt.id,
             reflection: "",
-          }));
+          }))
 
           setFormData((prev) => ({
             ...prev,
             prompt_responses: initialPromptResponses,
           }));
-        } else {
+        }
+
+         else {
           console.log("No prompts found in API response, keeping defaults");
         }
       } catch (error) {
@@ -111,8 +101,9 @@ const HLPReflectionForm = () => {
         console.log("Using default prompts due to API error");
       }
     };
-
-    fetchPrompts();
+    if (!edit){
+      fetchPrompts();
+    }
   }, []); // Empty dependency array to run only once on mount
 
   // Handle form input changes
@@ -149,14 +140,12 @@ const HLPReflectionForm = () => {
     try {
       // Evidence for Mastery section removed
 
-      // if (!formData.weekly_goal.trim()) {
-      //   setError("Weekly goal is required.");
-      //   setLoading(false);
-      //   return;
-      // }
-
-      // if (!formData.criteria_for_mastery.trim()) {
-      //   setError("Criteria for mastery is required.");
+      // if (
+      //   formData.prompt_responses.some(
+      //     (item) => !item.reflection || !item.reflection.trim()
+      //   )
+      // ) {
+      //   setError("All reflection responses are required.");
       //   setLoading(false);
       //   return;
       // }
@@ -168,6 +157,7 @@ const HLPReflectionForm = () => {
         lookfor_number: parseInt(formData.lookfor_number, 10) || 0,
         // Make sure prompt_responses have all required fields
         prompt_responses: formData.prompt_responses.map((pr) => ({
+          id: pr.id,
           prompt: pr.prompt,
           reflection: pr.reflection || "",
         })),
@@ -182,10 +172,19 @@ const HLPReflectionForm = () => {
         // Submit the form
         console.log("Attempting to submit form data...");
         try {
-          const response = await API.post(
-            "/entries/create-entry/",
-            dataToSubmit
-          );
+          let response
+          console.log(dataToSubmit)
+          if (!edit){
+            response = await API.post(
+              "/entries/create-entry/",
+              dataToSubmit
+            );
+          } else {
+            response = await API.post(
+              "/entries/edit-entry/",
+              dataToSubmit
+            )
+          }
           console.log("Submission successful:", response.data);
           setSuccess(true);
           setSubmitted(true);
@@ -213,7 +212,7 @@ const HLPReflectionForm = () => {
               localStorage.setItem("role", "Student Teacher");
             }
             navigate("/reflections/");
-          }, 5000);
+          }, 2000);
         } catch (apiError) {
           console.error("API error in submission:", apiError);
 
@@ -659,7 +658,7 @@ const HLPReflectionForm = () => {
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Submit Reflection
+                {submitMsg}
               </>
             )}
           </button>

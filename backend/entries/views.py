@@ -34,6 +34,30 @@ def get_entries(request):
         return Response({"error": f"Error fetching entries: {str(e)}"}, status=500)
 
 @api_view(["POST"])
+def edit_entry(request):
+    user = request.user
+    data = request.data.copy()
+    
+    # Get the entry ID from the request (assuming it's sent as 'id')
+    entry_id = data.get('id')
+    if not entry_id:
+        return Response({'error': "Entry ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        entry = Entry.objects.get(id=entry_id, user=user)  # optional: ensure user owns the entry
+    except Entry.DoesNotExist:
+        return Response({'error': "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Now update it by passing instance
+    serializer = EntrySerializer(entry, data=data, partial=True)  # partial=True allows partial updates
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
     try:

@@ -43,7 +43,7 @@ const HLPSelection = () => {
 
   const handleClick = (hlp) => {
     // Navigate to the reflection form with the selected HLP
-    navigate("/submit-reflection/", {state: {hlp}})
+    navigate("/submit-reflection/", {state: {hlp:hlp,edit:false}})
   };
 
   return (

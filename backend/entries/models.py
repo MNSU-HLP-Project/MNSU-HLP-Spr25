@@ -15,6 +15,7 @@ class Prompt(models.Model):
         return f"{self.prompt} ({'Default' if self.is_default else 'Custom'})"
 
 class PromptResponse(models.Model):
+    entry_obj = models.ForeignKey('entries.Entry', on_delete=models.CASCADE)
     prompt = models.TextField(blank=True, null=True)
     reflection = models.TextField(blank=True, null=True)
 

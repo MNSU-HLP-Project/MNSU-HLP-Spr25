@@ -173,7 +173,7 @@ const MyReflections = () => {
 
   // Handle back button click
   const handleBackClick = () => {
-    navigate(-1);
+    navigate("/mainmenu/");
   };
 
   return (
