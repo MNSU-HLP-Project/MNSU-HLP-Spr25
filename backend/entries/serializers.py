@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Entry, TeacherComment, Answer, Prompt, PromptResponse, EvidenceForMastery
+from .models import Entry, TeacherComment, Prompt, PromptResponse
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,18 +12,12 @@ class PromptSerializer(serializers.ModelSerializer):
         model = Prompt
         fields = '__all__'
 
-class EvidenceForMasterySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EvidenceForMastery
-        fields = '__all__'
-
 class PromptResponseSerializer(serializers.ModelSerializer):
-    prompt_detail = PromptSerializer(source='prompt', read_only=True)
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = PromptResponse
-        fields = ['id', 'entry', 'prompt', 'prompt_detail', 'indicator', 'reflection', 'teacher_comments']
+        fields = ['id', 'prompt', 'reflection', 'teacher_comments']
 
     def get_teacher_comments(self, obj):
         comments = obj.teacher_comments.all()
@@ -41,22 +35,14 @@ class TeacherCommentSerializer(serializers.ModelSerializer):
             return f"{obj.supervisor.user.first_name} {obj.supervisor.user.last_name}"
         return ""
 
-class AnswerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answer
-        fields = '__all__'
-
 class EntrySerializer(serializers.ModelSerializer):
     user_detail = UserSerializer(source='user', read_only=True)
     prompt_responses = PromptResponseSerializer(many=True, read_only=True)
-    evidences = EvidenceForMasterySerializer(many=True, read_only=True)
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Entry
-        fields = ['id', 'user', 'user_detail', 'hlp', 'lookfor_number', 'score', 'date', 'comments',
-                 'teacher_reply', 'status', 'week_number', 'weekly_goal', 'criteria_for_mastery',
-                 'goal_reflection', 'created_at', 'updated_at', 'prompt_responses', 'evidences', 'teacher_comments']
+        fields = ['id','user_detail','prompt_responses','teacher_comments','hlp','lookfor_number','score','date','status']
 
     def get_teacher_comments(self, obj):
         comments = TeacherComment.objects.filter(entry=obj, prompt_response=None)
@@ -65,16 +51,13 @@ class EntrySerializer(serializers.ModelSerializer):
 # Create Entry with nested objects
 class EntryCreateSerializer(serializers.ModelSerializer):
     prompt_responses = serializers.ListField(child=serializers.JSONField(), required=True)
-    evidences = serializers.ListField(child=serializers.JSONField(), required=True)
 
     class Meta:
         model = Entry
-        fields = ['user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'weekly_goal',
-                 'criteria_for_mastery', 'goal_reflection', 'week_number', 'prompt_responses', 'evidences']
+        fields = ['id','prompt_responses','hlp','week_number','lookfor_number','score','date','user']
 
     def create(self, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])
-        evidences_data = validated_data.pop('evidences', [])
 
         try:
             # Create the entry first
@@ -107,20 +90,13 @@ class EntryCreateSerializer(serializers.ModelSerializer):
                     )
 
                 # Create the prompt response
-                PromptResponse.objects.create(
-                    entry=entry,
-                    prompt=prompt,
-                    indicator=prompt_response_data.get('indicator', 'na'),
+                response = PromptResponse.objects.create(
+                    prompt=prompt.prompt,
                     reflection=prompt_response_data.get('reflection', '')
                 )
+                entry.prompt_responses.add(response)
 
             # Create evidences for mastery
-            for i, evidence_data in enumerate(evidences_data):
-                EvidenceForMastery.objects.create(
-                    entry=entry,
-                    text=evidence_data.get('text', ''),
-                    order=evidence_data.get('order', i+1)
-                )
 
             return entry
 

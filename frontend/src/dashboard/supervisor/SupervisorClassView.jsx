@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClasses, getStudentsForClass } from "../../utils/api";
 import Sidebar from "./Sidebar";
+import API from "../../utils/axios";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
 
 const SupervisorClassView = () => {
   const [classes, setClasses] = useState([]);
@@ -16,6 +18,7 @@ const SupervisorClassView = () => {
     const fetchClasses = async () => {
       try {
         const data = await getClasses();
+        console.log(data)
         setClasses(data);
       } catch (error) {
         console.error("Failed to fetch classes", error);
@@ -55,26 +58,16 @@ const SupervisorClassView = () => {
         setSelectedStudentId(null);
         return;
       }
-
       setSelectedStudentId(studentId);
+      if (studentEntriesMap[studentId]?.length != 0 && studentEntriesMap[studentId]) {
+        return
+      };
 
-      if (studentEntriesMap[studentId]) return;
+      const res = await API.get(`http://localhost:8000/entries/by-student/${studentId}/`);
+      console.log(res)
 
-      const res = await fetch(`http://localhost:8000/entries/by-student/${studentId}/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("Unexpected response:", text);
-        throw new Error("Fetch failed with status " + res.status);
-      }
-
-      const data = await res.json();
+      const data = res.data
+      console.log(data)
 
       setStudentEntriesMap((prev) => ({
         ...prev,
@@ -117,7 +110,7 @@ const SupervisorClassView = () => {
                   <div className="flex justify-between items-center">
                     <div
                       className="cursor-pointer"
-                      onClick={() => navigate(`/supervisor/review/${cls.id}`)}
+                      onClick={() => navigate(`/supervisor/review/${cls.name}`)}
                     >
                       <h2 className="text-xl font-bold flex items-center space-x-2 text-purple-700">
                         <span>📄</span>
@@ -178,7 +171,8 @@ const SupervisorClassView = () => {
                                         key={entry.id}
                                         className="p-2 bg-white rounded border"
                                       >
-                                        <p>{entry.content}</p>
+                                        <p>HLP {entry.hlp}</p>
+                                        <p>Lookfor: {HLP_LookFors[entry.hlp].lookFors[entry.lookfor_number]}</p>
                                         <p className="text-xs text-gray-500 mt-1">
                                           {new Date(entry.created_at).toLocaleDateString()}
                                         </p>

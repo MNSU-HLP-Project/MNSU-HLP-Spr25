@@ -25,16 +25,12 @@ class ExtendUser(models.Model):
     def __str__(self):
         return self.user.username
 
-class GradeLevel(models.Model):
-    gradelevel = models.CharField(max_length=50, null=True)
-
-    def __str__(self):
-        return self.gradelevel
-
 class SupervisorClass(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    students = models.ManyToManyField(User, related_name='students')
+    students = models.ManyToManyField(User, related_name='students', blank=True)
+    prompt_override = models.BooleanField(default=False)
+    prompt_list = models.ManyToManyField('entries.Prompt', related_name='class_prompt_lists')
 
     class Meta:
         verbose_name = "Supervisor Class"
@@ -49,8 +45,24 @@ class StudentTeacher(models.Model):
         ('GE', 'General Educator'),
         ('SE', 'Special Educator'),
     ]
+    GRADE_LEVEL_CHOICES = [
+        ('PK', 'Pre-Kindergarten'),
+        ('K', 'Kindergarten'),
+        ('1', '1st Grade'),
+        ('2', '2nd Grade'),
+        ('3', '3rd Grade'),
+        ('4', '4th Grade'),
+        ('5', '5th Grade'),
+        ('6', '6th Grade'),
+        ('7', '7th Grade'),
+        ('8', '8th Grade'),
+        ('9', '9th Grade'),
+        ('10', '10th Grade'),
+        ('11', '11th Grade'),
+        ('12', '12th Grade'),
+    ]
     type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES)
-    grade_levels = models.ManyToManyField(GradeLevel)
+    grade_level = models.CharField(max_length=2, choices=GRADE_LEVEL_CHOICES)
     class_name = models.ForeignKey(SupervisorClass, on_delete=models.CASCADE, null=True, blank=True)
 
 

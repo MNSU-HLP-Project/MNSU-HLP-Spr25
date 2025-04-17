@@ -229,7 +229,7 @@ const SupervisorReview = () => {
 
   // Handle back button click
   const handleBackClick = () => {
-    navigate("/mainmenu/");
+    navigate(-1);
   };
 
   return (

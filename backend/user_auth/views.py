@@ -10,12 +10,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, GradeLevel, SupervisorClass
-from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, GradeLevelSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass
+from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
+from entries.serializers import PromptSerializer
 
 
 from entries.models import Prompt
@@ -31,17 +32,61 @@ def check_token(token):
         return decoded
     else:
         return None
-    
+
 @api_view(['GET'])
-@permission_classes([AllowAny])
-def get_grade_levels(request):
-    """Gets grade levels for the whole database
-        Currently grade levels are the same throughout the whole application
-    """
-    grade_levels = GradeLevel.objects.all()
-    serializer = GradeLevelSerializer(grade_levels, many=True)
+@permission_classes([IsSupervisor])
+def get_class_details(request):
+    user = request.user
+    class_name = request.query_params.get('class_name')
+    sup_class = SupervisorClass.objects.filter(user=user, name=class_name).first()
+    serializer = SupervisorClassSerializer(sup_class)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsSupervisor])
+def edit_class(request):
+    """Edit a class"""
+    # Get User
+    user = request.user
+    # Get class user is under
+    sup_class = SupervisorClass.objects.filter(name = request.data['class_name'], user=user).first()
+    if sup_class:
+        # Get the class details from request data
+        prompt_override = request.data['prompt_override']
+        prompts = request.data['prompts']
+
+        prompt_list = sup_class.prompt_list
+        # First clear the prompt list
+        prompt_list.clear()
+        for prompt in prompts:
+            # See if a prompt exists
+            prompt_data = Prompt.objects.filter(prompt=prompt).first()
+            # If not create a new one and add
+            if not prompt_data:
+               prompt_data = Prompt.objects.create(prompt=prompt) 
+            prompt_list.add(prompt_data)
+            
+        sup_class.prompt_override = prompt_override
+        sup_class.save()
+        return Response('Class Updated Succesfully')      
+    # If no org exists that means that the user is not associated to an org
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+    
+@api_view(['GET'])
+@permission_classes([IsStudentTeacher])
+def get_prompts_student(request):
+    user = request.user
+    student = StudentTeacher.objects.get(user=user)
+    sup_class = student.class_name
+    override = sup_class.prompt_override
+    if override:
+        prompt_list = sup_class.prompt_list
+    else:
+        org = ExtendUser.objects.get(user=user).org
+        prompt_list = org.prompt_list
+    serializer = PromptSerializer(prompt_list, many=True)
+    return Response(serializer.data)
+        
 @api_view(['GET'])
 @permission_classes([IsSupervisorOrAdminOrSuperuser])
 def get_class_names(request):
@@ -50,18 +95,6 @@ def get_class_names(request):
     classes = SupervisorClass.objects.filter(user=user)
     serializer = SupervisorClassSerializer(classes, many=True)
     return Response(serializer.data)
-    
-@api_view(['POST'])
-@permission_classes([IsSuperuser])
-def update_grades(request):
-    """Update the grades list, this should only be accessed by a superuser"""
-    grades = request.data['grades']
-    # Currently deletes all of the grade levels but could be fixed to check
-    # I don't think this matters much as it is only going to be accessed by the superusers and very rarely
-    GradeLevel.objects.all().delete()
-    for grade in grades:
-        GradeLevel.objects.create(gradelevel = grade)
-    return Response('Grades Updated Successfully')
     
 @api_view(['POST'])
 @permission_classes([IsSupervisor])
@@ -104,8 +137,18 @@ def generate_org(request):
     Organization.objects.create(name=name, admin_email=admin)
     return Response(status=status.HTTP_200_OK)
     
+@api_view(['POST'])
+@permission_classes([IsSupervisor])
+def delete_class(request):
+    user = request.user
+    class_to_delete = SupervisorClass.objects.filter(user=user, name=request.data['class_name']).first()
+    if class_to_delete:
+        class_to_delete.delete()
+        return Response('Succesfully Deleted Class')
+    return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'No class with that name exists'})
+
 @api_view(['GET'])
-@permission_classes([IsSuperuser])
+@permission_classes([IsAdmin])
 def get_org_details(request):
     """Get details of the organization
 
@@ -285,15 +328,6 @@ def create_student_teacher(request):
 @api_view(["POST"])
 def create_supervisor(request):
     serializer = SupervisorSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-
-@api_view(["POST"])
-def create_grade_levels(request):
-    serializer = GradeLevelSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)

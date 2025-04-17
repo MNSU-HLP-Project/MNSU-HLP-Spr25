@@ -15,6 +15,8 @@ const MyReflections = () => {
     status: ""
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [expandedHLPs, setExpandedHLPs] = useState({});
+
 
   // Check role on component mount
   useEffect(() => {
@@ -28,8 +30,27 @@ const MyReflections = () => {
   // Fetch entries on component mount
   useEffect(() => {
     fetchEntries();
+    groupEntriesByHLP();
   }, []);
 
+  const groupEntriesByHLP = () => {
+    const grouped = {};
+  
+    entries.forEach((entry) => {
+      if (!grouped[entry.hlp]) {
+        grouped[entry.hlp] = [];
+      }
+      grouped[entry.hlp].push(entry);
+    });
+  
+    // Sort each group by date
+    Object.keys(grouped).forEach((hlp) => {
+      grouped[hlp].sort((a, b) => new Date(a.date) - new Date(b.date)); // newest first
+    });
+  
+    return grouped;
+  };
+  
   // Fetch entries with optional filters
   const fetchEntries = async (filterParams = {}) => {
     setLoading(true);
@@ -47,6 +68,7 @@ const MyReflections = () => {
       try {
 
         const response = await API.get(`/entries/student/entries/${queryString}`);
+        console.log(response.data)
 
         if (Array.isArray(response.data)) {
           setEntries(response.data);
@@ -72,6 +94,13 @@ const MyReflections = () => {
     }
   };
 
+  const toggleHLP = (hlp) => {
+    setExpandedHLPs((prev) => ({
+      ...prev,
+      [hlp]: !prev[hlp]
+    }));
+  };
+  
   // Removed dummy entries function
 
   // Handle filter changes
@@ -144,7 +173,7 @@ const MyReflections = () => {
 
   // Handle back button click
   const handleBackClick = () => {
-    navigate("/mainmenu/");
+    navigate(-1);
   };
 
   return (
@@ -258,51 +287,59 @@ const MyReflections = () => {
           ) : (
             /* Entries list */
             <div className="space-y-4">
-              {entries.map((entry) => {
-                const hlpData = HLP_LookFors[entry.hlp] || {};
-                return (
-                  <div key={entry.id} className="bg-white p-4 rounded-lg shadow-md">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h2 className="text-xl font-semibold">
-                          HLP {entry.hlp}: {hlpData.title || "Unknown HLP"}
-                        </h2>
-                        <p className="text-gray-600">Week {entry.week_number} • {new Date(entry.date).toLocaleDateString()}</p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusBadgeColor(entry.status)}`}>
-                        {formatStatus(entry.status)}
-                      </span>
-                    </div>
+              {Object.entries(groupEntriesByHLP()).map(([hlp, hlpEntries]) => {
+  const hlpData = HLP_LookFors[hlp] || {};
+  const isOpen = expandedHLPs[hlp] || false;
 
-                    <div className="mt-4">
-                      <h3 className="font-medium">Weekly Goal:</h3>
-                      <p className="text-gray-700 mt-1">{entry.weekly_goal}</p>
-                    </div>
+  return (
+    <div key={hlp} className="bg-white rounded-lg shadow-md">
+      {/* HLP Header with Toggle */}
+      <div
+        onClick={() => toggleHLP(hlp)}
+        className="p-4 cursor-pointer flex justify-between items-center bg-gray-100 rounded-t-lg hover:bg-gray-200 transition"
+      >
+        <h2 className="text-lg font-semibold">
+          HLP {hlp}: {hlpData.title || "Unknown HLP"}
+        </h2>
+        <button className="text-blue-600 font-medium">
+          {isOpen ? "Hide Entries" : "Show Entries"}
+        </button>
+      </div>
 
-                    {entry.teacher_comments && entry.teacher_comments.length > 0 && (
-                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                        <h3 className="font-medium text-blue-800">Teacher Feedback:</h3>
-                        <p className="text-gray-700 mt-1">
-                          {entry.teacher_comments[0].comment}
-                        </p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          - {entry.teacher_comments[0].supervisor_name} on {new Date(entry.teacher_comments[0].date).toLocaleDateString()}
-                        </p>
-                      </div>
-                    )}
+      {/* Entries under this HLP */}
+      {isOpen && (
+        <div className="space-y-4 p-4 border-t">
+          {hlpEntries.map((entry) => (
+            <div key={entry.id} className="border p-4 rounded-lg">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm text-gray-600">{new Date(`${entry.date}T12:00:00`).toLocaleDateString()}</p>
+                  <p className="text-md font-medium text-gray-800">Status: <span className={`px-2 py-1 rounded text-sm border ${getStatusBadgeColor(entry.status)}`}>{formatStatus(entry.status)}</span></p>
+                </div>
+                <button
+                  onClick={() => viewEntryDetails(entry.id)}
+                  className="flex items-center text-blue-600 hover:text-blue-800"
+                >
+                  <FaEye className="mr-1" />
+                  View Details
+                </button>
+              </div>
 
-                    <div className="mt-4 flex justify-end">
-                      <button
-                        onClick={() => viewEntryDetails(entry.id)}
-                        className="flex items-center text-blue-600 hover:text-blue-800"
-                      >
-                        <FaEye className="mr-1" />
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+              {entry.teacher_comments?.length > 0 && (
+                <div className="mt-3 bg-blue-50 p-3 rounded">
+                  <h4 className="font-semibold text-blue-800">Teacher Feedback:</h4>
+                  <p className="text-gray-700 mt-1">{entry.teacher_comments[0].comment}</p>
+                  <p className="text-sm text-gray-500 mt-1">- {entry.teacher_comments[0].supervisor_name} on {new Date(entry.teacher_comments[0].date).toLocaleDateString()}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+})}
+
             </div>
           )}
         </>

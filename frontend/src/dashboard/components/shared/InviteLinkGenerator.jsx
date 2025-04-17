@@ -10,7 +10,9 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
 
   useEffect(() => {
     // Get class list if anything is updated
+    if (userRole == 'Supervisor'){
     getClassList();
+    }
   }, [refreshSignal]); // re-run whenever refreshSignal changes
   
 

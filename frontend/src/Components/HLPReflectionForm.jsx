@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
+import { getPrompts } from "../utils/api";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const HLPReflectionForm = () => {
   const navigate = useNavigate();
@@ -38,16 +41,10 @@ const HLPReflectionForm = () => {
   const [formData, setFormData] = useState({
     hlp: hlpNumber,
     lookfor_number: 0,
-    weekly_goal: "",
-    criteria_for_mastery: "",
-    goal_reflection: "",
     week_number: 1,
     prompt_responses: [],
-    evidences: [
-      { text: "", order: 1 },
-      { text: "", order: 2 },
-      { text: "", order: 3 },
-    ],
+    score:0,
+    date: Date()
   });
 
   // Create default prompts
@@ -86,22 +83,18 @@ const HLPReflectionForm = () => {
 
     const fetchPrompts = async () => {
       try {
-        console.log("Making API call to fetch prompts...");
-        const response = await API.get("/entries/prompts/");
-        console.log("Prompts loaded successfully:", response.data);
+        const response = await getPrompts();
 
         // Clear any previous error message
         setError("");
 
         // Only update prompts if we got a valid response with data
         if (response.data && response.data.length > 0) {
-          console.log("Updating prompts with API data");
           setPrompts(response.data);
 
           // Initialize prompt responses with API data
           const initialPromptResponses = response.data.map((prompt) => ({
             prompt: prompt.id,
-            indicator: "na",
             reflection: "",
           }));
 
@@ -123,24 +116,15 @@ const HLPReflectionForm = () => {
   }, []); // Empty dependency array to run only once on mount
 
   // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
-  // Handle evidence input changes
-  const handleEvidenceChange = (index, value) => {
-    const updatedEvidences = [...formData.evidences];
-    updatedEvidences[index] = { ...updatedEvidences[index], text: value };
-
-    setFormData((prev) => ({
-      ...prev,
-      evidences: updatedEvidences,
-    }));
-  };
+  // Evidence for Mastery section removed
 
   // Handle prompt response changes
   const handlePromptResponseChange = (promptIndex, field, value) => {
@@ -163,47 +147,33 @@ const HLPReflectionForm = () => {
     setError("");
 
     try {
-      // Filter out empty evidences
-      const validEvidences = formData.evidences.filter(
-        (ev) => ev.text.trim() !== ""
-      );
+      // Evidence for Mastery section removed
 
-      // Validate required fields
-      if (validEvidences.length < 3) {
-        setError("Please provide all three evidences for mastery.");
-        setLoading(false);
-        return;
-      }
+      // if (!formData.weekly_goal.trim()) {
+      //   setError("Weekly goal is required.");
+      //   setLoading(false);
+      //   return;
+      // }
 
-      if (!formData.weekly_goal.trim()) {
-        setError("Weekly goal is required.");
-        setLoading(false);
-        return;
-      }
-
-      if (!formData.criteria_for_mastery.trim()) {
-        setError("Criteria for mastery is required.");
-        setLoading(false);
-        return;
-      }
+      // if (!formData.criteria_for_mastery.trim()) {
+      //   setError("Criteria for mastery is required.");
+      //   setLoading(false);
+      //   return;
+      // }
 
       // Make sure lookfor_number is a number
       const dataToSubmit = {
         ...formData,
+        score: formData.score,
         lookfor_number: parseInt(formData.lookfor_number, 10) || 0,
         // Make sure prompt_responses have all required fields
         prompt_responses: formData.prompt_responses.map((pr) => ({
           prompt: pr.prompt,
-          indicator: pr.indicator || "na",
           reflection: pr.reflection || "",
         })),
-        // Make sure evidences have all required fields
-        evidences: validEvidences.map((ev, index) => ({
-          text: ev.text,
-          order: index + 1,
-        })),
+        // Evidence for Mastery section removed
         // Add date if not present
-        date: formData.date || new Date().toISOString().split("T")[0],
+        date: new Date(formData.date).toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
       };
 
       console.log("Submitting data:", dataToSubmit);
@@ -320,7 +290,7 @@ const HLPReflectionForm = () => {
 
   // Handle back button click
   const handleBackClick = () => {
-    navigate("/hlpselection/", {
+    navigate(-1, {
       state: { name: hlpData?.group || "" },
     });
   };
@@ -510,8 +480,39 @@ const HLPReflectionForm = () => {
                   )
                 )}
             </select>
+            <label className="block text-gray-700 mb-2 font-medium">
+              Score Yourself:
+            </label>
+            <select
+              className="w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+              onChange={(e) =>{
+                setFormData({
+                  ...formData,
+                  score: e.target.value,
+                })
+              console.log(formData)}
+              }
+              value={formData.score}
+            >
+              <option value={-1}>Choose a Score</option>
+              <option value={0}>0</option>
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              
+            </select>
           </div>
-
+          <label className="block text-gray-700 mb-2 font-medium">
+              Date of Entry:
+            </label>
+          <DatePicker
+            selected={formData.date}
+            onChange={(date) => setFormData({
+              ...formData,
+              date:date
+            })}
+            />
+          
           {formData.lookfor_number > 0 &&
             hlpData?.lookFors[formData.lookfor_number] && (
               <div className="p-4 bg-white rounded-lg border border-indigo-200 shadow-sm">
@@ -561,87 +562,10 @@ const HLPReflectionForm = () => {
                   {prompt.prompt}
                 </h3>
 
-                {/* Indicator dropdown with better styling */}
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    Your response:
-                  </label>
-                  <div className="relative">
-                    <select
-                      className="w-full p-3 border border-purple-300 rounded-lg appearance-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white pr-10"
-                      value={
-                        formData.prompt_responses[index]?.indicator || "na"
-                      }
-                      onChange={(e) =>
-                        handlePromptResponseChange(
-                          index,
-                          "indicator",
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="always">Always</option>
-                      <option value="sometimes">Sometimes</option>
-                      <option value="never">Never</option>
-                      <option value="na">N/A</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-purple-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Visual indicator of selection */}
-                  <div className="mt-2 flex space-x-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        formData.prompt_responses[index]?.indicator === "always"
-                          ? "bg-green-100 text-green-800 border border-green-200"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      Always
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        formData.prompt_responses[index]?.indicator ===
-                        "sometimes"
-                          ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      Sometimes
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        formData.prompt_responses[index]?.indicator === "never"
-                          ? "bg-red-100 text-red-800 border border-red-200"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      Never
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        formData.prompt_responses[index]?.indicator === "na"
-                          ? "bg-gray-200 text-gray-800 border border-gray-300"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      N/A
-                    </span>
-                  </div>
-                </div>
-
                 {/* Optional reflection with better styling */}
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    Reflection (optional):
+                    Comments:
                   </label>
                   <textarea
                     className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
@@ -662,179 +586,9 @@ const HLPReflectionForm = () => {
           </div>
         </div>
 
-        {/* Evidence for Mastery Section */}
-        <div className="mb-6 bg-gradient-to-r from-green-50 to-teal-50 p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-teal-800 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Evidence for Mastery
-          </h2>
-          <p className="text-sm text-teal-700 mb-4 italic">
-            Provide three specific examples that demonstrate your mastery of
-            this HLP.
-          </p>
-
-          <div className="space-y-4">
-            {[0, 1, 2].map((index) => (
-              <div
-                key={index}
-                className="bg-white p-5 rounded-lg border border-teal-200 shadow-sm transition-all duration-300 hover:shadow-md"
-              >
-                <div className="flex items-center mb-3">
-                  <div className="bg-teal-100 text-teal-800 rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
-                    {index + 1}
-                  </div>
-                  <label className="block text-gray-700 font-medium">
-                    Evidence #{index + 1}:
-                  </label>
-                </div>
-                <textarea
-                  className="w-full p-3 border border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                  rows="4"
-                  value={formData.evidences[index]?.text || ""}
-                  onChange={(e) => handleEvidenceChange(index, e.target.value)}
-                  placeholder={`Provide specific evidence #${
-                    index + 1
-                  } for mastery...`}
-                  required
-                ></textarea>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Evidence for Mastery Section removed */}
 
         {/* Weekly Goals Section */}
-        <div className="mb-6 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-amber-800 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-            Weekly Goals
-          </h2>
-
-          <div className="space-y-6">
-            <div className="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-              <h3 className="font-semibold mb-3 text-amber-700 border-b border-amber-100 pb-2 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Weekly Goal
-              </h3>
-              <p className="text-sm text-amber-700 mb-2 italic">
-                What specific goal do you want to achieve this week related to
-                this HLP?
-              </p>
-              <textarea
-                className="w-full p-3 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                rows="3"
-                name="weekly_goal"
-                value={formData.weekly_goal}
-                onChange={handleInputChange}
-                placeholder="What is your goal for this week?"
-                required
-              ></textarea>
-            </div>
-
-            <div className="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-              <h3 className="font-semibold mb-3 text-amber-700 border-b border-amber-100 pb-2 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-                Criteria for Mastery
-              </h3>
-              <p className="text-sm text-amber-700 mb-2 italic">
-                How will you know you've achieved your goal? What specific
-                indicators will you look for?
-              </p>
-              <textarea
-                className="w-full p-3 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                rows="3"
-                name="criteria_for_mastery"
-                value={formData.criteria_for_mastery}
-                onChange={handleInputChange}
-                placeholder="How will you know you've achieved your goal?"
-                required
-              ></textarea>
-            </div>
-
-            <div className="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-              <h3 className="font-semibold mb-3 text-amber-700 border-b border-amber-100 pb-2 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                  />
-                </svg>
-                Goal Reflection
-              </h3>
-              <p className="text-sm text-amber-700 mb-2 italic">
-                Reflect on your progress toward your goal. What have you
-                learned? What challenges have you faced?
-              </p>
-              <textarea
-                className="w-full p-3 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                rows="3"
-                name="goal_reflection"
-                value={formData.goal_reflection}
-                onChange={handleInputChange}
-                placeholder="Reflect on your progress toward your goal..."
-              ></textarea>
-            </div>
-          </div>
-        </div>
 
         {/* Submit Button */}
         <div className="flex justify-end mt-8">

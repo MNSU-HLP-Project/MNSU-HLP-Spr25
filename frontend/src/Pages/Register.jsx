@@ -8,8 +8,27 @@ import API from "../utils/axios";
 
 function Register() {
   const [searchParams] = useSearchParams();
-  const [gradelevels, setGradeLevels] = useState([])
-
+  const [roleSignup, setRoleSignup] = useState('')
+  const gradelevels = [
+    { id: 1, grade_level: "K", gradelevel: "Kindergarten" },
+    { id: 2, grade_level: "1", gradelevel: "1st Grade" },
+    { id: 3, grade_level: "2", gradelevel: "2nd Grade" },
+    { id: 4, grade_level: "3", gradelevel: "3rd Grade" },
+    { id: 5, grade_level: "4", gradelevel: "4th Grade" },
+    { id: 6, grade_level: "5", gradelevel: "5th Grade" },
+    { id: 7, grade_level: "6", gradelevel: "6th Grade" },
+    { id: 8, grade_level: "7", gradelevel: "7th Grade" },
+    { id: 9, grade_level: "8", gradelevel: "8th Grade" },
+    { id: 10, grade_level: "9", gradelevel: "9th Grade" },
+    { id: 11, grade_level: "10", gradelevel: "10th Grade" },
+    { id: 12, grade_level: "11", gradelevel: "11th Grade" },
+    { id: 13, grade_level: "12", gradelevel: "12th Grade" }
+  ];
+  const roleObj = {
+    'stu': 'Student Teacher',
+    'admin': 'Administrator',
+    'sup': 'Supervisor'
+  }
   // Used to get the role that will be filled out as well as invitation code
   useEffect(() => {
       const code = searchParams.get('code');
@@ -19,44 +38,14 @@ function Register() {
       }
       // pull role form search params
       const role = searchParams.get('role')
+      setRoleSignup(roleObj[role])
       if (role == 'sup' || role=='admin') {
+
         // Set student_teacher to false to display different options
           setFormData((prev) => ({ ...prev, student_teacher: false}))
       }
   }, [searchParams]);
 
-  // Used to get grade levels when loading and then sort into correct order
-  useEffect(() => {
-    const fetchGrades = async () => {
-      try {
-        const response = await API.get("/user_auth/getgrades/");
-        // Sort the grades, handling both numbers and strings
-        const sortedGrades = [...response.data].sort((a, b) => {
-          // Convert numeric gradelevel strings to numbers, otherwise leave as string
-          const gradeA = isNaN(a.gradelevel) ? a.gradelevel : Number(a.gradelevel);
-          const gradeB = isNaN(b.gradelevel) ? b.gradelevel : Number(b.gradelevel);
-  
-          // If both gradelevels are numbers, compare numerically
-          if (typeof gradeA === 'string' && typeof gradeB === 'string') {
-            return gradeA < gradeB ? -1 : 1;
-          }
-  
-          // If one is a string and the other is a number, treat the string as smaller
-          if (typeof gradeA === 'string') return -1; // String comes first
-          if (typeof gradeB === 'string') return 1;  // String comes first
-  
-          // If both are numbers, sort numerically
-          return gradeA - gradeB;
-        });
-        setGradeLevels(sortedGrades);
-        console.log(sortedGrades);
-      } catch (error) {
-        console.error("Error getting grades", error);
-      }
-    };
-
-    fetchGrades();
-  }, []);
 // Default form data
   const [formData, setFormData] = useState({
     student_teacher: true,
@@ -127,7 +116,7 @@ function Register() {
         // Update errors based on what is given in response
         const apiErrors = error.response.data;
         const updatedErrors = { ...newErrors };
-
+        console.log(apiErrors.password)
         if (apiErrors.email) updatedErrors.email = apiErrors.email;
         if (apiErrors.password) updatedErrors.password = apiErrors.password;
         if (apiErrors.detail) updatedErrors.general = apiErrors.detail;
@@ -144,7 +133,7 @@ function Register() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
     <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold text-center text-gray-800">
-        Sign Up
+        {roleSignup} Sign Up
       </h2>
 
 
@@ -234,7 +223,9 @@ function Register() {
           onChange={handleChange}
         />
         {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          errors.password.map((e, index) => (
+            <p key={index} className="text-red-500 text-sm mt-1">{e}</p>
+          ))
         )}
       </div>
 
