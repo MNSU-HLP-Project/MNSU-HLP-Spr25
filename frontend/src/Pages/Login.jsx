@@ -45,7 +45,7 @@ function Auth() {
           localStorage.setItem("jwtToken", token);
           localStorage.setItem("role", response.data.role)
           console.log(response.data.role)
-          navigate(-1);
+          navigate("/mainmenu/");
         }
       
       

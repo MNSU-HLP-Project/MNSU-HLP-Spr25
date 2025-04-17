@@ -65,7 +65,6 @@ class SignupSerializer(serializers.ModelSerializer):
         except DjangoValidationError as e:
             errors['password'] = list(e.messages)
         if errors:
-            print(errors)
             raise serializers.ValidationError(errors)
         
         user = User.objects.create_user(
