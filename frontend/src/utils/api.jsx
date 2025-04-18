@@ -76,3 +76,18 @@ export const getStudentsForClass = async (class_obj) => {
     return response.data;
   };
   
+
+  export const getStudentEntries = async ({ hlp, week, status }) => {
+    try {
+      const params = {};
+      if (hlp) params.hlp = hlp;
+      if (week) params.week = week;
+      if (status) params.status = status;
+  
+      const response = await API.get("entries/student/entries/", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching student entries:", error);
+      throw error;
+    }
+  };
