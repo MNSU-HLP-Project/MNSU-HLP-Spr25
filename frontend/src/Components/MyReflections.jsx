@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
+import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const MyReflections = () => {
   const navigate = useNavigate();
@@ -313,7 +314,7 @@ const MyReflections = () => {
             <div key={entry.id} className="border p-4 rounded-lg">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm text-gray-600">{new Date(`${entry.date}T12:00:00`).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600">{entry.date}</p>
                   <p className="text-md font-medium text-gray-800">Status: <span className={`px-2 py-1 rounded text-sm border ${getStatusBadgeColor(entry.status)}`}>{formatStatus(entry.status)}</span></p>
                 </div>
                 <button

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
+import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const ReflectionDetail = () => {
   const navigate = useNavigate();
@@ -206,20 +207,14 @@ const ReflectionDetail = () => {
           HLP {entry.hlp}: {hlpData.title || "Unknown HLP"}
         </h2>
         <p className="text-gray-600">
-          Submitted on {new Date(`${entry.date}T12:00:00`).toLocaleDateString()}
+          Submitted on {entry.date}
         </p>
 
         {/* Look-fors */}
         {hlpData.lookFors && (
           <div className="mt-4">
             <p>#{entry.lookfor_number}: {hlpData.lookFors[entry.lookfor_number]}</p>
-            {/* <ul className="list-disc pl-5 space-y-1">
-              {Object.entries(hlpData.lookFors).map(([number, text]) => (
-                <li key={number} className="text-gray-700">
-                  <span className="font-medium">#{number}:</span> {text}
-                </li>
-              ))}
-            </ul> */}
+            <p className="text-sm text-gray-600 mt-1">Score: {entry.score ?? "N/A"}</p>
           </div>
         )}
       </div>
@@ -285,9 +280,19 @@ const ReflectionDetail = () => {
           </div>
         </div>
       )}
-      <button onClick={() => navigate("/submit-reflection/", {state: {hlp:entry.hlp,edit:true,detail:entry}})}>
-      Edit Reflection
-      </button>
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={() =>
+            navigate("/submit-reflection/", {
+              state: { hlp: entry.hlp, edit: true, detail: entry },
+            })
+          }
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
+        >
+          Edit Reflection
+        </button>
+      </div>
+
     </div>
   );
 };

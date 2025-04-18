@@ -6,6 +6,7 @@ import HLP_LookFors from "../assets/HLP_Lookfors";
 import { getPrompts } from "../utils/api";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const HLPReflectionForm = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const HLPReflectionForm = () => {
     lookfor_number: 0,
     week_number: 1,
     prompt_responses: [],
-    score:0,
+    score:-1,
     date: Date()
   });
 
@@ -60,9 +61,11 @@ const HLPReflectionForm = () => {
   useEffect(() => {
     if (edit){
       setPrompts(location.state.detail.prompt_responses)
-      setFormData(location.state.detail)
+      setFormData({
+        ...location.state.detail,
+        date: new Date(location.state.detail.date+"T00:00:00"),
+      })
       console.log(location.state.detail)
-      console.log(location.state.detail.prompt_responses)
     }
   }, []);
 
@@ -153,6 +156,7 @@ const HLPReflectionForm = () => {
       // Make sure lookfor_number is a number
       const dataToSubmit = {
         ...formData,
+        id: formData.id,
         score: formData.score,
         lookfor_number: parseInt(formData.lookfor_number, 10) || 0,
         // Make sure prompt_responses have all required fields
@@ -163,9 +167,9 @@ const HLPReflectionForm = () => {
         })),
         // Evidence for Mastery section removed
         // Add date if not present
-        date: new Date(formData.date).toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
+        date: formatDateToMMDDYYYY(formData.date) || new Date().toISOString().split("T")[0],
       };
-
+      console.log(formData)
       console.log("Submitting data:", dataToSubmit);
 
       try {
@@ -385,7 +389,7 @@ const HLPReflectionForm = () => {
           <div>
             <p className="font-bold text-lg">Success!</p>
             <p className="text-green-800">
-              Your reflection has been submitted successfully!
+              Your reflection has been {edit ? 'edited': 'submitted'} successfully!
             </p>
             <p className="text-sm mt-2">
               You will be redirected to your reflections page in a moment...
@@ -501,17 +505,29 @@ const HLPReflectionForm = () => {
               
             </select>
           </div>
-          <label className="block text-gray-700 mb-2 font-medium">
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2 font-medium">
               Date of Entry:
             </label>
-          <DatePicker
-            selected={formData.date}
-            onChange={(date) => setFormData({
-              ...formData,
-              date:date
-            })}
-            />
-          
+            <div className="w-full p-3 border border-indigo-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+              <DatePicker
+                selected={formData.date}
+                onChange={(date) =>{
+                  console.log(date)
+                  setFormData({
+                    ...formData,
+                    date: date,
+                  })
+                }
+                }
+                className="w-full outline-none"
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Select a date"
+              />
+            </div>
+          </div>
+
+
           {formData.lookfor_number > 0 &&
             hlpData?.lookFors[formData.lookfor_number] && (
               <div className="p-4 bg-white rounded-lg border border-indigo-200 shadow-sm">
