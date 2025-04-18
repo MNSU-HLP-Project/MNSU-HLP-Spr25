@@ -14,7 +14,7 @@ class SupervisorClassSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SupervisorClass
-        fields = ['user', 'name','prompt_override','prompt_list']
+        fields = ['user', 'name','prompt_override','prompt_list','id']
 
 
 class SignupSerializer(serializers.ModelSerializer):

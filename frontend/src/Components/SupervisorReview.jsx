@@ -27,7 +27,7 @@ const SupervisorReview = () => {
 
 
 
-  uuseEffect(() => {
+  useEffect(() => {
     if (classId && studentId) {
       fetchEntries();
     }
