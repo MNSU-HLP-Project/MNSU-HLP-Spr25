@@ -107,11 +107,9 @@ function App() {
           } />
 
           {/* Supervisor Routes */}
-          <Route path="/supervisor/review/:classId?" element={
-            <ProtectedRoute allowedRoles={["Supervisor"]}>
-              <SupervisorReview />
-            </ProtectedRoute>
-          } />
+          <Route path="/supervisor/review/:classId/:studentId" element={<SupervisorReview />} />
+
+         
 
           <Route path="/supervisor/feedback/:entryId" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>

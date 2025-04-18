@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClasses, getStudentsForClass } from "../../utils/api";
 import Sidebar from "./Sidebar";
-import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 
 const SupervisorClassView = () => {
   const [classes, setClasses] = useState([]);
-  const [selectedClassName, setSelectedClassName] = useState(null);
-  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [selectedClassId, setSelectedClassId] = useState(null);
   const [studentsByClass, setStudentsByClass] = useState({});
-  const [studentEntriesMap, setStudentEntriesMap] = useState({});
 
   const navigate = useNavigate();
 
@@ -18,7 +15,6 @@ const SupervisorClassView = () => {
     const fetchClasses = async () => {
       try {
         const data = await getClasses();
-        console.log(data)
         setClasses(data);
       } catch (error) {
         console.error("Failed to fetch classes", error);
@@ -28,53 +24,25 @@ const SupervisorClassView = () => {
   }, []);
 
   const handleToggleStudents = async (classObj) => {
-    const classKey = classObj.name;
+    const classId = classObj.id;
 
-    if (selectedClassName === classKey) {
-      setSelectedClassName(null);
+    if (selectedClassId === classId) {
+      setSelectedClassId(null); // collapse the section
       return;
     }
 
     try {
-      setSelectedClassName(classKey);
+      setSelectedClassId(classId);
 
-      if (!studentsByClass[classKey]) {
+      if (!studentsByClass[classId]) {
         const data = await getStudentsForClass(classObj);
         setStudentsByClass((prev) => ({
           ...prev,
-          [classKey]: data,
+          [classId]: data,
         }));
       }
-
-      setSelectedStudentId(null);
     } catch (error) {
       console.error("Failed to fetch students", error);
-    }
-  };
-
-  const handleStudentClick = async (studentId) => {
-    try {
-      if (selectedStudentId === studentId) {
-        setSelectedStudentId(null);
-        return;
-      }
-      setSelectedStudentId(studentId);
-      if (studentEntriesMap[studentId]?.length != 0 && studentEntriesMap[studentId]) {
-        return
-      };
-
-      const res = await API.get(`http://localhost:8000/entries/by-student/${studentId}/`);
-      console.log(res)
-
-      const data = res.data
-      console.log(data)
-
-      setStudentEntriesMap((prev) => ({
-        ...prev,
-        [studentId]: data,
-      }));
-    } catch (error) {
-      console.error("Failed to fetch student entries", error);
     }
   };
 
@@ -99,8 +67,9 @@ const SupervisorClassView = () => {
             <p className="text-gray-500">No classes available.</p>
           ) : (
             classes.map((cls) => {
-              const classKey = cls.name;
-              const students = studentsByClass[classKey] || [];
+              console.log("CLASS OBJECT:", cls);
+              const classId = cls?.id;
+              const students = studentsByClass[classId] || [];
 
               return (
                 <div
@@ -110,29 +79,25 @@ const SupervisorClassView = () => {
                   <div className="flex justify-between items-center">
                     <div
                       className="cursor-pointer"
-                      onClick={() => navigate(`/supervisor/review/${cls.name}`)}
+                      onClick={() => handleToggleStudents(cls)}
                     >
                       <h2 className="text-xl font-bold flex items-center space-x-2 text-purple-700">
                         <span>📄</span>
                         <span>{cls.name}</span>
                       </h2>
                       <p className="text-sm text-gray-500 mt-1">
-                        Click to view all reflections
+                        Click to view students
                       </p>
                     </div>
-
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleStudents(cls);
-                      }}
+                      onClick={() => handleToggleStudents(cls)}
                       className="text-gray-600 text-xl hover:text-purple-600"
                     >
-                      {selectedClassName === classKey ? "▲" : "▼"}
+                      {selectedClassId === classId ? "▲" : "▼"}
                     </button>
                   </div>
 
-                  {selectedClassName === classKey && (
+                  {selectedClassId === classId && (
                     <div className="mt-6 bg-gray-50 text-black rounded-md p-4">
                       <h3 className="text-lg font-semibold mb-4 border-b pb-2">
                         Students
@@ -146,42 +111,19 @@ const SupervisorClassView = () => {
                             <p className="font-semibold">
                               {student.last_name}, {student.first_name}
                             </p>
-                            <p className="text-sm text-gray-600">{student.username}</p>
+                            <p className="text-sm text-gray-600">
+                              {student.username}
+                            </p>
 
                             <button
                               className="mt-2 text-blue-600 text-sm underline"
-                              onClick={() => handleStudentClick(student.id)}
+                              onClick={() =>{
+                                console.log("Navigating to:", classId, student.id);
+                                navigate(`/supervisor/review/${classId}/${student.id}`)
+                              }}
                             >
-                              {selectedStudentId === student.id
-                                ? "Hide Reflections"
-                                : "View Reflections"}
+                              View Reflections
                             </button>
-
-                            {selectedStudentId === student.id && (
-                              <div className="mt-3 border-t pt-3">
-                                <p className="font-medium mb-2">Reflections:</p>
-                                {studentEntriesMap[student.id]?.length === 0 ? (
-                                  <p className="text-sm text-gray-400">
-                                    No entries found.
-                                  </p>
-                                ) : (
-                                  <ul className="space-y-2 text-sm">
-                                    {studentEntriesMap[student.id]?.map((entry) => (
-                                      <li
-                                        key={entry.id}
-                                        className="p-2 bg-white rounded border"
-                                      >
-                                        <p>HLP {entry.hlp}</p>
-                                        <p>Lookfor: {HLP_LookFors[entry.hlp].lookFors[entry.lookfor_number]}</p>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                          {new Date(entry.created_at).toLocaleDateString()}
-                                        </p>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>

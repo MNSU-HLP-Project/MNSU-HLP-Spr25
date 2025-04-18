@@ -18,7 +18,8 @@ urlpatterns = [
     path("entries/by-date/", get_entries_by_date, name="get_entries_by_date"),
     path("entries/by-hlp/", get_entries_by_hlp, name="get_entries_by_hlp"),
     path("entries/by-lookfor_number/", get_entries_by_lookfor_number, name="get_entries_by_lookfor_number"),
-    path("entries/by-class/", get_entries_by_class),
+    path("entries/by-class/<int:class_id>/<int:student_id>/", get_entries_by_class),
+
     path("by-student/<int:student_id>/", get_entries_by_student),
 
     # HLP submission workflow endpoints
