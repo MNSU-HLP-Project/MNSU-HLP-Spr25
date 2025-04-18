@@ -13,11 +13,12 @@ class PromptSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PromptResponseSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = PromptResponse
-        fields = ['id', 'prompt', 'reflection', 'teacher_comments']
+        fields = ['id', 'prompt', 'reflection', 'teacher_comments', 'entry_obj']
 
     def get_teacher_comments(self, obj):
         comments = obj.teacher_comments.all()
@@ -25,6 +26,7 @@ class PromptResponseSerializer(serializers.ModelSerializer):
 
 class TeacherCommentSerializer(serializers.ModelSerializer):
     supervisor_name = serializers.SerializerMethodField()
+
 
     class Meta:
         model = TeacherComment
@@ -37,16 +39,47 @@ class TeacherCommentSerializer(serializers.ModelSerializer):
 
 class EntrySerializer(serializers.ModelSerializer):
     user_detail = UserSerializer(source='user', read_only=True)
-    prompt_responses = PromptResponseSerializer(many=True, read_only=True)
+    prompt_responses = PromptResponseSerializer(many=True)
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Entry
-        fields = ['id','user_detail','prompt_responses','teacher_comments','hlp','lookfor_number','score','date','status']
-
+        fields = [
+            'id', 'user_detail', 'prompt_responses', 'teacher_comments',
+            'hlp', 'lookfor_number', 'score', 'date', 'status'
+        ]
+    
     def get_teacher_comments(self, obj):
         comments = TeacherComment.objects.filter(entry=obj, prompt_response=None)
         return TeacherCommentSerializer(comments, many=True).data
+
+    def update(self, instance, validated_data):
+        prompt_responses_data = validated_data.pop('prompt_responses', [])
+        # Update Entry fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Process prompt_responses
+        updated_responses = []
+        for response_data in prompt_responses_data:
+            response_id = response_data.get('id')
+            print(response_id)
+            print(response_data)
+            if response_id:
+                pr_instance = PromptResponse.objects.filter(id=response_id).first()
+                if pr_instance:
+                    for attr, val in response_data.items():
+                        setattr(pr_instance, attr, val)
+                    pr_instance.save()
+                    updated_responses.append(pr_instance)
+            else:
+                new_pr = PromptResponse.objects.create(**response_data, entry_obj=instance)
+                updated_responses.append(new_pr)
+
+        instance.prompt_responses.set(updated_responses)  # update the M2M field
+
+        return instance
 
 # Create Entry with nested objects
 class EntryCreateSerializer(serializers.ModelSerializer):
@@ -91,6 +124,7 @@ class EntryCreateSerializer(serializers.ModelSerializer):
 
                 # Create the prompt response
                 response = PromptResponse.objects.create(
+                    entry_obj = entry,
                     prompt=prompt.prompt,
                     reflection=prompt_response_data.get('reflection', '')
                 )
