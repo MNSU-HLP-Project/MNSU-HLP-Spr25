@@ -16,6 +16,7 @@ class Prompt(models.Model):
 
 class Entry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    sup_class = models.ForeignKey('user_auth.SupervisorClass', on_delete=models.CASCADE, null=True, blank=True)
     hlp = models.TextField()
     lookfor_number = models.IntegerField(default=0)
     SCORE_CHOICES = [
@@ -27,7 +28,8 @@ class Entry(models.Model):
     score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='NA')
     date = models.DateField(default=date.today)
     comments = models.TextField(default="")
-    teacher_reply = models.BooleanField(default=False)
+    teacher_reply = models.TextField(default="", blank=True) 
+
 
     # New fields for HLP submission workflow
     STATUS_CHOICES = [

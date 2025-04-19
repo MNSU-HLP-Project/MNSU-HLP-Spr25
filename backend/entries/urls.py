@@ -3,8 +3,8 @@ from .views import (
     get_entries, create_entry, delete_entry,
     get_entries_by_lookfor_number, get_entries_by_date, get_entries_by_hlp,
     get_entries_by_supervisor_students, get_student_entries, get_entry_detail,
-    get_entries_by_class, get_entries_by_student,
-    add_teacher_comment, update_entry_status, get_prompts
+    get_entries_by_class, get_entries_by_student, get_entries_by_class_and_student,
+    add_teacher_comment, update_entry_status, get_prompts, get_entry_by_id,
 )
 
 
@@ -18,7 +18,9 @@ urlpatterns = [
     path("entries/by-date/", get_entries_by_date, name="get_entries_by_date"),
     path("entries/by-hlp/", get_entries_by_hlp, name="get_entries_by_hlp"),
     path("entries/by-lookfor_number/", get_entries_by_lookfor_number, name="get_entries_by_lookfor_number"),
-    path("entries/by-class/<int:class_id>/<int:student_id>/", get_entries_by_class),
+    path("entries/by-class/<int:class_id>/", get_entries_by_class),
+    path("entries/by-class-student/<int:class_id>/<int:student_id>/", get_entries_by_class_and_student),
+    path("entry/<int:entry_id>/",get_entry_by_id),
 
     path("by-student/<int:student_id>/", get_entries_by_student),
 
@@ -29,4 +31,5 @@ urlpatterns = [
     path("entries/<int:entry_id>/comment/", add_teacher_comment, name="add_teacher_comment"),
     path("entries/<int:entry_id>/status/", update_entry_status, name="update_entry_status"),
     path("prompts/", get_prompts, name="get_prompts"),
+    
 ]

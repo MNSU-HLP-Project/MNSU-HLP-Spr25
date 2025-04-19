@@ -1,98 +1,54 @@
-import React, { useState, useEffect } from "react";
-
-import { useNavigate } from "react-router-dom";
-
-import { FaArrowLeft, FaFilter, FaEye, FaCheck, FaRedo } from "react-icons/fa";
-
-import API from "../utils/axios";
-
-import HLP_LookFors from "../assets/HLP_Lookfors";
-
-
+// src/pages/SupervisorReview.jsx
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import API from "../utils/axios"; // make sure your API instance is correctly configured
 
 const SupervisorReview = () => {
-
-  const navigate = useNavigate();
-
+  const { classId, studentId } = useParams();
   const [entries, setEntries] = useState([]);
-
-  const [students, setStudents] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
 
-  const { classId, studentId } = useParams();
-
-
-
   useEffect(() => {
-    if (classId && studentId) {
-      fetchEntries();
-    }
-  }, [classId, studentId]);
-  
-  
-  useEffect(() => {
-    if (students.length > 0) {
-      fetchEntries();
-    }
-  }, [students]);
-  
-
-  
-  const fetchStudents = async () => {
-    setLoading(true);
-    setError("");
-  
-    try {
-      const response = await API.get(`/user_auth/my-students`);
-      console.log("Students fetched:", response.data);
-      setStudents(response.data);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-      setError("Failed to fetch students for this class.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
-  const fetchEntries = async () => {
-    setLoading(true);
-    setError("");
-  
-    try {
-      const allEntries = [];
-  
-      for (const student of students) {
-        const res = await API.get(`/entries/entries/by-class/${classId}/${student.id}/`);
-        if (Array.isArray(res.data)) {
-          allEntries.push(...res.data);
-        }
+    const fetchEntries = async () => {
+      try {
+        const response = await API.get(`/entries/by-class/${classId}/${studentId}/`);
+        setEntries(response.data);
+      } catch (err) {
+        console.error("Failed to fetch entries", err);
+        setError("Failed to load reflections");
+      } finally {
+        setLoading(false);
       }
-  
-      const sortedEntries = allEntries.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-  
-      setEntries(sortedEntries);
-    } catch (error) {
-      console.error("Error fetching entries:", error);
-      setError("Failed to fetch entries for this class.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+    };
 
+    fetchEntries();
+  }, [classId, studentId]);
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
-
-
-
-}
+  return (
+    <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      <Sidebar />
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Student Reflections</h1>
+      {entries.length === 0 ? (
+        <p>No reflections found for this student.</p>
+      ) : (
+        <div className="space-y-4">
+          {entries.map((entry) => (
+            <div key={entry.id} className="bg-white p-4 border rounded shadow-sm">
+              <p className="font-semibold">Week: {entry.week}</p>
+              <p className="mt-1 text-gray-700">{entry.content}</p>
+              <p className="text-sm text-gray-500">Status: {entry.status}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+    </div>
+  );
+};
 
 export default SupervisorReview;
-
