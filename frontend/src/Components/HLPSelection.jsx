@@ -1,9 +1,10 @@
 import React from "react";
-import HLP_LookFors from "../assets/HLP_Lookfors"
+import HLP_LookFors from "../assets/HLP_Lookfors";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
 
 const HLPSelection = () => {
   // Setting default values
@@ -16,17 +17,18 @@ const HLPSelection = () => {
   const handleBackClick = () => navigate(-1);
   const handleMenuClick = () => alert("Menu button clicked");
   const handleLogout = () => navigate("/");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Getting the darker shade to hover TODO: Look into making this a default somehow
   const getDarkerShade = (color) => {
-    const colorBase = color.replace(/-\d+$/, ''); // Remove the `bg-`
+    const colorBase = color.replace(/-\d+$/, ""); // Remove the `bg-`
     return `${colorBase}-800`; // Adding -800 for a darker shade
   };
 
   // Get the collaboration that was set in HLPCategories
   useEffect(() => {
-    setGroupTitle(location.state.name)
-  },[])
+    setGroupTitle(location.state.name);
+  }, []);
 
   // Get the group data from the HLP_LookFors file
   useEffect(() => {
@@ -36,15 +38,14 @@ const HLPSelection = () => {
       if (groupData) {
         setPillars(groupData.Pillars);
         setEmbedded(groupData.Embedded);
-        setColor(groupData.color)
+        setColor(groupData.color);
       }
     }
   }, [groupTitle]);
 
   const handleClick = (hlp) => {
-    // Navigate to the reflection form with the selected HLP
-    //navigate("/submit-reflection/", {state: {hlp}})
-    navigate("/completed-lookfor/", {state: {hlp}})
+    // Navigate to completed lookfor for the selected HLP
+    navigate("/completed-lookfor/", { state: { hlp } });
   };
 
   return (
@@ -58,10 +59,14 @@ const HLPSelection = () => {
         <h1 className="text-3xl md:text-4xl text-center font-bold text-gray-800 border-b-2 border-gray-300 p-2">
           {groupTitle}
         </h1>
-        <FaBars
-          className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
-          onClick={handleMenuClick}
-        />
+        <div className="relative">
+          <FaBars
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => setMenuOpen(!menuOpen)}
+          />
+
+          {menuOpen && <MainMenuDropdown onClose={() => setMenuOpen(false)} />}
+        </div>
       </div>
 
       <p className="text-center text-lg md:text-xl font-bold text-gray-700 mb-1">
@@ -73,7 +78,9 @@ const HLPSelection = () => {
         {pillars.map((pillarId) => (
           <div
             key={pillarId}
-            className={`text-white ${color} p-6 w-full md:w-40 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(color)} transition`}
+            className={`text-white ${color} p-6 w-full md:w-40 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
+              color
+            )} transition`}
             onClick={() => handleClick(`HLP ${pillarId}`)}
           >
             <strong className="text-xl">HLP {pillarId}</strong>
@@ -88,7 +95,9 @@ const HLPSelection = () => {
         {embedded.map((embeddedId) => (
           <div
             key={embeddedId}
-            className={`${color} text-white p-4 w-full md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(color)} transition`}
+            className={`${color} text-white p-4 w-full md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
+              color
+            )} transition`}
             onClick={() => handleClick(`HLP ${embeddedId}`)}
           >
             <strong className="text-xl">HLP {embeddedId}</strong>
@@ -96,7 +105,7 @@ const HLPSelection = () => {
           </div>
         ))}
       </div>
-          {/* Logout Button */}
+      {/* Logout Button */}
       <div className="p-2 mt-auto flex justify-center">
         <button
           className="w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 transition duration-300 font-semibold text-lg md:text-xl"

@@ -280,7 +280,10 @@ const ReflectionDetail = () => {
           </div>
         </div>
       )}
-      <div className="flex justify-end mt-6">
+
+      {/* Edit:  Removed this from the details page and added edit functionality in the completedlookfors page */}
+
+      {/* <div className="flex justify-end mt-6">
         <button
           onClick={() =>
             navigate("/submit-reflection/", {
@@ -291,7 +294,7 @@ const ReflectionDetail = () => {
         >
           Edit Reflection
         </button>
-      </div>
+      </div> */}
 
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
+import { FaArrowLeft, FaFilter, FaEye ,FaBars} from "react-icons/fa";
+
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
 import { formatDateToMMDDYYYY } from "../utils/utilFunc";
@@ -195,6 +196,7 @@ const MyReflections = () => {
           <FaFilter className="mr-2" />
           Filter
         </button>
+        
       </div>
 
       {/* Filters */}
