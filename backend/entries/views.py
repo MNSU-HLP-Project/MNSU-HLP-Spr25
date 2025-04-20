@@ -4,6 +4,8 @@ from .models import Entry, Prompt, PromptResponse, TeacherComment
 from .serializers import (EntrySerializer, EntryCreateSerializer, PromptSerializer,
                           PromptResponseSerializer,
                           TeacherCommentSerializer)
+from rest_framework import serializers
+
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
@@ -91,16 +93,12 @@ def create_entry(request):
                     {"message": "Entry has been created successfully!", "entry": return_serializer.data},
                     status=201
                 )
-            except Exception as e:
-                print(f"Error saving entry: {str(e)}")
-                return Response({"error": f"Error saving entry: {str(e)}"}, status=500)
-        else:
-            print(f"Validation errors: {serializer.errors}")
-            return Response({"error": "Failed to create entry", "details": serializer.errors}, status=400)
-    except Exception as e:
-        print(f"Unexpected error in create_entry: {str(e)}")
-        return Response({"error": f"Unexpected error: {str(e)}"}, status=500)
 
+            return entry
+
+        except Exception as e:
+            print(f"Error creating entry: {str(e)}")
+            raise serializers.ValidationError(f"Error creating entry: {str(e)}")
 
 
 
@@ -406,29 +404,24 @@ def get_prompts(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_entries_by_class(request, class_id, student_id):
+def get_entries_by_class(request, class_id):
     try:
         sup_class = SupervisorClass.objects.get(id=class_id)
-        student = User.objects.get(id=student_id)
-
-        # Check if student belongs to this class
-        if student not in sup_class.students.all():
-            return Response({"error": "Student not in this class"}, status=400)
-
-        entries = Entry.objects.filter(user=student).order_by('-created_at')
-        serializer = EntrySerializer(entries, many=True)
-        return Response(serializer.data, status=200)
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)
-    except User.DoesNotExist:
-        return Response({"error": "Student not found"}, status=404)
+
+    # Get all students in this class
+    students = sup_class.students.all()
+
+    # Get all entries from those students
+    entries = Entry.objects.filter(user__in=students).order_by('-created_at')
+    serializer = EntrySerializer(entries, many=True)
+    return Response(serializer.data, status=200)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_entries_by_student(request, student_id):
-    from django.contrib.auth.models import User
-    from entries.models import Entry
-    from entries.serializers import EntrySerializer
 
     try:
         student = User.objects.get(id=student_id)
@@ -437,4 +430,38 @@ def get_entries_by_student(request, student_id):
         return Response(serializer.data, status=200)
     except User.DoesNotExist:
         return Response({"error": "Student not found"}, status=404)
+    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_entries_by_class_and_student(request, class_id, student_id):
+    print(f"REQUESTED: class_id={class_id}, student_id={student_id}")
+    entries = Entry.objects.filter(user__id=student_id, sup_class__id=class_id)
+    print(f"ENTRIES FOUND: {entries.count()}")
+    for e in entries:
+        print(f"- {e.id}: user={e.user_id}, class={e.sup_class_id}")
+    serializer = EntrySerializer(entries, many=True)
+    return Response(serializer.data, status=200)
 
+
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def get_entry_by_id(request, entry_id):
+    try:
+        entry = Entry.objects.get(id=entry_id)
+
+        if request.method == "GET":
+            serializer = EntrySerializer(entry)
+            return Response(serializer.data)
+
+        elif request.method == "PATCH":
+            serializer = EntrySerializer(entry, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            print("❌ Serializer Errors:", serializer.errors)
+            return Response(serializer.errors, status=400)
+
+    except Entry.DoesNotExist:
+        return Response({"error": "Entry not found"}, status=404)
