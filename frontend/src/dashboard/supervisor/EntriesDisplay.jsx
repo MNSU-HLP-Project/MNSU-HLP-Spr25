@@ -141,7 +141,7 @@ const EntriesDisplay = () => {
               <div className="flex justify-between items-center mb-2">
                 <div>
                   <h2 className="text-base font-bold text-purple-800">
-                    HLP: {HLP_LookFors?.[entry.hlp]?.title || `HLP ${entry.hlp}`}
+                    HLP {entry.hlp}: {HLP_LookFors?.[entry.hlp]?.title}
                   </h2>
                   <p className="text-sm text-gray-500">
                     Group: {HLP_LookFors?.[entry.hlp]?.group || "N/A"}
@@ -160,19 +160,12 @@ const EntriesDisplay = () => {
               <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                 <span className="flex items-center gap-2">
                   <FaCalendarAlt />
-                  Week{entry.week_number}
+                  {entry.date}
                 </span>
                 <span className="text-gray-700">
-                  🔍 Look-for:{" "}
-                  {HLP_LookFors?.[entry.hlp]?.lookFors?.[entry.lookfor_number] ||
-                    `Look-for #${entry.lookfor_number}`}
+                  🔍 Look-for #{entry.lookfor_number}: {" "}
+                  {HLP_LookFors?.[entry.hlp]?.lookFors?.[entry.lookfor_number]}
                 </span>
-              </div>
-
-              {/* Weekly Goal */}
-              <div className="bg-indigo-50 text-indigo-900 p-4 rounded mb-4">
-                <p className="font-semibold mb-1">⚡ Weekly Goal:</p>
-                <p>{entry.weekly_goal || "No goal provided."}</p>
               </div>
 
               {/* Review Button */}

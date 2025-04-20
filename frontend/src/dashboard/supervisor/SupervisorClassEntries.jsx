@@ -18,7 +18,7 @@ const SupervisorClassEntries = () => {
   const [filters, setFilters] = useState({
     hlp: "",
     week: "",
-    status: ""
+    status: "pending"
   });
 
   useEffect(() => {
@@ -138,8 +138,8 @@ const SupervisorClassEntries = () => {
               >
                 <div className="flex justify-between items-center mb-2">
                   <div>
-                    <h2 className="text-base font-bold text-purple-800">
-                      {hlpInfo?.title || `HLP ${entry.hlp}`}
+                    <h2 className={`text-base font-bold`}>
+                    HLP {entry.hlp}: {hlpInfo?.title}
                     </h2>
                     <p className="text-sm text-gray-500">
                       Group: {hlpInfo?.group || "N/A"}
@@ -159,20 +159,16 @@ const SupervisorClassEntries = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <FaCalendarAlt />
-                    Week {entry.week_number} • {new Date(entry.date).toLocaleDateString()}
+                      {new Date(entry.date).toLocaleDateString()}
                   </span>
                 </div>
 
                 {lookForText && (
                   <div className="text-sm text-gray-700 mb-3">
-                    🔍 <span className="font-medium">Look-for:</span> {lookForText}
+                    🔍 <span className="font-medium">Look-for:</span> #{entry.lookfor_number}: {lookForText}
                   </div>
                 )}
 
-                <div className="bg-indigo-50 text-indigo-900 p-4 rounded mb-4">
-                  <p className="font-semibold mb-1">⚡ Weekly Goal:</p>
-                  <p>{entry.weekly_goal || "No weekly goal provided."}</p>
-                </div>
 
                 <div className="flex justify-end gap-2 mt-3">
                   <button

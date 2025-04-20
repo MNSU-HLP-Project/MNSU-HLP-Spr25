@@ -89,10 +89,8 @@ class EntryCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
         fields = [
-            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments',
-            'weekly_goal', 'goal_reflection', 'week_number', 'prompt_responses'
-        ]
-        read_only_fields = ['user']  # user will be taken from request context
+            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'week_number', 'prompt_responses'
+        ]  # user will be taken from request context
 
     def create(self, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])

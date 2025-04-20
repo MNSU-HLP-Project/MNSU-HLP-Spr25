@@ -68,7 +68,9 @@ const EditOrg = () => {
           {orgDetails.name}
         </h2>
         {!showEdit && (
-          <button className="w-full mt-4 p-3 bg-green-700 text-white rounded-lg hover:bg-green-800">
+          <button className="w-full mt-4 p-3 bg-green-700 text-white rounded-lg hover:bg-green-800"
+          onClick={setShowEdit(!showEdit)}
+          >
             Edit Org
           </button>
         )}

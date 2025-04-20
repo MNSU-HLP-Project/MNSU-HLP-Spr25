@@ -79,7 +79,7 @@ def create_entry(request):
             print(f"Missing required fields: {missing_fields}")
             return Response({"error": f"Missing required fields: {', '.join(missing_fields)}"}, status=400)
 
-        serializer = EntryCreateSerializer(data=data)
+        serializer = EntryCreateSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             try:
@@ -94,11 +94,15 @@ def create_entry(request):
                     status=201
                 )
 
-            return entry
-
-        except Exception as e:
-            print(f"Error creating entry: {str(e)}")
-            raise serializers.ValidationError(f"Error creating entry: {str(e)}")
+            except Exception as e:
+                print(f"Error saving entry: {str(e)}")
+                return Response({"error": f"Error saving entry: {str(e)}"}, status=500)
+        else:
+            print(f"Validation errors: {serializer.errors}")
+            return Response({"error": "Failed to create entry", "details": serializer.errors}, status=400)
+    except Exception as e:
+        print(f"Unexpected error in create_entry: {str(e)}")
+        return Response({"error": f"Unexpected error: {str(e)}"}, status=500)
 
 
 
