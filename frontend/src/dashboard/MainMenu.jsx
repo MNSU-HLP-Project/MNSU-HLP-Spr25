@@ -12,9 +12,9 @@ const MainMenu = () => {
   // Map roles to their respective components
   const roleComponents = {
     "Student Teacher": <StudentTeacherView />,
-    "Admin": <AdminView />,
-    "Superuser": <SuperuserView />,
-    "Supervisor": <SupervisorMainView />
+    Admin: <AdminView />,
+    Superuser: <SuperuserView />,
+    Supervisor: <SupervisorMainView />,
   };
 
   return (
@@ -34,8 +34,8 @@ const MainMenu = () => {
           className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-32 md:w-36 p-3 md:p-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 flex items-center justify-center transition duration-300 font-semibold text-lg md:text-xl z-50"
           onClick={() => {
             // Clear localStorage before logging out
-            localStorage.removeItem('jwtToken');
-            localStorage.removeItem('role');
+            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("role");
             navigate("/");
           }}
         >

@@ -15,7 +15,6 @@ const HLPSelection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleBackClick = () => navigate(-1);
-  const handleMenuClick = () => alert("Menu button clicked");
   const handleLogout = () => navigate("/");
   const [menuOpen, setMenuOpen] = useState(false);
 
