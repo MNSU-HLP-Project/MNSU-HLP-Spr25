@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Entry, TeacherComment, Answer, Prompt, PromptResponse
 from user_auth.models import SupervisorClass
+from .models import Entry, TeacherComment, Prompt, PromptResponse
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,15 +13,13 @@ class PromptSerializer(serializers.ModelSerializer):
         model = Prompt
         fields = '__all__'
 
-
-
 class PromptResponseSerializer(serializers.ModelSerializer):
-    prompt_detail = PromptSerializer(source='prompt', read_only=True)
+    id = serializers.IntegerField()
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = PromptResponse
-        fields = ['id', 'entry', 'prompt', 'prompt_detail', 'indicator', 'reflection', 'teacher_comments']
+        fields = ['id', 'prompt', 'reflection', 'teacher_comments', 'entry_obj']
 
     def get_teacher_comments(self, obj):
         comments = obj.teacher_comments.all()
@@ -29,6 +27,7 @@ class PromptResponseSerializer(serializers.ModelSerializer):
 
 class TeacherCommentSerializer(serializers.ModelSerializer):
     supervisor_name = serializers.SerializerMethodField()
+
 
     class Meta:
         model = TeacherComment
@@ -39,23 +38,49 @@ class TeacherCommentSerializer(serializers.ModelSerializer):
             return f"{obj.supervisor.user.first_name} {obj.supervisor.user.last_name}"
         return ""
 
-class AnswerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answer
-        fields = '__all__'
-
 class EntrySerializer(serializers.ModelSerializer):
     user_detail = UserSerializer(source='user', read_only=True)
-    prompt_responses = PromptResponseSerializer(many=True, read_only=True)
+    prompt_responses = PromptResponseSerializer(many=True)
     teacher_comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Entry
-        fields = '__all__'
-
+        fields = [
+            'id', 'user_detail', 'prompt_responses', 'teacher_comments',
+            'hlp', 'lookfor_number', 'score', 'date', 'status'
+        ]
+    
     def get_teacher_comments(self, obj):
         comments = TeacherComment.objects.filter(entry=obj, prompt_response=None)
         return TeacherCommentSerializer(comments, many=True).data
+
+    def update(self, instance, validated_data):
+        prompt_responses_data = validated_data.pop('prompt_responses', [])
+        # Update Entry fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Process prompt_responses
+        updated_responses = []
+        for response_data in prompt_responses_data:
+            response_id = response_data.get('id')
+            print(response_id)
+            print(response_data)
+            if response_id:
+                pr_instance = PromptResponse.objects.filter(id=response_id).first()
+                if pr_instance:
+                    for attr, val in response_data.items():
+                        setattr(pr_instance, attr, val)
+                    pr_instance.save()
+                    updated_responses.append(pr_instance)
+            else:
+                new_pr = PromptResponse.objects.create(**response_data, entry_obj=instance)
+                updated_responses.append(new_pr)
+
+        instance.prompt_responses.set(updated_responses)  # update the M2M field
+
+        return instance
 
 # Create Entry with nested objects
 class EntryCreateSerializer(serializers.ModelSerializer):
@@ -72,7 +97,6 @@ class EntryCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])
         request = self.context.get('request')
-
         try:
             # Get user and class
             user = request.user
@@ -103,12 +127,13 @@ class EntryCreateSerializer(serializers.ModelSerializer):
                         prompt_text = "What would you do differently next time?"
                     prompt = Prompt.objects.create(id=prompt_id, prompt=prompt_text)
 
-                PromptResponse.objects.create(
-                    entry=entry,
-                    prompt=prompt,
-                    indicator=prompt_response_data.get('indicator', 'na'),
+                # Create the prompt response
+                response = PromptResponse.objects.create(
+                    entry_obj = entry,
+                    prompt=prompt.prompt,
                     reflection=prompt_response_data.get('reflection', '')
                 )
+                entry.prompt_responses.add(response)
 
             return entry
 

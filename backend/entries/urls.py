@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    get_entries, create_entry, delete_entry,
+    get_entries, create_entry, delete_entry, edit_entry,
     get_entries_by_lookfor_number, get_entries_by_date, get_entries_by_hlp,
     get_entries_by_supervisor_students, get_student_entries, get_entry_detail,
     get_entries_by_class, get_entries_by_student, get_entries_by_class_and_student,
@@ -13,6 +13,7 @@ urlpatterns = [
     path("entries/", get_entries, name="entries-list"),  # GET all entries
     path("create-entry/", create_entry, name="create-entry"),  # POST new entry
     path("delete-entry/<int:id>/", delete_entry, name="delete-entry"),  # DELETE an entry
+    path("edit-entry/", edit_entry, name='edit-entry'),
 
     # Filter endpoints
     path("entries/by-date/", get_entries_by_date, name="get_entries_by_date"),

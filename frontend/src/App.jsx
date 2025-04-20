@@ -56,8 +56,8 @@ function App() {
       {loading ? <PreLoader isVisible={!fadeOut} /> : null}
       <div className={`app-container ${loading ? "hidden" : "visible"}`}>
         <Routes>
-        <Route path='/edit-class/' element={<ClassEditor />} />
-        <Route path="/edit-classes/" element={<ClassGenerator />} />
+          <Route path='/edit-class/' element={<ClassEditor />} />
+          <Route path="/edit-classes/" element={<ClassGenerator />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/mainmenu/" element={
             <ProtectedRoute allowedRoles={["Student Teacher", "Supervisor", "Admin", "Superuser"]}>

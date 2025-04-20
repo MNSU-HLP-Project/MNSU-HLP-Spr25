@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
+import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const ReflectionDetail = () => {
   const navigate = useNavigate();
@@ -118,35 +119,6 @@ const ReflectionDetail = () => {
     navigate("/reflections/");
   };
 
-  // Get indicator text
-  const getIndicatorText = (indicator) => {
-    switch (indicator) {
-      case "always":
-        return "Always";
-      case "sometimes":
-        return "Sometimes";
-      case "never":
-        return "Never";
-      case "na":
-      default:
-        return "N/A";
-    }
-  };
-
-  // Get indicator badge color
-  const getIndicatorBadgeColor = (indicator) => {
-    switch (indicator) {
-      case "always":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "sometimes":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "never":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "na":
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
 
   // Get status badge color
   const getStatusBadgeColor = (status) => {
@@ -235,20 +207,14 @@ const ReflectionDetail = () => {
           HLP {entry.hlp}: {hlpData.title || "Unknown HLP"}
         </h2>
         <p className="text-gray-600">
-          Week {entry.week_number} • Submitted on {new Date(entry.date).toLocaleDateString()}
+          Submitted on {entry.date}
         </p>
 
         {/* Look-fors */}
         {hlpData.lookFors && (
           <div className="mt-4">
-            <h3 className="font-medium text-lg mb-2">Look-fors:</h3>
-            <ul className="list-disc pl-5 space-y-1">
-              {Object.entries(hlpData.lookFors).map(([number, text]) => (
-                <li key={number} className="text-gray-700">
-                  <span className="font-medium">#{number}:</span> {text}
-                </li>
-              ))}
-            </ul>
+            <p>#{entry.lookfor_number}: {hlpData.lookFors[entry.lookfor_number]}</p>
+            <p className="text-sm text-gray-600 mt-1">Score: {entry.score ?? "N/A"}</p>
           </div>
         )}
       </div>
@@ -261,10 +227,7 @@ const ReflectionDetail = () => {
             {entry.prompt_responses.map((response) => (
               <div key={response.id} className="border-b pb-4 last:border-b-0 last:pb-0">
                 <div className="flex justify-between items-start">
-                  <h3 className="font-medium">{response.prompt_detail.prompt}</h3>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getIndicatorBadgeColor(response.indicator)}`}>
-                    {getIndicatorText(response.indicator)}
-                  </span>
+                  <h3 className="font-medium">{response.prompt}</h3>
                 </div>
 
                 {response.reflection && (
@@ -295,27 +258,6 @@ const ReflectionDetail = () => {
 
       {/* Evidence for Mastery section removed */}
 
-      {/* Weekly Goals */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-4">
-        <h2 className="text-xl font-semibold mb-4">Weekly Goals</h2>
-
-        <div className="mb-4">
-          <h3 className="font-medium mb-2">Weekly Goal:</h3>
-          <p className="text-gray-700">{entry.weekly_goal}</p>
-        </div>
-
-        <div className="mb-4">
-          <h3 className="font-medium mb-2">Criteria for Mastery:</h3>
-          <p className="text-gray-700">{entry.criteria_for_mastery}</p>
-        </div>
-
-        {entry.goal_reflection && (
-          <div>
-            <h3 className="font-medium mb-2">Goal Reflection:</h3>
-            <p className="text-gray-700">{entry.goal_reflection}</p>
-          </div>
-        )}
-      </div>
 
       {/* Overall Teacher Comments */}
       {entry.teacher_comments && entry.teacher_comments.length > 0 && (
@@ -338,6 +280,19 @@ const ReflectionDetail = () => {
           </div>
         </div>
       )}
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={() =>
+            navigate("/submit-reflection/", {
+              state: { hlp: entry.hlp, edit: true, detail: entry },
+            })
+          }
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
+        >
+          Edit Reflection
+        </button>
+      </div>
+
     </div>
   );
 };

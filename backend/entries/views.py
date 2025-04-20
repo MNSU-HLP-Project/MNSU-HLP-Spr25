@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.response import Response
-from .models import Entry, Prompt, PromptResponse, EvidenceForMastery, TeacherComment
+from .models import Entry, Prompt, PromptResponse, TeacherComment
 from .serializers import (EntrySerializer, EntryCreateSerializer, PromptSerializer,
                           PromptResponseSerializer,
                           TeacherCommentSerializer)
@@ -36,49 +36,62 @@ def get_entries(request):
         return Response({"error": f"Error fetching entries: {str(e)}"}, status=500)
 
 @api_view(["POST"])
+def edit_entry(request):
+    user = request.user
+    data = request.data.copy()
+    
+    # Get the entry ID from the request (assuming it's sent as 'id')
+    entry_id = data.get('id')
+    if not entry_id:
+        return Response({'error': "Entry ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        entry = Entry.objects.get(id=entry_id, user=user)  # optional: ensure user owns the entry
+    except Entry.DoesNotExist:
+        return Response({'error': "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Now update it by passing instance
+    serializer = EntrySerializer(entry, data=data, partial=True)  # partial=True allows partial updates
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    prompt_responses = serializers.ListField(child=serializers.JSONField(), required=True)
+    try:
+        # Add the current user to the data if not provided
+        data = request.data.copy()
+        if 'user' not in data:
+            data['user'] = request.user.id
 
-    class Meta:
-        model = Entry
-        fields = [
-            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments',
-            'weekly_goal', 'goal_reflection', 'week_number', 'prompt_responses', 'sup_class'
-        ]
-        read_only_fields = ['user', 'sup_class']
+        # Print the data for debugging
+        print(f"Received data for create_entry: {data}")
 
-    def create(self, validated_data):
-        prompt_responses_data = validated_data.pop('prompt_responses', [])
+        # Ensure required fields are present
+        required_fields = ['hlp', 'date', 'prompt_responses']
+        missing_fields = [field for field in required_fields if field not in data or not data[field]]
 
-        try:
-            # ✅ Create the entry (sup_class is already in validated_data from the view)
-            entry = Entry.objects.create(**validated_data)
+        if missing_fields:
+            print(f"Missing required fields: {missing_fields}")
+            return Response({"error": f"Missing required fields: {', '.join(missing_fields)}"}, status=400)
 
-            # Process each prompt
-            for prompt_response_data in prompt_responses_data:
-                prompt_id = prompt_response_data.get('prompt')
-                if not prompt_id:
-                    continue
+        serializer = EntryCreateSerializer(data=data)
 
-                try:
-                    prompt = Prompt.objects.get(id=prompt_id)
-                except Prompt.DoesNotExist:
-                    prompt_text = "Reflection prompt"
-                    if prompt_id == 1:
-                        prompt_text = "How did you implement this HLP in your teaching?"
-                    elif prompt_id == 2:
-                        prompt_text = "What challenges did you face?"
-                    elif prompt_id == 3:
-                        prompt_text = "What would you do differently next time?"
+        if serializer.is_valid():
+            try:
+                print("Serializer is valid, attempting to save...")
+                entry = serializer.save()
+                print(f"Entry saved successfully with ID: {entry.id}")
 
-                    prompt = Prompt.objects.create(id=prompt_id, prompt=prompt_text)
-
-                PromptResponse.objects.create(
-                    entry=entry,
-                    prompt=prompt,
-                    indicator=prompt_response_data.get('indicator', 'na'),
-                    reflection=prompt_response_data.get('reflection', '')
+                # Return the full entry with all nested data
+                return_serializer = EntrySerializer(entry)
+                return Response(
+                    {"message": "Entry has been created successfully!", "entry": return_serializer.data},
+                    status=201
                 )
 
             return entry

@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, password_validation
 from entries.serializers import PromptSerializer
+from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, SupervisorClass
 
 class InvitationSerializer(serializers.ModelSerializer):
@@ -52,13 +53,20 @@ class SignupSerializer(serializers.ModelSerializer):
 
         # If the role is admin, we need to make sure it matches the correct org admin email
         if role == 'Admin':
-            admin_org = Organization.objects.get(admin_email=validated_data['email'].lower())
+            admin_org = Organization.objects.filter(admin_email=validated_data['email'].lower()).first()
             if not admin_org:
-                raise serializers.ValidationError("No Authorized Orginization")
+                raise serializers.ValidationError({"email": "No Authorized Orginization"})
             else:
                 org = admin_org
         
-        # Create user now 
+        errors = dict() 
+        try:    
+            password_validation.validate_password(validated_data['password'],user=None) 
+        except DjangoValidationError as e:
+            errors['password'] = list(e.messages)
+        if errors:
+            raise serializers.ValidationError(errors)
+        
         user = User.objects.create_user(
             username=validated_data['email'].lower(),  # Use email as the username
             first_name=validated_data['first_name'],
