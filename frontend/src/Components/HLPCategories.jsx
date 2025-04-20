@@ -1,23 +1,35 @@
+import { useState } from "react";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import MainMenuDropdown from "../Components/StudentMainMenuDropdown"; 
 
 export default function HLPCategories() {
   // Categories of HLPs
   const categories = [
     { name: "Collaboration", color: "bg-collab", textColor: "text-white" },
     { name: "Data-Driven Planning", color: "bg-data", textColor: "text-white" },
-    { name: "Instruction in Behavior and Academics", color: "bg-instr", textColor: "text-white" },
-    { name: "Intensify and Intervene as Needed", color: "bg-itens", textColor: "text-white" },
+    {
+      name: "Instruction in Behavior and Academics",
+      color: "bg-instr",
+      textColor: "text-white",
+    },
+    {
+      name: "Intensify and Intervene as Needed",
+      color: "bg-itens",
+      textColor: "text-white",
+    },
   ];
   // Setting up default values
   const navigate = useNavigate();
   const handleBackClick = () => navigate(-1);
-  const handleMenuClick = () => alert("Menu button clicked");
+  const [menuOpen, setMenuOpen] = useState(false);
+
 
   // Navigate and change state to correct category
-  const handleCategoryClick = (name) => navigate("/hlpselection/", {
-    state: {name}
-  });
+  const handleCategoryClick = (name) =>
+    navigate("/hlpselection/", {
+      state: { name },
+    });
 
   // Logout on pressing log out
   const handleLogout = () => navigate("/");
@@ -27,9 +39,22 @@ export default function HLPCategories() {
       {/* Header */}
       <div>
         <div className="flex justify-between items-center mt-4 mb-4">
-          <FaArrowLeft className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform" onClick={handleBackClick} />
-          <h1 className="text-3xl md:text-4xl font-bold border-b-2 border-gray-300 pb-1">HLP Categories</h1>
-          <FaBars className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform" onClick={handleMenuClick} />
+          <FaArrowLeft
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+            onClick={handleBackClick}
+          />
+          <h1 className="text-3xl md:text-4xl font-bold border-b-2 border-gray-300 pb-1">
+            HLP Categories
+          </h1>
+          <div className="relative">
+            <FaBars
+              className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+              onClick={() => setMenuOpen(!menuOpen)}
+            />
+            {menuOpen && (
+              <MainMenuDropdown onClose={() => setMenuOpen(false)} />
+            )}
+          </div>
         </div>
 
         <p className="text-center text-lg md:text-xl font-bold text-gray-700 mb-4">

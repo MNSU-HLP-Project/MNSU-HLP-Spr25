@@ -104,6 +104,7 @@ const HLPReflectionForm = () => {
         console.log("Using default prompts due to API error");
       }
     };
+
     if (!edit){
       fetchPrompts();
     }
@@ -488,13 +489,13 @@ const HLPReflectionForm = () => {
             </label>
             <select
               className="w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-              onChange={(e) =>{
+              onChange={(e) => {
                 setFormData({
                   ...formData,
                   score: e.target.value,
-                })
-              console.log(formData)}
-              }
+                });
+                console.log(formData);
+              }}
               value={formData.score}
             >
               <option value={-1}>Choose a Score</option>
@@ -502,7 +503,6 @@ const HLPReflectionForm = () => {
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
-              
             </select>
           </div>
           <div className="mb-6">
@@ -512,22 +512,20 @@ const HLPReflectionForm = () => {
             <div className="w-full p-3 border border-indigo-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
               <DatePicker
                 selected={formData.date}
-                onChange={(date) =>{
-                  console.log(date)
+
+                onChange={(date) => {
+                  console.log(date);
                   setFormData({
                     ...formData,
                     date: date,
-                  })
-                }
-                }
+                  });
+                }}
                 className="w-full outline-none"
                 dateFormat="yyyy-MM-dd"
                 placeholderText="Select a date"
               />
             </div>
           </div>
-
-
           {formData.lookfor_number > 0 &&
             hlpData?.lookFors[formData.lookfor_number] && (
               <div className="p-4 bg-white rounded-lg border border-indigo-200 shadow-sm">

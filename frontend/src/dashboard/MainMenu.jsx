@@ -11,9 +11,9 @@ const MainMenu = () => {
 
   const roleComponents = {
     "Student Teacher": <StudentTeacherView />,
-    "Admin": <AdminView />,
-    "Superuser": <SuperuserView />,
-    "Supervisor": <SupervisorMainView />,
+    Admin: <AdminView />,
+    Superuser: <SuperuserView />,
+    Supervisor: <SupervisorMainView />,
   };
 
   return (
