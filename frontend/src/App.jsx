@@ -25,6 +25,10 @@ import SupervisorFeedback from "./Components/SupervisorFeedback";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ClassGenerator from "./dashboard/components/shared/ClassGenerator.jsx";
 import ClassEditor from "./dashboard/components/shared/ClassEditor.jsx";
+import SupervisorClassEntries from "./dashboard/supervisor/SupervisorClassEntries.jsx";
+import SupervisorStudents from "./dashboard/supervisor/SupervisorStudents.jsx";
+import EntriesDisplay from "./dashboard/supervisor/EntriesDisplay.jsx";
+import ReviewEntryDetails from "./dashboard/supervisor/ReviewEntryDetails.jsx";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -173,6 +177,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/supervisor/student-entries/:studentId" element={<EntriesDisplay/>} />
+          <Route path="/entries/by-class/:classId" element={<SupervisorClassEntries/>} />
+          <Route path = "/supervisor/students/:classId" element = {<SupervisorStudents/>}/>
+          <Route path = "/review/entry/:entryId" element = {<ReviewEntryDetails/>}/>
+         
+
+          <Route path="/supervisor/feedback/:entryId" element={
+            <ProtectedRoute allowedRoles={["Supervisor"]}>
+              <SupervisorFeedback />
+            </ProtectedRoute>
+          } />
 
           {/* Keep the old route for backward compatibility */}
           <Route

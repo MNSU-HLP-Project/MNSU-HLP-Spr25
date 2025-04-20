@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from user_auth.models import SupervisorClass
 from .models import Entry, TeacherComment, Prompt, PromptResponse
 from django.contrib.auth.models import User
 
@@ -87,28 +88,36 @@ class EntryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        fields = ['id','prompt_responses','hlp','week_number','lookfor_number','score','date','user']
+        fields = [
+            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments',
+            'weekly_goal', 'goal_reflection', 'week_number', 'prompt_responses'
+        ]
+        read_only_fields = ['user']  # user will be taken from request context
 
     def create(self, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])
-
+        request = self.context.get('request')
         try:
-            # Create the entry first
+            # Get user and class
+            user = request.user
+            sup_class = SupervisorClass.objects.get(students__id=user.id)
+
+            # Set user and sup_class on entry
+            validated_data['user'] = user
+            validated_data['sup_class'] = sup_class
+
+            # Create the entry
             entry = Entry.objects.create(**validated_data)
 
-            # Create prompt responses
+            # Handle prompt responses
             for prompt_response_data in prompt_responses_data:
-                # Ensure prompt exists
                 prompt_id = prompt_response_data.get('prompt')
                 if not prompt_id:
                     continue
 
                 try:
-                    # Try to get the prompt by ID
                     prompt = Prompt.objects.get(id=prompt_id)
                 except Prompt.DoesNotExist:
-                    # If prompt doesn't exist, create a new one with the ID and a default text
-                    print(f"Creating new prompt for ID {prompt_id}")
                     prompt_text = "Reflection prompt"
                     if prompt_id == 1:
                         prompt_text = "How did you implement this HLP in your teaching?"
@@ -116,11 +125,7 @@ class EntryCreateSerializer(serializers.ModelSerializer):
                         prompt_text = "What challenges did you face?"
                     elif prompt_id == 3:
                         prompt_text = "What would you do differently next time?"
-
-                    prompt = Prompt.objects.create(
-                        id=prompt_id,
-                        prompt=prompt_text
-                    )
+                    prompt = Prompt.objects.create(id=prompt_id, prompt=prompt_text)
 
                 # Create the prompt response
                 response = PromptResponse.objects.create(
@@ -130,12 +135,11 @@ class EntryCreateSerializer(serializers.ModelSerializer):
                 )
                 entry.prompt_responses.add(response)
 
-            # Create evidences for mastery
-
             return entry
 
+        except SupervisorClass.DoesNotExist:
+            raise serializers.ValidationError("Student is not enrolled in any class.")
         except Exception as e:
-            # Log the error for debugging
             print(f"Error creating entry: {str(e)}")
             raise serializers.ValidationError(f"Error creating entry: {str(e)}")
 

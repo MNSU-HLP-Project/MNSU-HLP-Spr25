@@ -15,7 +15,7 @@ class SupervisorClassSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SupervisorClass
-        fields = ['user', 'name','prompt_override','prompt_list']
+        fields = ['user', 'name','prompt_override','prompt_list','id']
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -172,7 +172,7 @@ class SupervisorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = '__all__'
+        fields = ['id', 'name', 'students']
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:

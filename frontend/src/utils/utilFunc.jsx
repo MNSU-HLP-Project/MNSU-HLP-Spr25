@@ -1,3 +1,4 @@
+
 export const formatDateToMMDDYYYY = (date) => {
     // Added line 3 to fix error that happens when date is entered as a string
     const d = new Date(date); // Ensure it's a Date object
@@ -6,3 +7,4 @@ export const formatDateToMMDDYYYY = (date) => {
     const yyyy = d.getFullYear();
     return `${yyyy}-${mm}-${dd}`;
 };
+

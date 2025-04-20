@@ -352,9 +352,7 @@ def get_users_by_role(request):
     return Response({"username": username, "The user's role": user.role}, status=200)
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -385,20 +383,24 @@ def get_students_under_supervisor(request):
         return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 """Added this to get students from specific class"""  
-@api_view(["POST"])
-def get_students_in_class(request):
-    class_obj = request.data.get("class_obj")
-
-    if not class_obj or not class_obj.get("name") or not class_obj.get("user"):
-        return Response({"error": "Class name and user ID are required"}, status=400)
-
+@api_view(["GET"])
+def get_students_in_class(request, class_id):
     try:
-        user = User.objects.get(id=class_obj['user'])
-        class_name = class_obj['name']
-        sup_class = SupervisorClass.objects.get(name=class_name, user=user)
-        students = sup_class.students.all()  # ✅ must include .all()
+        sup_class = SupervisorClass.objects.get(id=class_id)
+        students = sup_class.students.all()
         serializer = CurrentUserSerializer(students, many=True)
         return Response(serializer.data, status=200)
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)
 
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_class_byid(request, class_id):
+    try:
+        sup_class = SupervisorClass.objects.get(id=class_id)
+        return Response({"name": sup_class.name})
+    except SupervisorClass.DoesNotExist:
+        return Response({"error": "Class not found"}, status=404)

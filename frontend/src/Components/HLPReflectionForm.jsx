@@ -4,8 +4,8 @@ import { FaArrowLeft } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
 import { getPrompts } from "../utils/api";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const HLPReflectionForm = () => {
@@ -31,8 +31,8 @@ const HLPReflectionForm = () => {
 
   // Get the HLP number from location state
   const hlpNumber = location.state?.hlp?.replace("HLP ", "") || "";
-  const edit = location.state.edit;
-  const submitMsg = edit ? "Edit Reflection" : "Submit Reflection";
+  const edit = location.state.edit
+  const submitMsg = edit ? "Edit Reflection" : "Submit Reflection"
   const hlpData = hlpNumber ? HLP_LookFors[hlpNumber] : null;
 
   //Getting color form the group
@@ -46,8 +46,8 @@ const HLPReflectionForm = () => {
     lookfor_number: 0,
     week_number: 1,
     prompt_responses: [],
-    score: -1,
-    date: Date(),
+    score:-1,
+    date: Date()
   });
 
   // Create default prompts
@@ -59,13 +59,13 @@ const HLPReflectionForm = () => {
 
   // Initialize with default prompts
   useEffect(() => {
-    if (edit) {
-      setPrompts(location.state.detail.prompt_responses);
+    if (edit){
+      setPrompts(location.state.detail.prompt_responses)
       setFormData({
         ...location.state.detail,
-        date: new Date(location.state.detail.date + "T00:00:00"),
-      });
-      console.log("details", location.state.detail);
+        date: new Date(location.state.detail.date+"T00:00:00"),
+      })
+      console.log(location.state.detail)
     }
   }, []);
 
@@ -82,18 +82,20 @@ const HLPReflectionForm = () => {
         // Only update prompts if we got a valid response with data
         if (response.data && response.data.length > 0) {
           setPrompts(response.data);
-          let initialPromptResponses;
+          let initialPromptResponses
           // Initialize prompt responses with API data
-          initialPromptResponses = response.data.map((prompt) => ({
+           initialPromptResponses = response.data.map((prompt) => ({
             prompt: prompt.id,
             reflection: "",
-          }));
+          }))
 
           setFormData((prev) => ({
             ...prev,
             prompt_responses: initialPromptResponses,
           }));
-        } else {
+        }
+
+         else {
           console.log("No prompts found in API response, keeping defaults");
         }
       } catch (error) {
@@ -102,7 +104,8 @@ const HLPReflectionForm = () => {
         console.log("Using default prompts due to API error");
       }
     };
-    if (!edit) {
+
+    if (!edit){
       fetchPrompts();
     }
   }, []); // Empty dependency array to run only once on mount
@@ -165,23 +168,27 @@ const HLPReflectionForm = () => {
         })),
         // Evidence for Mastery section removed
         // Add date if not present
-        date:
-          formatDateToMMDDYYYY(formData.date) ||
-          new Date().toISOString().split("T")[0],
+        date: formatDateToMMDDYYYY(formData.date) || new Date().toISOString().split("T")[0],
       };
-      console.log(formData);
+      console.log(formData)
       console.log("Submitting data:", dataToSubmit);
 
       try {
         // Submit the form
         console.log("Attempting to submit form data...");
         try {
-          let response;
-          console.log(dataToSubmit);
-          if (!edit) {
-            response = await API.post("/entries/create-entry/", dataToSubmit);
+          let response
+          console.log(dataToSubmit)
+          if (!edit){
+            response = await API.post(
+              "/entries/create-entry/",
+              dataToSubmit
+            );
           } else {
-            response = await API.post("/entries/edit-entry/", dataToSubmit);
+            response = await API.post(
+              "/entries/edit-entry/",
+              dataToSubmit
+            )
           }
           console.log("Submission successful:", response.data);
           setSuccess(true);
@@ -383,8 +390,7 @@ const HLPReflectionForm = () => {
           <div>
             <p className="font-bold text-lg">Success!</p>
             <p className="text-green-800">
-              Your reflection has been {edit ? "edited" : "submitted"}{" "}
-              successfully!
+              Your reflection has been {edit ? 'edited': 'submitted'} successfully!
             </p>
             <p className="text-sm mt-2">
               You will be redirected to your reflections page in a moment...
@@ -506,6 +512,7 @@ const HLPReflectionForm = () => {
             <div className="w-full p-3 border border-indigo-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
               <DatePicker
                 selected={formData.date}
+
                 onChange={(date) => {
                   console.log(date);
                   setFormData({
@@ -519,7 +526,6 @@ const HLPReflectionForm = () => {
               />
             </div>
           </div>
-
           {formData.lookfor_number > 0 &&
             hlpData?.lookFors[formData.lookfor_number] && (
               <div className="p-4 bg-white rounded-lg border border-indigo-200 shadow-sm">
