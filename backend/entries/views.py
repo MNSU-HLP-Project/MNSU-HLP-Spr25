@@ -39,26 +39,41 @@ def get_entries(request):
 def edit_entry(request):
     user = request.user
     data = request.data.copy()
-    
+
     # Get the entry ID from the request (assuming it's sent as 'id')
     entry_id = data.get('id')
     if not entry_id:
         return Response({'error': "Entry ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     try:
         entry = Entry.objects.get(id=entry_id, user=user)  # optional: ensure user owns the entry
     except Entry.DoesNotExist:
         return Response({'error': "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # Check if this is a revision of a previously reviewed entry
+    was_revision_needed = entry.status == 'revision'
+
+    # If this was a revision, update the status back to pending
+    if was_revision_needed:
+        data['status'] = 'pending'
+        print(f"Entry {entry_id} was revised after feedback and is now pending review again")
+
     # Now update it by passing instance
     serializer = EntrySerializer(entry, data=data, partial=True)  # partial=True allows partial updates
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        updated_entry = serializer.save()
+
+        # Add a note in the response if this was a revision
+        response_data = serializer.data
+        if was_revision_needed:
+            response_data['was_revised'] = True
+            response_data['message'] = "Entry was revised and is now pending review again"
+
+        return Response(response_data)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
@@ -434,7 +449,7 @@ def get_entries_by_student(request, student_id):
         return Response(serializer.data, status=200)
     except User.DoesNotExist:
         return Response({"error": "Student not found"}, status=404)
-    
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_entries_by_class_and_student(request, class_id, student_id):

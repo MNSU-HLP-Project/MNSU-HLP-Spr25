@@ -259,14 +259,36 @@ const ReflectionDetail = () => {
       {/* Evidence for Mastery section removed */}
 
 
+      {/* Revision Notice */}
+      {entry.status === "revision" && (
+        <div className="bg-yellow-50 p-6 rounded-lg shadow-md mb-4 border border-yellow-200">
+          <div className="flex items-start">
+            <div className="bg-yellow-100 p-2 rounded-full mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-yellow-800 mb-2">Revision Requested</h2>
+              <p className="text-yellow-700">Your supervisor has requested revisions to this reflection. Please review their feedback below and make the necessary changes.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Overall Teacher Comments */}
       {entry.teacher_comments && entry.teacher_comments.length > 0 && (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Teacher Feedback</h2>
+        <div className={`bg-white p-6 rounded-lg shadow-md mb-4 ${entry.status === "revision" ? "border-2 border-yellow-300" : ""}`}>
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            Teacher Feedback
+          </h2>
           <div className="space-y-4">
             {entry.teacher_comments.map((comment) => (
-              <div key={comment.id} className="p-4 bg-blue-50 rounded-lg">
-                <p className="text-gray-700">{comment.comment}</p>
+              <div key={comment.id} className={`p-4 rounded-lg ${entry.status === "revision" ? "bg-yellow-50 border border-yellow-200" : "bg-blue-50"}`}>
+                <p className="text-gray-700 font-medium">{comment.comment}</p>
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-sm text-gray-500">
                     - {comment.supervisor_name} on {new Date(comment.date).toLocaleDateString()}
@@ -290,9 +312,20 @@ const ReflectionDetail = () => {
               state: { hlp: entry.hlp, edit: true, detail: entry },
             })
           }
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
+          className={`flex items-center font-medium py-2 px-4 rounded-lg shadow-md transition duration-200 ${entry.status === "revision"
+            ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+            : "bg-indigo-600 hover:bg-indigo-700 text-white"}`}
         >
-          Edit Reflection
+          {entry.status === "revision" ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Make Requested Revisions
+            </>
+          ) : (
+            "Edit Reflection"
+          )}
         </button>
       </div>
 

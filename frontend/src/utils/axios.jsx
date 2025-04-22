@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Set base URL
 const API = axios.create({
-    baseURL: 'http://127.0.0.1:8000'
+    baseURL: 'http://127.0.0.1:8001'
 })
 
 //Setting config for request
@@ -12,7 +12,7 @@ API.interceptors.request.use((config) => {
 
     // make a boolean for easy check
     const isPublic = publicPaths.some((path) => config.url.includes(path));
-  
+
     // If it is not public than add the token to the auth header
     if (!isPublic) {
       const token = localStorage.getItem('jwtToken');
@@ -20,7 +20,7 @@ API.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
-  
+
     return config;
   });
 
@@ -33,17 +33,17 @@ API.interceptors.request.use((config) => {
         { path: '/user_auth/login/', action: 'Login' },
         { path: '/user_auth/edit_org/', action: 'Organization Edit' }
       ];
-      
+
       // Check if the url contains one of these
       const matched = successPaths.find((entry) =>
         response.config.url.includes(entry.path)
       );
-      
+
       // If it does then alert the user
       if (matched) {
         alert(`${matched.action} completed successfully!`);
       }
-  
+
       return response;
     },
     // error handling
@@ -58,7 +58,7 @@ API.interceptors.request.use((config) => {
       const isPublic = publicPaths.some((path) => url.includes(path));
       // If the status is 401 or 403 we should redirect back and clear the token
       if (!isPublic && (status === 401 || status === 403)) {
-        window.localStorage.removeItem('jwtToken'); // Clear token 
+        window.localStorage.removeItem('jwtToken'); // Clear token
         window.location.href = '/'; // force redirect login
       }
       // If it isn't public we should also alert the user
@@ -71,5 +71,5 @@ API.interceptors.request.use((config) => {
       return Promise.reject(error);
     }
   );
-  
+
 export default API;

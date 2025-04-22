@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import API from "../../utils/axios";
 
 import Sidebar from "./Sidebar";
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark } from "react-icons/fa";
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 
 const ReviewEntryDetails = () => {
@@ -34,16 +34,50 @@ const ReviewEntryDetails = () => {
   const handleAction = async (newStatus) => {
     if (!entry) return;
     setUpdating(true);
+    let commentAdded = false;
+
     try {
-      const response = await API.patch(`/entries/entry/${entryId}/`, {
-        status: newStatus,
-        teacher_reply: comment || "",
-      });
-      setEntry(response.data);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      // First, add the teacher comment if there is one (non-empty)
+      if (comment && comment.trim().length > 0) {
+        try {
+          // Add teacher comment
+          await API.post(`/entries/entries/${entryId}/comment/`, {
+            comment: comment.trim(),
+            score: parseInt(entry.score) || 1 // Use entry score or default to 1, ensure it's a number
+          });
+          console.log("Teacher comment added successfully");
+          commentAdded = true;
+        } catch (commentErr) {
+          console.error("Error adding teacher comment:", commentErr);
+          // Only show an alert if the comment was actually provided but failed to save
+          if (comment.trim().length > 0) {
+            console.log("Comment was provided but failed to save");
+            // We'll continue with the status update anyway
+          }
+        }
+      } else {
+        console.log("No comment provided, skipping comment submission");
+      }
+
+      // Then update the status
+      try {
+        const response = await API.patch(`/entries/entry/${entryId}/`, {
+          status: newStatus
+        });
+
+        // Refresh the entry data to include the new comment
+        const updatedEntryResponse = await API.get(`/entries/entry/${entryId}/`);
+        setEntry(updatedEntryResponse.data);
+
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } catch (statusErr) {
+        console.error("Failed to update entry status:", statusErr);
+        alert("Failed to update entry status. Please try again.");
+      }
     } catch (err) {
-      alert("Failed to update entry.");
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
     } finally {
       setUpdating(false);
     }
@@ -55,6 +89,8 @@ const ReviewEntryDetails = () => {
         return "bg-green-100 text-green-800 border border-green-200";
       case "pending":
         return "bg-blue-100 text-blue-800 border border-blue-200";
+      case "revision":
+        return "bg-yellow-100 text-yellow-800 border border-yellow-200";
       default:
         return "bg-gray-100 text-gray-700 border border-gray-200";
     }
@@ -131,12 +167,27 @@ const ReviewEntryDetails = () => {
               </div>
             </div>
 
-            {/* Reflection */}
-            <div>
-              <h3 className="font-semibold text-indigo-800 mb-2 text-base">📝 Reflection</h3>
-              <div className="bg-indigo-50 text-indigo-900 p-4 rounded-lg leading-relaxed">
-                {entry.goal_reflection || "No reflection provided."}
-              </div>
+            {/* Student Prompt Responses */}
+            <div className="mb-6">
+              <h3 className="font-semibold text-indigo-800 mb-3 text-base flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Student Reflections
+              </h3>
+
+              {entry.prompt_responses && entry.prompt_responses.length > 0 ? (
+                <div className="space-y-4">
+                  {entry.prompt_responses.map((response, index) => (
+                    <div key={index} className="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                      <h4 className="font-medium text-indigo-800 mb-2">{response.prompt}</h4>
+                      <p className="text-gray-700">{response.reflection || "No response provided."}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No reflections provided.</p>
+              )}
             </div>
 
             {/* Comment Box */}
@@ -156,12 +207,27 @@ const ReviewEntryDetails = () => {
             {/* Success Message */}
             {success && (
               <div className="text-green-600 font-medium">
-                ✅ Reflection approved successfully!
+                ✅ Action completed successfully!
               </div>
             )}
 
-            {/* Approve Button */}
-            <div className="flex justify-end mt-4">
+            {/* Action Buttons */}
+            <div className="flex justify-end mt-4 space-x-3">
+              {/* Needs Revision Button */}
+              <button
+                onClick={() => handleAction("revision")}
+                disabled={updating || entry.status === "approved" || entry.status === "revision"}
+                className={`flex items-center gap-2 px-5 py-2 rounded-lg shadow-md font-medium transition ${
+                  entry.status === "revision" || entry.status === "approved"
+                    ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                    : "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white"
+                }`}
+              >
+                <FaRedo className="h-4 w-4" />
+                {entry.status === "revision" ? "Revision Requested" : "Request Revision"}
+              </button>
+
+              {/* Approve Button */}
               <button
                 onClick={() => handleAction("approved")}
                 disabled={updating || entry.status === "approved"}
@@ -171,20 +237,7 @@ const ReviewEntryDetails = () => {
                     : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
                 }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <FaCheck className="h-4 w-4" />
                 {entry.status === "approved" ? "Already Approved" : "Approve Reflection"}
               </button>
             </div>

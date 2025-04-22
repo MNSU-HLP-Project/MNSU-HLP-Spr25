@@ -181,7 +181,7 @@ function App() {
           <Route path="/entries/by-class/:classId" element={<SupervisorClassEntries/>} />
           <Route path = "/supervisor/students/:classId" element = {<SupervisorStudents/>}/>
           <Route path = "/review/entry/:entryId" element = {<ReviewEntryDetails/>}/>
-         
+
 
           <Route path="/supervisor/feedback/:entryId" element={
             <ProtectedRoute allowedRoles={["Supervisor"]}>

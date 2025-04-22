@@ -562,8 +562,18 @@ const HLPReflectionForm = () => {
                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
               />
             </svg>
-            Reflection Prompts
+            Reflection Prompts {edit ? "(Edit Your Previous Responses)" : ""}
           </h2>
+          {edit && (
+            <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded-lg">
+              <p className="text-yellow-800 font-medium flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                </svg>
+                You are editing your previous reflection. Your previous responses are shown below.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-6">
             {prompts.map((prompt, index) => (
@@ -575,10 +585,18 @@ const HLPReflectionForm = () => {
                   {prompt.prompt}
                 </h3>
 
+                {/* Display previous response if editing */}
+                {edit && prompt.reflection && (
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800 font-medium mb-1">Your Previous Response:</p>
+                    <p className="text-gray-700">{prompt.reflection}</p>
+                  </div>
+                )}
+
                 {/* Optional reflection with better styling */}
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    Comments:
+                    {edit ? "Edit Your Comments:" : "Comments:"}
                   </label>
                   <textarea
                     className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
@@ -591,7 +609,7 @@ const HLPReflectionForm = () => {
                         e.target.value
                       )
                     }
-                    placeholder="Add your reflection here..."
+                    placeholder={edit ? "Edit your previous response here..." : "Add your reflection here..."}
                   ></textarea>
                 </div>
               </div>

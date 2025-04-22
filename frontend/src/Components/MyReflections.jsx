@@ -37,22 +37,22 @@ const MyReflections = () => {
 
   const groupEntriesByHLP = () => {
     const grouped = {};
-  
+
     entries.forEach((entry) => {
       if (!grouped[entry.hlp]) {
         grouped[entry.hlp] = [];
       }
       grouped[entry.hlp].push(entry);
     });
-  
+
     // Sort each group by date
     Object.keys(grouped).forEach((hlp) => {
       grouped[hlp].sort((a, b) => new Date(a.date) - new Date(b.date)); // newest first
     });
-  
+
     return grouped;
   };
-  
+
   // Fetch entries with optional filters
   const fetchEntries = async (filterParams = {}) => {
     setLoading(true);
@@ -102,7 +102,7 @@ const MyReflections = () => {
       [hlp]: !prev[hlp]
     }));
   };
-  
+
   // Removed dummy entries function
 
   // Handle filter changes
@@ -196,7 +196,7 @@ const MyReflections = () => {
           <FaFilter className="mr-2" />
           Filter
         </button>
-        
+
       </div>
 
       {/* Filters */}
@@ -313,7 +313,7 @@ const MyReflections = () => {
       {isOpen && (
         <div className="space-y-4 p-4 border-t">
           {hlpEntries.map((entry) => (
-            <div key={entry.id} className="border p-4 rounded-lg">
+            <div key={entry.id} className={`border p-4 rounded-lg ${entry.status === "revision" ? "border-2 border-yellow-300 bg-yellow-50" : ""}`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-sm text-gray-600">{entry.date}</p>
@@ -321,16 +321,27 @@ const MyReflections = () => {
                 </div>
                 <button
                   onClick={() => viewEntryDetails(entry.id)}
-                  className="flex items-center text-blue-600 hover:text-blue-800"
+                  className={`flex items-center px-3 py-1 rounded-lg ${entry.status === "revision"
+                    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border border-yellow-300"
+                    : "text-blue-600 hover:text-blue-800"}`}
                 >
                   <FaEye className="mr-1" />
-                  View Details
+                  {entry.status === "revision" ? "Review & Revise" : "View Details"}
                 </button>
               </div>
 
+              {entry.status === "revision" && (
+                <div className="mt-3 flex items-center text-yellow-800 bg-yellow-100 p-2 rounded-lg border border-yellow-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <span className="font-medium">Revision needed - Check feedback</span>
+                </div>
+              )}
+
               {entry.teacher_comments?.length > 0 && (
-                <div className="mt-3 bg-blue-50 p-3 rounded">
-                  <h4 className="font-semibold text-blue-800">Teacher Feedback:</h4>
+                <div className={`mt-3 p-3 rounded ${entry.status === "revision" ? "bg-yellow-50 border border-yellow-200" : "bg-blue-50"}`}>
+                  <h4 className={`font-semibold ${entry.status === "revision" ? "text-yellow-800" : "text-blue-800"}`}>Teacher Feedback:</h4>
                   <p className="text-gray-700 mt-1">{entry.teacher_comments[0].comment}</p>
                   <p className="text-sm text-gray-500 mt-1">- {entry.teacher_comments[0].supervisor_name} on {new Date(entry.teacher_comments[0].date).toLocaleDateString()}</p>
                 </div>
