@@ -63,22 +63,23 @@ class EntrySerializer(serializers.ModelSerializer):
 
         # Process prompt_responses
         updated_responses = []
-        for response_data in prompt_responses_data:
-            response_id = response_data.get('id')
-            print(response_id)
-            print(response_data)
-            if response_id:
-                pr_instance = PromptResponse.objects.filter(id=response_id).first()
-                if pr_instance:
-                    for attr, val in response_data.items():
-                        setattr(pr_instance, attr, val)
-                    pr_instance.save()
-                    updated_responses.append(pr_instance)
-            else:
-                new_pr = PromptResponse.objects.create(**response_data, entry_obj=instance)
-                updated_responses.append(new_pr)
+        if prompt_responses_data:
+            for response_data in prompt_responses_data:
+                response_id = response_data.get('id')
+                print(response_id)
+                print(response_data)
+                if response_id:
+                    pr_instance = PromptResponse.objects.filter(id=response_id).first()
+                    if pr_instance:
+                        for attr, val in response_data.items():
+                            setattr(pr_instance, attr, val)
+                        pr_instance.save()
+                        updated_responses.append(pr_instance)
+                else:
+                    new_pr = PromptResponse.objects.create(**response_data, entry_obj=instance)
+                    updated_responses.append(new_pr)
 
-        instance.prompt_responses.set(updated_responses)  # update the M2M field
+            instance.prompt_responses.set(updated_responses)  # update the M2M field
 
         return instance
 
