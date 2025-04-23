@@ -44,6 +44,11 @@ const HLPReflectionList = () => {
           className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
           onClick={handleBackClick}
         />
+        <div className="mb-6 text-black text-center py-3">
+        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+          HLP #{hlpNumber}: {HLP_LookFors[hlpNumber].title}
+        </p>
+      </div>
         <div className="relative">
             <FaBars
               className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
@@ -54,12 +59,6 @@ const HLPReflectionList = () => {
             )}
           </div>
 
-      </div>
-        {/* HLP Info Section */}
-        <div className="mb-6 text-black text-center py-3">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
-          HLP #{hlpNumber}: {HLP_LookFors[hlpNumber].title}
-        </p>
       </div>
       <div className="p-4 md:p-8">
         <div className={`mb-6 ${HLP_LookFors.groups[HLP_LookFors[hlpNumber].group].color} from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md`}>

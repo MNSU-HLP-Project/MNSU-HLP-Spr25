@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainMenuDropdown = ({ className = "", onClose }) => {
   const navigate = useNavigate();
   const dropdownRef = useRef();
+  const [supervisor, setSupervisor] = useState(localStorage.getItem('role')=='Supervisor')
 
   const handleNavigation = (path) => {
-    localStorage.setItem("role", "Student Teacher");
     navigate(path);
     if (onClose) onClose();
   };
@@ -28,10 +28,38 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
   }, [onClose]);
 
   return (
-    <div
-      ref={dropdownRef}
-      className={`absolute right-2 top-10 w-64 max-w-[90vw] bg-white border border-gray-300 rounded-xl shadow-xl z-50 p-4 space-y-3 ${className}`}
-    >
+    <div>
+      {supervisor &&
+        <div
+        ref={dropdownRef}
+        className={`absolute right-2 top-10 w-64 max-w-[90vw] bg-white border border-gray-300 rounded-xl shadow-xl z-50 p-4 space-y-3 ${className}`}
+      >
+        <button
+        className="w-full text-center px-4 py-3 bg-blue-600 text-white rounded-lg text-base font-semibold hover:bg-blue-700 transition"
+        onClick={() => navigate("/classes/")}
+      >
+        📝 View Reflections
+        </button>
+        <button
+        className="w-full text-center px-4 py-3 bg-green-600 text-white rounded-lg text-base font-semibold hover:bg-green-700 transition"
+        onClick={() => navigate("/mainmenu/")}
+      >
+        Dashboard
+      </button>
+      <button
+        onClick={handleLogout}
+        className="w-full text-center px-4 py-3 bg-red-600 text-white rounded-lg text-base font-semibold hover:bg-red-700 transition"
+      >
+        Log Out
+      </button>
+      </div>
+
+      }
+      {!supervisor && 
+      <div
+        ref={dropdownRef}
+        className={`absolute right-2 top-10 w-64 max-w-[90vw] bg-white border border-gray-300 rounded-xl shadow-xl z-50 p-4 space-y-3 ${className}`}
+      >
       <button
         onClick={() => handleNavigation("/hlpcategories/")}
         className="w-full text-left px-4 py-3 bg-blue-600 text-white rounded-lg text-base font-semibold hover:bg-blue-700 transition"
@@ -59,8 +87,10 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
       >
         Log Out
       </button>
+      </div>
+      }
     </div>
-  );
-};
+  );;
+}
 
 export default MainMenuDropdown;
