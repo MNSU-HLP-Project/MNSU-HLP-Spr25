@@ -57,7 +57,7 @@ function Auth() {
 
       {/* Username Input */}
       <div className="mb-5">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
           Username
         </label>
         <input
@@ -75,7 +75,7 @@ function Auth() {
 
       {/* Password Input */}
       <div className="mb-5">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
           Password
         </label>
         <input
@@ -101,7 +101,7 @@ function Auth() {
       {/* Submit Button */}
       <button
         onClick={buttonPress}
-        className="w-full py-3 bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-md hover:shadow-xl transform hover:scale-[1.02] active:scale-95 transition-all duration-200 ease-in-out"
+        className="w-full py-3 bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-base md:text-lg lg:text-xl text-white font-semibold rounded-lg shadow-md hover:shadow-xl transform hover:scale-[1.02] active:scale-95 transition-all duration-200 ease-in-out"
       >
         Log In
       </button>

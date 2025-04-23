@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Auth from "./Login"
+import { useState, useEffect } from "react";
+import Auth from "./Login";
 
 function LandingPage() {
-  const [showAuth, setShowAuth] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const [showAuth, setShowAuth] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
@@ -48,7 +48,7 @@ function LandingPage() {
               Master your High-Leverage Practices (HLPs) with ease!
             </h2>
             <button
-              className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-full shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-30"
+              className="px-8 py-4 md:px-10 md:py-6 lg:px-12 lg:py-8 text-base md:text-lg lg:text-2xl bg-white text-blue-600 font-semibold rounded-full shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-30"
               onClick={() => setShowAuth(true)}
             >
               Log In
@@ -72,28 +72,34 @@ function LandingPage() {
       {/* Features Section */}
       <section className="w-full py-20 px-6 bg-white">
         <div className="container mx-auto max-w-5xl">
-          <h2 className="text-3xl font-bold mb-12 text-center text-gray-800">Why TeachTrack?</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center text-gray-800">
+            Why TeachTrack?
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: "📊",
                 title: "Track & Score HLPs",
-                description: "Easily track and score your High-Leverage Practices",
+                description:
+                  "Easily track and score your High-Leverage Practices",
               },
               {
                 icon: "📝",
                 title: "Easy Journaling",
-                description: "Document your teaching journey with our intuitive journaling tools",
+                description:
+                  "Document your teaching journey with our intuitive journaling tools",
               },
               {
                 icon: "📈",
                 title: "Insights & Progress",
-                description: "Gain valuable insights and visualize your progress over time",
+                description:
+                  "Gain valuable insights and visualize your progress over time",
               },
               {
                 icon: "🤝",
                 title: "Collaborate & Share",
-                description: "Work together with mentors and peers to improve your skills",
+                description:
+                  "Work together with mentors and peers to improve your skills",
               },
             ].map((feature, index) => (
               <div
@@ -103,7 +109,9 @@ function LandingPage() {
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 flex items-center justify-center mb-4 text-3xl">
                   <span className="text-white">{feature.icon}</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{feature.title}</h3>
+                <h3 className="text-xl font-bold mb-2 text-gray-800">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -128,7 +136,12 @@ function LandingPage() {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
               <Auth />
@@ -137,7 +150,7 @@ function LandingPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default LandingPage
+export default LandingPage;

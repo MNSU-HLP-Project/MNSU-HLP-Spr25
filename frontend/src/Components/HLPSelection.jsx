@@ -83,27 +83,32 @@ const HLPSelection = () => {
             onClick={() => handleClick(`HLP ${pillarId}`)}
           >
             <strong className="text-xl">HLP {pillarId}</strong>
-            <p>{HLP_LookFors[pillarId].title}</p>
+            <p className="text-sm line-clamp-2 md:line-clamp-none">
+              {HLP_LookFors[pillarId].title}
+            </p>
           </div>
         ))}
       </div>
 
       {/* Embedded HLPs Section */}
       <h2 className="mt-4 text-xl font-semibold text-center">Embedded HLP’s</h2>
-      <div className="flex flex-row-6 md:flex-row-4 justify-center gap-3 mt-3 px-4">
+      <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 mt-3 px-4">
         {embedded.map((embeddedId) => (
           <div
             key={embeddedId}
-            className={`${color} text-white p-4 w-full md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
+            className={`${color} text-white p-4 w-[45%] sm:w-[30%] md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
               color
             )} transition`}
             onClick={() => handleClick(`HLP ${embeddedId}`)}
           >
-            <strong className="text-xl">HLP {embeddedId}</strong>
-            <p>{HLP_LookFors[embeddedId]?.title}</p>
+            <strong className="text-xl mb-1">HLP {embeddedId}</strong>
+            <p className="text-sm line-clamp-3 md:line-clamp-none">
+              {HLP_LookFors[embeddedId]?.title}
+            </p>
           </div>
         ))}
       </div>
+
       {/* Logout Button */}
       <div className="p-2 mt-auto flex justify-center">
         <button
