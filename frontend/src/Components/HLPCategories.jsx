@@ -35,7 +35,7 @@ export default function HLPCategories() {
   const handleLogout = () => navigate("/");
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-b from-gray-100 to-white p-6">
+    <div className="min-h-[100dvh] flex flex-col justify-between bg-gradient-to-b from-gray-100 to-white p-6">
       {/* Header */}
       <div>
         <div className="flex justify-between items-center mt-4 mb-4">

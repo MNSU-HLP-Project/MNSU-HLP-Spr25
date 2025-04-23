@@ -5,6 +5,7 @@ import API from "../../utils/axios";
 import { FaArrowLeft, FaCalendarAlt, FaFilter, FaEye } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
+import MenuDropdown from "../../Components/MenuDropdown";
 
 const EntriesDisplay = () => {
   const { classId, studentId } = useParams();
@@ -69,12 +70,12 @@ const EntriesDisplay = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
+    <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
+      {window.screen.width > 600 && <Sidebar />}
 
       <main className="flex-1 p-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 rounded shadow">
+        <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded shadow">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
@@ -84,15 +85,13 @@ const EntriesDisplay = () => {
               <FaArrowLeft />
             </button>
             <div>
-              <h1 className="text-2xl font-bold">Student Reflections</h1>
-              <p className="text-sm text-purple-100">Review submissions by student</p>
+              <h1 className="text-xl md-text-2xl font-bold">Student Reflections</h1>
+              <p className="text-sm text-white-100">Review submissions by student</p>
             </div>
           </div>
           <div>
-            <button className="bg-white text-purple-700 px-4 py-2 rounded shadow hover:bg-purple-100 flex items-center space-x-2">
-              <FaFilter />
-              <span>Filter</span>
-            </button>
+            
+            {window.screen.width <= 600 && <MenuDropdown />}
           </div>
         </div>
 
@@ -144,7 +143,7 @@ const EntriesDisplay = () => {
               {/* HLP & Group Info */}
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <h2 className="text-base font-bold text-purple-800">
+                  <h2 className="text-base font-bold text-blue-800">
                     HLP {entry.hlp}: {HLP_LookFors?.[entry.hlp]?.title}
                   </h2>
                   <p className="text-sm text-gray-500">
@@ -176,7 +175,7 @@ const EntriesDisplay = () => {
               <div className="flex justify-end mt-3">
                 <button
                   onClick={() => navigate(`/review/entry/${entry.id}`)}
-                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded shadow flex items-center gap-2 text-sm"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded shadow flex items-center gap-2 text-sm"
                 >
                   <FaEye />
                   Review Details

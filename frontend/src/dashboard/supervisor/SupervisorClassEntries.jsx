@@ -5,6 +5,7 @@ import API from "../../utils/axios";
 import { FaArrowLeft, FaUser, FaCalendarAlt, FaEye, FaFilter } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
+import MenuDropdown from "../../Components/MenuDropdown";
 
 const SupervisorClassEntries = () => {
   const { classId } = useParams();
@@ -71,12 +72,12 @@ const SupervisorClassEntries = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
+    <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
+      {window.screen.width > 600 && <Sidebar />}
 
       <main className="flex-1 p-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 rounded shadow">
+        <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded shadow">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate(-1)}
@@ -86,10 +87,12 @@ const SupervisorClassEntries = () => {
               <FaArrowLeft />
             </button>
             <div>
-              <h1 className="text-2xl font-bold">Student Reflections</h1>
-              <p className="text-sm text-purple-100">Viewing entries for: <span className="font-semibold">{className}</span></p>
+              <h1 className="text-xl font-bold">Student Reflections</h1>
+              <p className="text-sm text-white-100">Viewing all class entries for: <span className="font-semibold">{className}</span></p>
             </div>
+
           </div>
+          {window.screen.width <= 600 && <MenuDropdown />}
         </div>
 
         {/* Filters */}
@@ -163,7 +166,7 @@ const SupervisorClassEntries = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <FaCalendarAlt />
-                      {new Date(entry.date).toLocaleDateString()}
+                      {entry.date}
                   </span>
                 </div>
 
@@ -177,7 +180,7 @@ const SupervisorClassEntries = () => {
                 <div className="flex justify-end gap-2 mt-3">
                   <button
                     onClick={() => navigate(`/review/entry/${entry.id}`)}
-                    className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 flex items-center gap-2"
+                    className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 flex items-center gap-2"
                   >
                     <FaEye /> Review Details
                   </button>

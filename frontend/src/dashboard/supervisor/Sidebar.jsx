@@ -25,12 +25,10 @@ const Sidebar = () => {
         <NavLink to="/classes" className={getLinkClasses("/classes")}>
           <span>Classes</span>
         </NavLink>
-        <button
-          onClick={() => alert("Functionality coming soon!")}
-          className="flex items-center space-x-2 text-left w-full text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-        >
+        <NavLink to="/mainmenu" className={getLinkClasses("/mainmenu")}>
           <span>Settings</span>
-        </button>
+        </NavLink>
+
       </nav>
     </aside>
   );

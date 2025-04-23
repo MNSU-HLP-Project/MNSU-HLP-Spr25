@@ -4,6 +4,7 @@ import { getStudentEntries } from "../utils/api";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
 import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
 import API from "../utils/axios";
+import HLP_LookFors from "../assets/HLP_Lookfors";
 
 const HLPReflectionList = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const HLPReflectionList = () => {
   }, [hlpNumber]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
         <FaArrowLeft
@@ -54,9 +55,15 @@ const HLPReflectionList = () => {
           </div>
 
       </div>
-      <div className="p-4 md:p-8 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200">
-        <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md">
-        <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mb-4 text-indigo-800 flex items-center">
+        {/* HLP Info Section */}
+        <div className="mb-6 text-black text-center py-3">
+        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+          HLP #{hlpNumber}: {HLP_LookFors[hlpNumber].title}
+        </p>
+      </div>
+      <div className="p-4 md:p-8">
+        <div className={`mb-6 ${HLP_LookFors.groups[HLP_LookFors[hlpNumber].group].color} from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md`}>
+        <h2 className="text-xl md:text-xl lg:text-2xl font-semibold mb-4 text-white flex items-center">
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,9 +83,9 @@ const HLPReflectionList = () => {
           </h2>
 
           {loading ? (
-            <p className="text-gray-700">Loading reflections...</p>
+            <p className="text-white">Loading reflections...</p>
           ) : entries.length === 0 ? (
-            <p className="text-gray-600">
+            <p className="text-white">
               No reflections submitted yet for this HLP.
             </p>
           ) : (
@@ -88,16 +95,16 @@ const HLPReflectionList = () => {
                   key={entry.id}
                   className="bg-white p-5 rounded-lg border border-indigo-200 shadow-sm transition-all duration-300 hover:shadow-md"
                 >
-                  <h3 className="text-lg md:text-3xl  font-semibold text-indigo-700 mb-2">
+                  <h3 className="text-lg md:text-2xl  font-semibold text-indigo-700 mb-2">
                     Look-for #{entry.lookfor_number}
                   </h3>
-                  <p className="text-sm md:text-2xl text-gray-600 mb-1">
+                  <p className="text-sm md:text-xl text-gray-600 mb-1">
                     Score:{" "}
                     <span className="font-medium text-gray-800">
                       {entry.score}
                     </span>
                   </p>
-                  <p className="text-sm md:text-2xl text-gray-600 mb-4">
+                  <p className="text-sm md:text-xl text-gray-600 mb-4">
                     Date Submitted:{" "}
                     <span className="font-medium text-gray-800">
                       {entry.date}

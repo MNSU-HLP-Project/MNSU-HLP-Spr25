@@ -152,7 +152,7 @@ const ReflectionDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-4 flex justify-center items-center">
+      <div className="min-h-[100dvh] bg-gray-100 p-4 flex justify-center items-center">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <p className="text-gray-600">Loading reflection details...</p>
         </div>
@@ -162,7 +162,7 @@ const ReflectionDetail = () => {
 
   if (error || !entry) {
     return (
-      <div className="min-h-screen bg-gray-100 p-4">
+      <div className="min-h-[100dvh] bg-gray-100 p-4">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-red-600 mb-4">Error</h2>
           <p className="text-gray-700 mb-4">{error || "Reflection not found."}</p>
@@ -190,7 +190,7 @@ const ReflectionDetail = () => {
   const hlpData = HLP_LookFors[entry.hlp] || {};
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-[100dvh] bg-gray-100 p-4">
       {/* Header */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex items-center justify-between">
         <div className="flex items-center">

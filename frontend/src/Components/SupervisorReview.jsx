@@ -30,8 +30,8 @@ const SupervisorReview = () => {
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
+    <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
+      {window.screen.width > 600 && <Sidebar />}
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Student Reflections</h1>
       {entries.length === 0 ? (

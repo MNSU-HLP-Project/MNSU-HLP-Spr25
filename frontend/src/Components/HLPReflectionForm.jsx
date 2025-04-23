@@ -301,7 +301,7 @@ const HLPReflectionForm = () => {
 
   if (!hlpData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 p-4">
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 p-4">
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-red-200">
           <div className="flex items-center justify-center mb-6 text-red-500">
             <svg
@@ -351,7 +351,7 @@ const HLPReflectionForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-4 md:p-8">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-gray-200 p-4 md:p-8">
       {/* Header */}
       <div
         className={`p-5 rounded-xl shadow-lg mb-6 flex items-center text-white ${bgColorClass}`}

@@ -48,7 +48,7 @@ const HLPSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
         <FaArrowLeft

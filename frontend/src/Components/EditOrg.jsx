@@ -59,7 +59,7 @@ const EditOrg = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
       <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-wide drop-shadow-lg">
         TeachTrack
       </h1>

@@ -18,3 +18,4 @@ dist/
 *.sqlite3
 /venv/
 backend/db.sqlite3
+.env
