@@ -77,7 +77,7 @@ const HLPSelection = () => {
         {pillars.map((pillarId) => (
           <div
             key={pillarId}
-            className={`text-white ${color} p-6 w-full md:w-40 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
+            className={`text-white ${color} p-6 w-full md:w-40 text-center rounded-xl shadow-lg cursor-pointer hover:${getDarkerShade(
               color
             )} transition`}
             onClick={() => handleClick(`HLP ${pillarId}`)}
@@ -96,7 +96,7 @@ const HLPSelection = () => {
         {embedded.map((embeddedId) => (
           <div
             key={embeddedId}
-            className={`${color} text-white p-4 w-[45%] sm:w-[30%] md:w-48 text-center rounded-lg shadow-lg cursor-pointer hover:${getDarkerShade(
+            className={`${color} text-white p-4 w-[45%] sm:w-[30%] md:w-48 text-center rounded-xl shadow-lg cursor-pointer hover:${getDarkerShade(
               color
             )} transition`}
             onClick={() => handleClick(`HLP ${embeddedId}`)}
