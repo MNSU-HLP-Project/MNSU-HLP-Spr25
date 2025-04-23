@@ -1,6 +1,6 @@
 # Get your local IP address
 $ip = (Get-NetIPAddress -AddressFamily IPv4 |
-    Where-Object { $_.InterfaceAlias -notlike "*Virtual*" -and $_.IPAddress -like "192.*" } |
+    Where-Object { $_.InterfaceAlias -like "Wi-Fi"} |
     Select-Object -First 1).IPAddress
 
 if (-not $ip) {

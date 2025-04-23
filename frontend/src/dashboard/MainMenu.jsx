@@ -17,7 +17,7 @@ const MainMenu = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 pb-16 items-center relative font-sans">
+    <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 pb-16 items-center relative font-sans">
       {/* Title */}
       <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 mt-12 md:mt-20 tracking-tight">
         TeachTrack

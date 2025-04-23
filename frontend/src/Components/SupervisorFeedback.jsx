@@ -317,7 +317,7 @@ const SupervisorFeedback = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-4 flex justify-center items-center">
+      <div className="min-h-[100dvh] bg-gray-100 p-4 flex justify-center items-center">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <p className="text-gray-600">Loading reflection details...</p>
         </div>
@@ -327,7 +327,7 @@ const SupervisorFeedback = () => {
 
   if (error && !entry) {
     return (
-      <div className="min-h-screen bg-gray-100 p-4">
+      <div className="min-h-[100dvh] bg-gray-100 p-4">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-red-600 mb-4">Error</h2>
           <p className="text-gray-700 mb-4">{error || "Reflection not found."}</p>
@@ -347,7 +347,7 @@ const SupervisorFeedback = () => {
   const studentName = entry.user_detail ? `${entry.user_detail.first_name} ${entry.user_detail.last_name}` : (entry.user?.username || "Unknown Student");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-4 md:p-8">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-gray-200 p-4 md:p-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-700 p-5 rounded-xl shadow-lg mb-6 flex items-center justify-between text-white">
         <div className="flex items-center">

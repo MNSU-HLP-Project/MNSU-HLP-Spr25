@@ -37,7 +37,7 @@ const HLPReflectionList = () => {
   }, [hlpNumber]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
         <FaArrowLeft
@@ -61,7 +61,7 @@ const HLPReflectionList = () => {
           HLP #{hlpNumber}: {HLP_LookFors[hlpNumber].title}
         </p>
       </div>
-      <div className="p-4 md:p-8 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200">
+      <div className="p-4 md:p-8">
         <div className={`mb-6 ${HLP_LookFors.groups[HLP_LookFors[hlpNumber].group].color} from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md`}>
         <h2 className="text-xl md:text-xl lg:text-2xl font-semibold mb-4 text-white flex items-center">
 

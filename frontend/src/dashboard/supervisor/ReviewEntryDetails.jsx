@@ -103,7 +103,7 @@ const ReviewEntryDetails = () => {
   const lookForText = hlpInfo?.lookFors?.[entry.lookfor_number];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
+    <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
       {window.screen.width > 600 && <Sidebar />}
 
       <main className="flex-1 p-8">

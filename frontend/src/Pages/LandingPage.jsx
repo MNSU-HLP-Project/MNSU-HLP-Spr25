@@ -8,7 +8,7 @@ function LandingPage() {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-white text-gray-900">
+    <div className="min-h-[100dvh] flex flex-col items-center bg-white text-gray-900">
       {/* ✅ Hero Section */}
       <section className="w-full px-6 py-12 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white">
         <h1 className="font-sans text-5xl font-bold mb-8">TeachTrack</h1>
