@@ -32,7 +32,7 @@ class Entry(models.Model):
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
-        ('NA', 'Not Applicable'),
+        ('-1', 'No Choice'),
     ]
     score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='NA')
     date = models.DateField(default=date.today)
