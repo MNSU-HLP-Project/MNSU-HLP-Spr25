@@ -5,6 +5,7 @@ import API from "../../utils/axios";
 import Sidebar from "./Sidebar";
 import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
+import MenuDropdown from "../../Components/MenuDropdown";
 
 const ReviewEntryDetails = () => {
   const { entryId } = useParams();
@@ -103,11 +104,11 @@ const ReviewEntryDetails = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
+      {window.screen.width > 600 && <Sidebar />}
 
       <main className="flex-1 p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 rounded-lg shadow">
+        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
@@ -117,9 +118,11 @@ const ReviewEntryDetails = () => {
               <FaArrowLeft />
             </button>
             <div>
-              <h1 className="text-2xl font-bold">Review Entry Details</h1>
+              <h1 className="text-xl md-text-2xl font-bold">Review Entry Details</h1>
               <p className="text-sm text-purple-100">Full reflection breakdown</p>
             </div>
+            
+          {window.screen.width <= 600 && <MenuDropdown />}
           </div>
         </div>
 
@@ -133,8 +136,8 @@ const ReviewEntryDetails = () => {
             {/* Top Info */}
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-semibold text-purple-800">
-                  {hlpInfo?.title || `HLP ${entry.hlp}`}
+                <h2 className="text-xl font-semibold text-blue-700">
+                  HLP #{entry.hlp}: {hlpInfo?.title || `HLP ${entry.hlp}`}
                 </h2>
                 <p className="text-sm text-gray-500">Group: {hlpInfo?.group || "N/A"}</p>
               </div>
@@ -148,23 +151,23 @@ const ReviewEntryDetails = () => {
             {/* Meta Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
               <div className="flex items-center gap-2">
-                <FaCalendarAlt className="text-purple-600" />
-                <span>Week {entry.week_number}</span>
+                <FaCalendarAlt className="text-blue-600" />
+                <span>{entry.date}</span>
               </div>
               <div className="flex items-center gap-2">
-                <FaBookmark className="text-purple-600" />
+                <FaBookmark className="text-blue-600" />
                 <span>
-                  Look-for: {lookForText || `#${entry.lookfor_number}`}
+                  Look-for #{entry.lookfor_number}: {lookForText || `#${entry.lookfor_number}`}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <FaUser className="text-purple-600" />
+                <FaUser className="text-blue-600" />
                 <span>
                   Student: {entry.user_detail?.first_name} {entry.user_detail?.last_name}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-purple-600 font-bold">Score:</span>
+                <span className="text-blue-600 font-bold">Score:</span>
                 <span>{entry.score}</span>
               </div>
             </div>

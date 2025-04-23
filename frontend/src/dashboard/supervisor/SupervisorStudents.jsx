@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import API from '../../utils/axios';
 import { FaArrowLeft, FaUserGraduate, FaEye } from 'react-icons/fa';
 import Sidebar from './Sidebar';
+import MenuDropdown from '../../Components/MenuDropdown';
 
 const SupervisorStudents = () => {
   const { classId } = useParams();
@@ -37,11 +38,10 @@ const SupervisorStudents = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
-
+      {window.screen.width > 600 && <Sidebar />}
       <main className="flex-1 p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 rounded shadow">
+        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded shadow">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
@@ -51,9 +51,11 @@ const SupervisorStudents = () => {
               <FaArrowLeft />
             </button>
             <div>
-              <h1 className="text-2xl font-bold">Students in Class</h1>
-              <p className="text-sm text-purple-100">Click “Review” to view reflections</p>
+              <h1 className="text-xl md-text-2xl font-bold">Students in Class</h1>
+              <p className="text-sm text-white-100">Click “Review” to view reflections</p>
             </div>
+            
+          {window.screen.width <= 600 && <MenuDropdown />}
           </div>
         </div>
 
@@ -68,12 +70,12 @@ const SupervisorStudents = () => {
               className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 group relative overflow-hidden"
             >
               {/* Gradient hover border effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-400 to-blue-400 opacity-0 group-hover:opacity-100 blur-lg rounded-xl transition duration-300 z-0"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-200 to-blue-500 opacity-0 group-hover:opacity-100 blur-lg rounded-xl transition duration-300 z-0"></div>
 
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-4">
                   {/* Avatar bubble */}
-                  <div className="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-md">
+                  <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-md">
                     {getInitials(student.first_name, student.last_name)}
                   </div>
                   <div>
@@ -86,7 +88,7 @@ const SupervisorStudents = () => {
 
                 <button
                   onClick={() => goToReflections(student.id)}
-                  className="mt-3 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded flex items-center justify-center gap-2 text-sm shadow"
+                  className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center justify-center gap-2 text-sm shadow"
                 >
                   <FaEye />
                   Review Reflections

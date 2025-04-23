@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaFilter, FaEye ,FaBars} from "react-icons/fa";
-
+import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
 import API from "../utils/axios";
 import HLP_LookFors from "../assets/HLP_Lookfors";
-import { formatDateToMMDDYYYY } from "../utils/utilFunc";
 
 const MyReflections = () => {
   const navigate = useNavigate();
@@ -295,6 +293,7 @@ const MyReflections = () => {
               {Object.entries(groupEntriesByHLP()).map(([hlp, hlpEntries]) => {
   const hlpData = HLP_LookFors[hlp] || {};
   const isOpen = expandedHLPs[hlp] || false;
+  const hasRevisionStatus = hlpEntries.some((entry) => entry.status === "revision");
 
   return (
     <div key={hlp} className="bg-white rounded-lg shadow-md">
@@ -305,6 +304,25 @@ const MyReflections = () => {
       >
         <h2 className="text-lg font-semibold">
           HLP {hlp}: {hlpData.title || "Unknown HLP"}
+          {hasRevisionStatus && (
+             <div className="flex items-center ml-2 text-yellow-500">
+             <svg
+               xmlns="http://www.w3.org/2000/svg"
+               className="h-5 w-5"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke="currentColor"
+             >
+               <path
+                 strokeLinecap="round"
+                 strokeLinejoin="round"
+                 strokeWidth={2}
+                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+               />
+             </svg>
+             <span className="ml-1 text-sm font-medium">Revision Needed</span>
+           </div>
+          )}
         </h2>
         <button className="text-blue-600 font-medium">
           {isOpen ? "Hide Entries" : "Show Entries"}

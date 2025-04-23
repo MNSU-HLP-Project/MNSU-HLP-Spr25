@@ -31,7 +31,7 @@ const SupervisorReview = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Sidebar />
+      {window.screen.width > 600 && <Sidebar />}
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Student Reflections</h1>
       {entries.length === 0 ? (
