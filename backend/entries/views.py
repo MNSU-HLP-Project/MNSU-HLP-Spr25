@@ -53,10 +53,10 @@ def edit_entry(request):
     # Check if this is a revision of a previously reviewed entry
     was_revision_needed = entry.status == 'revision'
 
-    # If this was a revision, update the status back to pending
+    # If this was a revision, update the status to 'revised' to indicate it's a resubmission
     if was_revision_needed:
-        data['status'] = 'pending'
-        print(f"Entry {entry_id} was revised after feedback and is now pending review again")
+        data['status'] = 'revised'
+        print(f"Entry {entry_id} was revised after feedback and is now marked as revised")
 
     # Now update it by passing instance
     serializer = EntrySerializer(entry, data=data, partial=True)  # partial=True allows partial updates

@@ -127,6 +127,8 @@ const ReflectionDetail = () => {
         return "bg-green-100 text-green-800 border-green-200";
       case "revision":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "revised":
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "pending":
       default:
         return "bg-blue-100 text-blue-800 border-blue-200";
@@ -140,6 +142,8 @@ const ReflectionDetail = () => {
         return "Approved";
       case "revision":
         return "Needs Revision";
+      case "revised":
+        return "Revised Submission";
       case "pending":
       default:
         return "Pending Review";

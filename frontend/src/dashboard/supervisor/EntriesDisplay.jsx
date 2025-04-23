@@ -59,6 +59,8 @@ const EntriesDisplay = () => {
         return "bg-green-100 text-green-800";
       case "pending":
         return "bg-blue-100 text-blue-800";
+      case "revised":
+        return "bg-purple-100 text-purple-800";
       case "revision":
         return "bg-yellow-100 text-yellow-800";
       default:
@@ -120,7 +122,9 @@ const EntriesDisplay = () => {
           >
             <option value="">All Statuses</option>
             <option value="pending">Pending Review</option>
+            <option value="revised">Revised Submissions</option>
             <option value="approved">Approved</option>
+            <option value="revision">Needs Revision</option>
           </select>
         </div>
 

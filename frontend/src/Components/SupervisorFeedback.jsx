@@ -307,6 +307,8 @@ const SupervisorFeedback = () => {
         return "Approved";
       case "revision":
         return "Needs Revision";
+      case "revised":
+        return "Revised Submission";
       case "pending":
       default:
         return "Pending Review";

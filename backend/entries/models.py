@@ -21,7 +21,7 @@ class PromptResponse(models.Model):
 
     def __str__(self):
         return f"Response to {self.prompt}"
-    
+
 class Entry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     sup_class = models.ForeignKey('user_auth.SupervisorClass', on_delete=models.CASCADE, null=True, blank=True)
@@ -37,11 +37,12 @@ class Entry(models.Model):
     score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='NA')
     date = models.DateField(default=date.today)
     comments = models.TextField(default="")
-    teacher_reply = models.TextField(default="", blank=True) 
+    teacher_reply = models.TextField(default="", blank=True)
 
     # New fields for HLP submission workflow
     STATUS_CHOICES = [
         ('pending', 'Pending Review'),
+        ('revised', 'Revised Submission'),
         ('approved', 'Approved'),
         ('revision', 'Needs Revision'),
     ]
