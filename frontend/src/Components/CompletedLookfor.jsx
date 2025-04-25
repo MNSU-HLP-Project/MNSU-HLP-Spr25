@@ -5,7 +5,6 @@ import { FaArrowLeft, FaBars } from "react-icons/fa";
 import HLP_LookFors from "../assets/HLP_Lookfors";
 import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
 import API from "../utils/axios";
-import HLP_LookFors from "../assets/HLP_Lookfors";
 
 const HLPReflectionList = () => {
   const navigate = useNavigate();

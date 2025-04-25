@@ -16,7 +16,7 @@ Write-Host "ALLOWED_HOSTS = ['localhost', '127.0.0.1', '$ip']"
 
 # Step 2: Start Django server in a background process
 Write-Host "Starting Django development server on 0.0.0.0:8000..."
-$djangoProc = Start-Process powershell -ArgumentList " .\venv\Scripts\Activate; cd backend; python manage.py runserver 0.0.0.0:8000" -PassThru
+$djangoProc = Start-Process powershell -ArgumentList " .\venv\Scripts\Activate; cd backend; python manage.py runserver ${ip}:8000" -PassThru
 # Step 4: Dynamically update frontend/.env
 $envPath = ".\frontend\.env"
 $envVar = "VITE_API_BASE_URL=http://${ip}:8000"
