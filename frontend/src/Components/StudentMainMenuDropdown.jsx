@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const MainMenuDropdown = ({ className = "", onClose }) => {
@@ -74,7 +75,7 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
       </button>
       <button
         onClick={() => {
-          alert("Resources clicked");
+          toast.success("Resources clicked");
           onClose?.();
         }}
         className="w-full text-left px-4 py-3 bg-green-600 text-white rounded-lg text-base font-semibold hover:bg-green-700 transition"

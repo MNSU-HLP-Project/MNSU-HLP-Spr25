@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../utils/axios";
+import { Toaster, toast } from 'react-hot-toast';
+
 
 function Auth() {
   const [formData, setFormData] = useState({
@@ -21,17 +23,19 @@ function Auth() {
     if (!formData.password) newErrors.password = "Password is required.";
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-
+  
     try {
       const response = await API.post("/user_auth/login/", {
         username: formData.username,
         password: formData.password,
       });
-
+  
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("jwtToken", token);
         localStorage.setItem("role", response.data.role);
+  
+  
         navigate("/mainmenu/");
       }
     } catch (error) {
@@ -46,11 +50,15 @@ function Auth() {
         updatedErrors.general = "Something went wrong. Please try again.";
       }
       setErrors(updatedErrors);
+  
+
     }
   };
+  
 
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 sm:p-8 transition-all duration-300">
+      <Toaster/>
       <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
         Welcome Back
       </h2>
@@ -91,12 +99,12 @@ function Auth() {
         )}
       </div>
 
-      {/* General Error */}
+      {/* General Error
       {errors.general && (
         <p className="text-sm text-red-500 text-center mb-4">
           {errors.general}
         </p>
-      )}
+      )} */}
 
       {/* Submit Button */}
       <button

@@ -9,7 +9,6 @@ import HLPSelection from "./Components/HLPSelection";
 import "./global.css"; // Import styles
 import StudentDetailsPage from "./students/page";
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
-// Removed SupervisorClassView import
 
 // HLP Submission Workflow Components
 import HLPReflectionForm from "./Components/HLPReflectionForm";
@@ -29,6 +28,7 @@ import SupervisorClassEntries from "./dashboard/supervisor/SupervisorClassEntrie
 import SupervisorStudents from "./dashboard/supervisor/SupervisorStudents.jsx";
 import EntriesDisplay from "./dashboard/supervisor/EntriesDisplay.jsx";
 import ReviewEntryDetails from "./dashboard/supervisor/ReviewEntryDetails.jsx";
+import { Toaster } from "react-hot-toast";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -58,6 +58,32 @@ function App() {
     <>
       {loading ? <PreLoader isVisible={!fadeOut} /> : null}
       <div className={`app-container ${loading ? "hidden" : "visible"}`}>
+      <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              fontFamily: 'Poppins, sans-serif',
+              fontSize: '16px',
+    
+              padding: '14px 20px',
+            },
+            success: {
+              style: {
+                background: '#e6fffa',  // light teal/green background
+                color: '#0f766e',       // darker green text
+      
+              },
+            },
+            error: {
+              style: {
+                background: '#ffe6e6',  // light pink background
+                color: '#b91c1c',       // dark red text
+                border: '1px solid #b91c1c',
+              },
+            },
+          }}
+        />
+
         <Routes>
           <Route path="/edit-class/" element={<ClassEditor />} />
           <Route path="/edit-classes/" element={<ClassGenerator />} />

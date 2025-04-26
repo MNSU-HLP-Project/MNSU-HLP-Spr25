@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import API from "../utils/axios";
+import toast from "react-hot-toast";
 
 
 function Register() {
@@ -124,7 +125,7 @@ function Register() {
 
         setErrors(updatedErrors);
       } else {
-        alert("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
     }
   };

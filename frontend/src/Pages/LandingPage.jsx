@@ -10,6 +10,7 @@ function LandingPage() {
   return (
     <div className="min-h-[100dvh] flex flex-col items-center bg-white text-gray-900">
       {/* ✅ Hero Section */}
+
       <section className="w-full px-6 py-12 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white">
         <h1 className="font-sans text-5xl font-bold mb-8">TeachTrack</h1>
         <h2 className="text-2xl mb-8">
@@ -38,87 +39,14 @@ function LandingPage() {
           <div className="flex flex-col items-center">
             <span className="text-4xl">📝</span>
             <p className="text-lg mt-2">Easy Journaling</p>
-
-
-
-
-
-
           </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl">📈</span>
             <p className="text-lg mt-2">Insights & Progress</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl">🤝</span>
             <p className="text-lg mt-2">Collaborate & Share</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
         </div>
       </section>
@@ -134,17 +62,6 @@ function LandingPage() {
               ✖
             </button>
             <Auth />
-
-
-
-
-
-
-
-
-
-
-
           </div>
         </div>
       )}

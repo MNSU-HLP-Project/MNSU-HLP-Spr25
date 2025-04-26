@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "./utils/axios";
+import { toast } from 'react-hot-toast';
 
 const EntryForm = () => {
   const [formData, setFormData] = useState({
@@ -18,11 +19,11 @@ const EntryForm = () => {
     try {
       const response = await API.post("/api/create-entry/", formData);
       console.log("Entry created:", response.data);
-      alert("Entry submitted successfully!");
+      toast.success("Entry submitted successfully!");
       setFormData({ hlp_number: "", date: "", score: "", comments: "" });
     } catch (error) {
       console.error("Error submitting entry:", error);
-      alert("Failed to submit entry.");
+      toast.error("Failed to submit entry.");
     }
   };
 

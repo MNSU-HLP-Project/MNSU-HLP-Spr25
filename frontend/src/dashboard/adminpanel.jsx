@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles.css"; // Import the external stylesheet
+import toast from "react-hot-toast";
 
 export default function AdminPage() {
   const [entries, setEntries] = useState([]);
@@ -24,11 +25,11 @@ export default function AdminPage() {
     try {
         const response = await API.delete(`/api/delete-entry/${id}/`);
         console.log("Delete Response:", response);
-        alert("Entry deleted successfully!");
+        toast.success("Entry deleted successfully!");
         fetchEntries(); // Refresh the list after deletion
     } catch (error) {
         console.error("Error deleting entry:", error.response); // Log the error response
-        alert(`Failed to delete entry. ${error.response?.data?.message || "Please check the console."}`);
+        toast.error(`Failed to delete entry. ${error.response?.data?.message || "Please check the console."}`);
     }
 };
 
