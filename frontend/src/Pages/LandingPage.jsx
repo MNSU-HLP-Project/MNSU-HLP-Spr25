@@ -18,21 +18,36 @@ function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
       {/* Navbar */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-3"
-        }`}
+      {/* Navbar */}
+<nav
+  className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+    scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-3"
+  }`}
+>
+  <div className="container mx-auto px-4 flex justify-between items-center">
+    {/* Logo */}
+    <div
+      className={`font-bold text-xl sm:text-2xl ${
+        scrolled ? "text-blue-600" : "text-white"
+      }`}
+    >
+      TeachTrack
+    </div>
+
+    {/* Right Side Button */}
+    <div>
+      <button className={`px-4 py-1.5 border rounded-full font-medium ${
+          scrolled
+            ? "border-blue-600 text-blue-600 "
+            : "border-white text-white"
+        } transition duration-300 text-sm sm:text-base`}
       >
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div
-            className={`font-bold text-xl sm:text-2xl ${
-              scrolled ? "text-blue-600" : "text-white"
-            }`}
-          >
-            TeachTrack
-          </div>
-        </div>
-      </nav>
+        Join through Invite
+      </button>
+    </div>
+  </div>
+</nav>
+
 
       {/* Hero Section */}
       <section className="w-full pt-20 pb-10 sm:pt-32 sm:pb-20 px-4 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white relative overflow-hidden">
