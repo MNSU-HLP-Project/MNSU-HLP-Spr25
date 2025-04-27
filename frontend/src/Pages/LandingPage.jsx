@@ -50,7 +50,8 @@ function LandingPage() {
 
 
       {/* Hero Section */}
-      <section className="w-full pt-20 pb-10 sm:pt-32 sm:pb-20 px-4 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white relative overflow-hidden">
+      <section className="w-full pt-20 pb-10 sm:pt-32 sm:pb-12 px-4 text-center bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-white relative overflow-hidden">
+
         <div className="container mx-auto max-w-4xl relative">
           <div className="absolute inset-0 bg-white bg-opacity-10 blur-3xl rounded-full transform -translate-y-1/4 scale-150 z-0"></div>
           <div className="relative z-10">
@@ -84,12 +85,12 @@ function LandingPage() {
 
       
 {/* Features Section */}
-<section className="w-full pt-6 sm:py-16 px-2 bg-white">
+<section className="w-full pt-6 sm:pt-8 px-2 bg-white">
   <div className="container mx-auto max-w-6xl">
-    <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-12 text-center text-gray-800">
+    <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-gray-800">
       Why TeachTrack?
     </h2>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
       {[
         {
           icon: "📊",
@@ -114,13 +115,13 @@ function LandingPage() {
       ].map((feature, index) => (
         <div
           key={index}
-          className="bg-white rounded-lg shadow-md p-2 md:p-6 hover:-translate-y-1 hover:shadow-lg transition text-center border border-gray-100"
+          className="bg-white rounded-lg shadow-md p-4 sm:p-4 md:p-3 hover:-translate-y-1 hover:shadow-lg transition text-center border border-gray-100"
         >
-          <div className="w-8 h-8 md:w-16 md:h-16 mx-auto bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center mb-2 md:mb-4 text-lg md:text-3xl">
+          <div className="w-10 h-10 md:w-12 md:h-12 mx-auto bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center mb-2 md:mb-3 text-xl md:text-2xl">
             <span className="text-white">{feature.icon}</span>
           </div>
-          <h3 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-gray-800">{feature.title}</h3>
-          <p className="text-gray-600 text-xs md:text-base">{feature.description}</p>
+          <h3 className="text-sm md:text-base font-bold mb-1 md:mb-2 text-gray-800">{feature.title}</h3>
+          <p className="text-gray-600 text-xs md:text-sm">{feature.description}</p>
         </div>
       ))}
     </div>
