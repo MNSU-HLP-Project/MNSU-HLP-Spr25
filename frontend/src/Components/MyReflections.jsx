@@ -179,7 +179,7 @@ const MyReflections = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gray-100 p-4">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-blue-200 p-4">
       {/* Header */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
         <div className="flex items-center">
