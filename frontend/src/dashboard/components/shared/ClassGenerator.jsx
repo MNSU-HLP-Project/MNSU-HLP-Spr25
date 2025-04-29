@@ -79,7 +79,6 @@ const ClassGenerator = ({ onClassCreated }) => {
   return (
     // <div className="min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
     <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
-
       {/* Header */}
       <div className="mb-6">
         <button
@@ -87,20 +86,19 @@ const ClassGenerator = ({ onClassCreated }) => {
           className="text-2xl cursor-pointer mr-4"
         >
           <FaArrowLeft className="mr-2" />
-          
         </button>
         <h1 className="text-3xl font-bold text-center mt-4  text-gray-800">
           My Classes
         </h1>
       </div>
 
-      <div className="mt-1 w-full mx-auto p-4 bg-gray-100 rounded-xl shadow-lg">
-        
+      <div className="mt-1 w-full mx-auto bg-gradient-to-b p-4 bg-gray-100 rounded-xl shadow-lg">
         {currentClasses &&
           currentClasses.map((c_class, index) => (
             <div
               key={index}
-              className="flex items-center justify-between bg-gray-200 p-2 rounded-lg mt-2"
+              // className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mt-2"
+              className="flex items-center justify-between bg-gray-100 p-2 rounded-xl border border-gray-200 mt-2"
             >
               <NewClass text={c_class} />
               <button
@@ -113,7 +111,7 @@ const ClassGenerator = ({ onClassCreated }) => {
                 onClick={() => removeClassFromList(index)}
                 className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
               >
-                X
+                Remove
               </button>
             </div>
           ))}
@@ -129,7 +127,7 @@ const ClassGenerator = ({ onClassCreated }) => {
           <p className="text-red-500 text-sm mt-1">{errors.class_name}</p>
         )}
         <button
-          className="w-full md:w-3/6 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mt-2 mx-auto"
+          className=" block w-1/2  md:w-1/2 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mt-2 mx-auto"
           onClick={genClass}
         >
           Generate Class

@@ -4,6 +4,8 @@ const HLP_LookFors = {
             "Pillars": [1, 3],
             "Embedded": [2],
             color: "bg-collab",
+
+            
             text: "collab"
         },
         "Data-Driven Planning": {
