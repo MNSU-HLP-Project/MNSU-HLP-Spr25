@@ -1,5 +1,5 @@
 import { FaBars } from "react-icons/fa";
-import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
+import MainMenuDropdown from "./StudentMainMenuDropdown";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 

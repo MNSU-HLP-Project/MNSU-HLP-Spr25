@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClasses, getStudentsForClass } from "../../utils/api";
 import Sidebar from "./Sidebar";
-import MenuDropdown from "../../Components/MenuDropdown";
+import MenuDropdown from "../studentTeacher/MenuDropdown";
 
 const SupervisorClassView = () => {
   const [classes, setClasses] = useState([]);

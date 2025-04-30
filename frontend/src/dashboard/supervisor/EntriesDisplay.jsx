@@ -5,7 +5,7 @@ import API from "../../utils/axios";
 import { FaArrowLeft, FaCalendarAlt, FaFilter, FaEye } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
-import MenuDropdown from "../../Components/MenuDropdown";
+import MenuDropdown from "../studentTeacher/MenuDropdown";
 
 const EntriesDisplay = () => {
   const { classId, studentId } = useParams();

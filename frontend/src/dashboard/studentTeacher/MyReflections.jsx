@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
-import API from "../utils/axios";
-import HLP_LookFors from "../assets/HLP_Lookfors";
+import API from "../../utils/axios";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
 
 const MyReflections = () => {
   const navigate = useNavigate();

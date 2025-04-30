@@ -1,10 +1,10 @@
 import React from "react";
-import HLP_LookFors from "../assets/HLP_Lookfors";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
+import MainMenuDropdown from "./StudentMainMenuDropdown";
 
 const HLPSelection = () => {
   // Setting default values

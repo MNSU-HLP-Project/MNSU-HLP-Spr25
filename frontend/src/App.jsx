@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
-import EditOrg from "./Components/EditOrg.jsx";
+import EditOrg from "./dashboard/admin/EditOrg.jsx";
 import MainMenu from "./dashboard/MainMenu";
-import HLPCategories from "./Components/HLPCategories";
+import HLPCategories from "./dashboard/studentTeacher/HLPCategories.jsx";
 import Register from "./Pages/Register.jsx";
-import HLPSelection from "./Components/HLPSelection";
+import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
 import "./global.css"; // Import styles
 import StudentDetailsPage from "./students/page";
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
 
 // HLP Submission Workflow Components
-import HLPReflectionForm from "./Components/HLPReflectionForm";
+import HLPReflectionForm from "./dashboard/studentTeacher/HLPReflectionForm.jsx";
 
-import HLPReflectionList from "./Components/CompletedLookfor";
+import HLPReflectionList from "./dashboard/studentTeacher/CompletedLookfor.jsx";
 
-import MyReflections from "./Components/MyReflections";
-import ReflectionDetail from "./Components/ReflectionDetail";
-import SupervisorReview from "./Components/SupervisorReview";
-import SupervisorFeedback from "./Components/SupervisorFeedback";
+import MyReflections from "./dashboard/studentTeacher/MyReflections.jsx";
+import ReflectionDetail from "./dashboard/studentTeacher/ReflectionDetail.jsx";
+import SupervisorReview from "./dashboard/supervisor/SupervisorReview.jsx";
+import SupervisorFeedback from "./dashboard/supervisor/SupervisorFeedback.jsx";
 
 // Protected Route Component
 import ProtectedRoute from "./utils/ProtectedRoute";

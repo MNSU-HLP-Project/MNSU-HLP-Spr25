@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import API from "../utils/axios";
-import HLP_LookFors from "../assets/HLP_Lookfors";
-import { formatDateToMMDDYYYY } from "../utils/utilFunc";
+import API from "../../utils/axios";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
+import { formatDateToMMDDYYYY } from "../../utils/utilFunc";
 
 const ReflectionDetail = () => {
   const navigate = useNavigate();

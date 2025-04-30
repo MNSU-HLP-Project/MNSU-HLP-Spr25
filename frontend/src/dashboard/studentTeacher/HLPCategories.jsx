@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import MainMenuDropdown from "../Components/StudentMainMenuDropdown"; 
+import MainMenuDropdown from "./StudentMainMenuDropdown"; 
 
 export default function HLPCategories() {
   // Categories of HLPs

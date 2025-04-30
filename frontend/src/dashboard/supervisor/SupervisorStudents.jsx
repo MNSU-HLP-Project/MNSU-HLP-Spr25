@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import API from '../../utils/axios';
 import { FaArrowLeft, FaUserGraduate, FaEye } from 'react-icons/fa';
 import Sidebar from './Sidebar';
-import MenuDropdown from '../../Components/MenuDropdown';
+import MenuDropdown from '../studentTeacher/MenuDropdown';
 
 const SupervisorStudents = () => {
   const { classId } = useParams();

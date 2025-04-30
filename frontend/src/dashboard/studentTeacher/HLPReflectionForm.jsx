@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import API from "../utils/axios";
-import HLP_LookFors from "../assets/HLP_Lookfors";
-import { getPrompts } from "../utils/api";
+import API from "../../utils/axios";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
+import { getPrompts } from "../../utils/api";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { formatDateToMMDDYYYY } from "../utils/utilFunc";
+import { formatDateToMMDDYYYY } from "../../utils/utilFunc";
 
 const HLPReflectionForm = () => {
   const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getStudentEntries } from "../utils/api";
+import { getStudentEntries } from "../../utils/api";
 import { FaArrowLeft, FaBars } from "react-icons/fa";
-import HLP_LookFors from "../assets/HLP_Lookfors";
-import MainMenuDropdown from "../Components/StudentMainMenuDropdown";
-import API from "../utils/axios";
+import HLP_LookFors from "../../assets/HLP_Lookfors";
+import MainMenuDropdown from "./StudentMainMenuDropdown";
+import API from "../../utils/axios";
 
 const HLPReflectionList = () => {
   const navigate = useNavigate();

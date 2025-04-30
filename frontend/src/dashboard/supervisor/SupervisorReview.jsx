@@ -1,7 +1,7 @@
 // src/pages/SupervisorReview.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import API from "../utils/axios"; // make sure your API instance is correctly configured
+import API from "../../utils/axios"; // make sure your API instance is correctly configured
 
 const SupervisorReview = () => {
   const { classId, studentId } = useParams();

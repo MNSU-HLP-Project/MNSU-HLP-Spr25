@@ -5,7 +5,7 @@ import API from "../../utils/axios";
 import Sidebar from "./Sidebar";
 import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
-import MenuDropdown from "../../Components/MenuDropdown";
+import MenuDropdown from "../studentTeacher/MenuDropdown";
 
 const ReviewEntryDetails = () => {
   const { entryId } = useParams();
