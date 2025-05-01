@@ -49,6 +49,7 @@ API.interceptors.response.use(
 
     const errorMsg =
       error.response?.data?.message ||
+      error.response?.data?.error ||
       error.message ||
       "Something went wrong.";
 
