@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
+from entries.serializers import PromptSerializer
 
 
 from entries.models import Prompt
@@ -32,6 +33,60 @@ def check_token(token):
     else:
         return None
 
+@api_view(['GET'])
+@permission_classes([IsSupervisor])
+def get_class_details(request):
+    user = request.user
+    class_name = request.query_params.get('class_name')
+    sup_class = SupervisorClass.objects.filter(user=user, name=class_name).first()
+    serializer = SupervisorClassSerializer(sup_class)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsSupervisor])
+def edit_class(request):
+    """Edit a class"""
+    # Get User
+    user = request.user
+    # Get class user is under
+    sup_class = SupervisorClass.objects.filter(name = request.data['class_name'], user=user).first()
+    if sup_class:
+        # Get the class details from request data
+        prompt_override = request.data['prompt_override']
+        prompts = request.data['prompts']
+
+        prompt_list = sup_class.prompt_list
+        # First clear the prompt list
+        prompt_list.clear()
+        for prompt in prompts:
+            # See if a prompt exists
+            prompt_data = Prompt.objects.filter(prompt=prompt).first()
+            # If not create a new one and add
+            if not prompt_data:
+               prompt_data = Prompt.objects.create(prompt=prompt) 
+            prompt_list.add(prompt_data)
+            
+        sup_class.prompt_override = prompt_override
+        sup_class.save()
+        return Response('Class Updated Succesfully')      
+    # If no org exists that means that the user is not associated to an org
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED) 
+    
+@api_view(['GET'])
+@permission_classes([IsStudentTeacher])
+def get_prompts_student(request):
+    user = request.user
+    student = StudentTeacher.objects.get(user=user)
+    sup_class = student.class_name
+    override = sup_class.prompt_override
+    if override:
+        prompt_list = sup_class.prompt_list
+    else:
+        org = ExtendUser.objects.get(user=user).org
+        prompt_list = org.prompt_list
+    serializer = PromptSerializer(prompt_list, many=True)
+    return Response(serializer.data)
+        
 @api_view(['GET'])
 @permission_classes([IsSupervisorOrAdminOrSuperuser])
 def get_class_names(request):
@@ -82,6 +137,16 @@ def generate_org(request):
     Organization.objects.create(name=name, admin_email=admin)
     return Response(status=status.HTTP_200_OK)
     
+@api_view(['POST'])
+@permission_classes([IsSupervisor])
+def delete_class(request):
+    user = request.user
+    class_to_delete = SupervisorClass.objects.filter(user=user, name=request.data['class_name']).first()
+    if class_to_delete:
+        class_to_delete.delete()
+        return Response('Succesfully Deleted Class')
+    return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'No class with that name exists'})
+
 @api_view(['GET'])
 @permission_classes([IsAdmin])
 def get_org_details(request):
@@ -287,9 +352,7 @@ def get_users_by_role(request):
     return Response({"username": username, "The user's role": user.role}, status=200)
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -320,18 +383,24 @@ def get_students_under_supervisor(request):
         return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 """Added this to get students from specific class"""  
-@api_view(["POST"])
-def get_students_in_class(request):
-    class_obj = request.data.get("class_obj")  # Or class_name if you prefer
-
-    if not class_obj:
-        return Response({"error": "Class ID is required"}, status=400)
-    user = User.objects.get(id=class_obj['user'])
-    class_name = class_obj['name']
+@api_view(["GET"])
+def get_students_in_class(request, class_id):
     try:
-        sup_class = SupervisorClass.objects.get(name=class_name, user=user)
-        students = sup_class.students
+        sup_class = SupervisorClass.objects.get(id=class_id)
+        students = sup_class.students.all()
         serializer = CurrentUserSerializer(students, many=True)
         return Response(serializer.data, status=200)
+    except SupervisorClass.DoesNotExist:
+        return Response({"error": "Class not found"}, status=404)
+
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_class_byid(request, class_id):
+    try:
+        sup_class = SupervisorClass.objects.get(id=class_id)
+        return Response({"name": sup_class.name})
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)

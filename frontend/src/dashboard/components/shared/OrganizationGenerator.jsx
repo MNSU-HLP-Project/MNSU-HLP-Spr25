@@ -1,6 +1,7 @@
 // components/shared/OrganizationGenerator.jsx
 import React, { useState } from "react";
 import { generateOrganization } from "../../../utils/api";
+import toast from "react-hot-toast";
 
 const OrganizationGenerator = () => {
   const [inviteLink, setInviteLink] = useState(null);
@@ -74,7 +75,7 @@ const OrganizationGenerator = () => {
               className="bg-green-500 text-white px-3 py-1 rounded-r-lg hover:bg-green-600"
               onClick={() => {
                 navigator.clipboard.writeText(inviteLink);
-                alert("Copied to clipboard");
+                toast.success("Copied to clipboard");
               }}
             >
               Copy

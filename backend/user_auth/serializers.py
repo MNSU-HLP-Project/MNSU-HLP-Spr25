@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass
+from django.contrib.auth import authenticate, password_validation
+from entries.serializers import PromptSerializer
+from django.core.exceptions import ValidationError as DjangoValidationError
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, SupervisorClass
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,9 +11,11 @@ class InvitationSerializer(serializers.ModelSerializer):
         fields = ['id', 'teacher', 'role', 'code', 'created_at', 'max_uses', 'use_count','class_name']
 
 class SupervisorClassSerializer(serializers.ModelSerializer):
+    prompt_list = PromptSerializer(many=True)
+    
     class Meta:
         model = SupervisorClass
-        fields = ['user', 'name']
+        fields = ['user', 'name','prompt_override','prompt_list','id']
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -49,13 +53,20 @@ class SignupSerializer(serializers.ModelSerializer):
 
         # If the role is admin, we need to make sure it matches the correct org admin email
         if role == 'Admin':
-            admin_org = Organization.objects.get(admin_email=validated_data['email'].lower())
+            admin_org = Organization.objects.filter(admin_email=validated_data['email'].lower()).first()
             if not admin_org:
-                raise serializers.ValidationError("No Authorized Orginization")
+                raise serializers.ValidationError({"email": "No Authorized Orginization"})
             else:
                 org = admin_org
         
-        # Create user now 
+        errors = dict() 
+        try:    
+            password_validation.validate_password(validated_data['password'],user=None) 
+        except DjangoValidationError as e:
+            errors['password'] = list(e.messages)
+        if errors:
+            raise serializers.ValidationError(errors)
+        
         user = User.objects.create_user(
             username=validated_data['email'].lower(),  # Use email as the username
             first_name=validated_data['first_name'],
@@ -83,7 +94,9 @@ class SignupSerializer(serializers.ModelSerializer):
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             class_name = invitation.class_name
             sup_class = SupervisorClass.objects.get(name=class_name, user=invitation.teacher)
+            stuteach.class_name = sup_class
             sup_class.students.add(user)
+            stuteach.save()
             # Add student teacher to the supervisor
             if sup:
                 sup.student_teachers.add(StudentTeacher.objects.get(user=user))
@@ -159,5 +172,9 @@ class SupervisorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = '__all__'
+        fields = ['id', 'name', 'students']
 
+class CurrentUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name", "username"]

@@ -1,5 +1,6 @@
 
 import API from './axios';
+
 /**
  * Generates an Organization and returns back invitation link for supervisors
  * @param {{org_name: string, admin_email: string}} org_data
@@ -33,6 +34,21 @@ export const generateInvite = async (class_name='') => {
     }
 };
 
+export const removeClass = async (class_name) => {
+    const response = await API.post('/user_auth/remove-class/',
+        {
+            class_name: class_name
+        }
+    )
+    return response
+
+}
+
+export const getPrompts = async () => {
+    const response = await API.get('/user_auth/get-prompts-student/')
+    return response
+}
+
 /**
  * Generates class for a supervisor
  * @param {any} form_data
@@ -54,8 +70,24 @@ export const getClasses = async () => {
 }
 
 export const getStudentsForClass = async (class_obj) => {
-  const response = await axios.post('http://localhost:8000/user_auth/students-in-class/', {
-    class_obj: class_obj,
-  });
-  return response.data;
-};
+    const response = await API.post('/user_auth/students-in-class/', {
+      class_obj: class_obj,
+    });
+    return response.data;
+  };
+  
+
+  export const getStudentEntries = async ({ hlp, week, status }) => {
+    try {
+      const params = {};
+      if (hlp) params.hlp = hlp;
+      if (week) params.week = week;
+      if (status) params.status = status;
+  
+      const response = await API.get("entries/student/entries/", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching student entries:", error);
+      throw error;
+    }
+  };

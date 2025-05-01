@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getClasses, getStudentsForClass } from "../../utils/api"; //getStudentsForClass
-import Sidebar from "./Sidebar"; // new Sidebar component
+import { useNavigate } from "react-router-dom";
+import { getClasses, getStudentsForClass } from "../../utils/api";
+import Sidebar from "./Sidebar";
+import MenuDropdown from "../studentTeacher/MenuDropdown";
 
 const SupervisorClassView = () => {
   const [classes, setClasses] = useState([]);
-  const [selectedClassId, setSelectedClassId] = useState(null);
-  const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
 
-  // Fetch classes on load
   useEffect(() => {
     const fetchClasses = async () => {
       try {
@@ -20,71 +20,49 @@ const SupervisorClassView = () => {
     fetchClasses();
   }, []);
 
-  // Fetch students when a class is clicked
-  const handleClassClick = async (classObj) => {
-    
-    try {
-      setSelectedClassId(classObj.name)
-        const data = await getStudentsForClass(classObj);
-      setStudents(data);
-    } catch (error) {
-      console.error("Failed to fetch students", error);
-    }
-  };
-
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
+    <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
+      {window.screen.width > 600 && <Sidebar />}
 
-      {/* Main Content */}
-      <main className="flex-1 p-6">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">
-            {selectedClassId
-              ? classes.find((c) => c.id === selectedClassId)?.name
-              : "Your Classes"}
+      <main className="flex-1 p-8">
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-4xl font-extrabold text-black drop-shadow-sm">
+            TeachTrack
           </h1>
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-500">🔔</button>
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold">
-              SV
-            </div>
-          </div>
+          {window.screen.width <= 600 && <MenuDropdown />}
         </div>
 
-        <div className="space-y-4">
-          {classes.map((cls) => (
-            <div
-              key={cls.id}
-              onClick={() => {console.log(cls);handleClassClick(cls)}}
-              className="border p-4 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
-            >
-              <h2 className="text-xl font-semibold">{cls.name}</h2>
-              {selectedClassId && (
-                <div className="mt-4">
-                  <div className="flex space-x-6 mb-4 border-b">
-                    <button className="pb-2 border-b-2 border-black font-semibold">
-                      Students
-                    </button>
-                    <button className="pb-2 text-gray-400">Analytics</button>
-                  </div>
-                  <div className="grid gap-4">
-                    {students.map((student) => (
-                      <div
-                        key={student.id}
-                        className="border p-3 rounded shadow"
-                      >
-                        <p className="font-semibold">{student.last_name}, {student.first_name}</p>
-                        <p className="text-sm text-gray-500">{student.username}</p>
-                        {/* <p className="text-sm">Type: {student.type}</p> */}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="space-y-6">
+          {classes.length === 0 ? (
+            <p className="text-gray-500">No classes available.</p>
+          ) : (
+            classes.map((cls) => (
+              <div
+                key={cls.id}
+                className="bg-white border border-gray-200 px-6 py-5 rounded-xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer"
+                onClick={() => navigate(`/supervisor/students/${cls.id}`)}
+              >
+                <h2 className="text-xl font-bold flex items-center space-x-2 text-blue-700">
+                  <span>📄</span>
+                  <span>{cls.name}</span>
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Click card to view individual student reflections
+                </p>
+
+                {/* ✅ New Button */}
+                <button
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent card click
+                    navigate(`/entries/by-class/${cls.id}`);
+                  }}
+                >
+                  View All Reflections for This Class
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </main>
     </div>

@@ -4,10 +4,12 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import API from "../utils/axios";
+import toast from "react-hot-toast";
 
 
 function Register() {
   const [searchParams] = useSearchParams();
+  const [roleSignup, setRoleSignup] = useState('')
   const gradelevels = [
     { id: 1, grade_level: "K", gradelevel: "Kindergarten" },
     { id: 2, grade_level: "1", gradelevel: "1st Grade" },
@@ -23,7 +25,11 @@ function Register() {
     { id: 12, grade_level: "11", gradelevel: "11th Grade" },
     { id: 13, grade_level: "12", gradelevel: "12th Grade" }
   ];
-
+  const roleObj = {
+    'stu': 'Student Teacher',
+    'admin': 'Administrator',
+    'sup': 'Supervisor'
+  }
   // Used to get the role that will be filled out as well as invitation code
   useEffect(() => {
       const code = searchParams.get('code');
@@ -33,7 +39,9 @@ function Register() {
       }
       // pull role form search params
       const role = searchParams.get('role')
+      setRoleSignup(roleObj[role])
       if (role == 'sup' || role=='admin') {
+
         // Set student_teacher to false to display different options
           setFormData((prev) => ({ ...prev, student_teacher: false}))
       }
@@ -109,7 +117,7 @@ function Register() {
         // Update errors based on what is given in response
         const apiErrors = error.response.data;
         const updatedErrors = { ...newErrors };
-
+        console.log(apiErrors.password)
         if (apiErrors.email) updatedErrors.email = apiErrors.email;
         if (apiErrors.password) updatedErrors.password = apiErrors.password;
         if (apiErrors.detail) updatedErrors.general = apiErrors.detail;
@@ -117,16 +125,16 @@ function Register() {
 
         setErrors(updatedErrors);
       } else {
-        alert("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex items-center justify-center min-h-[100dvh] bg-gray-100 p-4">
     <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold text-center text-gray-800">
-        Sign Up
+        {roleSignup} Sign Up
       </h2>
 
 
@@ -216,7 +224,9 @@ function Register() {
           onChange={handleChange}
         />
         {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          errors.password.map((e, index) => (
+            <p key={index} className="text-red-500 text-sm mt-1">{e}</p>
+          ))
         )}
       </div>
 

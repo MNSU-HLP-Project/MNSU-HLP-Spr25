@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'entries',
     'user_auth',
     'django.contrib.sites',
-     'rest_framework_simplejwt', 
+    'rest_framework_simplejwt', 
 
 ]
 
@@ -61,9 +61,8 @@ MIDDLEWARE = [
 ]
 
 # Allow requests from your React frontend
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Adjust this to your React frontend URL
-]
+CORS_ALLOW_ALL_ORIGINS = True 
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 ROOT_URLCONF = 'backend.urls'

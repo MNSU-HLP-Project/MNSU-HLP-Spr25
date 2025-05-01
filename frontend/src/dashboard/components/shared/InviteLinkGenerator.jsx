@@ -1,6 +1,7 @@
 // components/shared/InviteLinkGenerator.jsx
 import React, { useState, useEffect } from "react";
 import { generateInvite, getClasses } from "../../../utils/api";
+import toast from "react-hot-toast";
 
 const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   const [inviteLink, setInviteLink] = useState(null);
@@ -10,7 +11,9 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
 
   useEffect(() => {
     // Get class list if anything is updated
+    if (userRole == 'Supervisor'){
     getClassList();
+    }
   }, [refreshSignal]); // re-run whenever refreshSignal changes
   
 
@@ -98,7 +101,7 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
               className="bg-green-500 text-white px-3 py-1 rounded-r-lg hover:bg-green-600"
               onClick={() => {
                 navigator.clipboard.writeText(inviteLink);
-                alert("Copied to clipboard");
+                toast.success("Copied to clipboard");
                 setInviteLink('')
               }}
             >
