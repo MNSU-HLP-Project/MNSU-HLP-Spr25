@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'entries',
     'user_auth',
     'django.contrib.sites',
-     'rest_framework_simplejwt', 
+    'rest_framework_simplejwt', 
 
 ]
 
