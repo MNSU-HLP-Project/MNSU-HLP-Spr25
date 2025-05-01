@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../utils/axios";
-import { Toaster, toast } from 'react-hot-toast';
+import {  toast } from 'react-hot-toast';
 
 
 function Auth() {
@@ -49,7 +49,7 @@ function Auth() {
       } else {
         updatedErrors.general = "Something went wrong. Please try again.";
       }
-      setErrors(updatedErrors);
+      
   
 
     }
@@ -58,7 +58,6 @@ function Auth() {
 
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 sm:p-8 transition-all duration-300">
-      <Toaster/>
       <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
         Welcome Back
       </h2>

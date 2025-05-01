@@ -1,22 +1,20 @@
 import axios from "axios";
-import { toast } from 'react-hot-toast'; // Import toast
+import { toast } from "react-hot-toast";
 
-// Set base URL
+// Base URL for API
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/",
 });
 
-// Setting config for request
-API.interceptors.request.use((config) => {
-  // Public paths that don't need token
-  const publicPaths = ['/user_auth/login/', '/user_auth/signup/'];
+// Public paths that don't require a token
+const publicPaths = ["/user_auth/login/", "/user_auth/signup/"];
 
-  // Check if URL is public
+// Request interceptor to attach token
+API.interceptors.request.use((config) => {
   const isPublic = publicPaths.some((path) => config.url.includes(path));
 
-  // If not public, add Authorization header
   if (!isPublic) {
-    const token = localStorage.getItem('jwtToken');
+    const token = localStorage.getItem("jwtToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,22 +23,19 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Config for the response back
+// Response interceptor to handle success and errors
 API.interceptors.response.use(
   (response) => {
-    // Paths where we want success toasts
     const successPaths = [
-      { path: '/user_auth/signup/', action: 'Sign Up' },
-      { path: '/user_auth/login/', action: 'Login' },
-      { path: '/user_auth/edit_org/', action: 'Organization Edit' }
+      { path: "/user_auth/signup/", action: "Sign Up" },
+      { path: "/user_auth/login/", action: "Login" },
+      { path: "/user_auth/edit_org/", action: "Organization Edit" },
     ];
 
-    // Find if the URL matches a success path
     const matched = successPaths.find((entry) =>
       response.config.url.includes(entry.path)
     );
 
-    // Show success toast if matched
     if (matched) {
       toast.success(`${matched.action} completed successfully!`);
     }
@@ -48,24 +43,24 @@ API.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Error handling
-    const errorMsg = error.response?.data?.message || 'Something went wrong.';
+    const url = error.config?.url || "";
     const status = error.response?.status;
-    const url = error.config?.url || '';
-
-    // Public paths
-    const publicPaths = ['/user_auth/login/', '/user_auth/signup/'];
     const isPublic = publicPaths.some((path) => url.includes(path));
 
-    // If not public and 401 or 403, clear token and redirect
-    if (!isPublic && (status === 401 || status === 403)) {
-      window.localStorage.removeItem('jwtToken');
-      window.location.href = '/';
-    }
+    const errorMsg =
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong.";
 
-    // Show error toast if not public
-    if (!isPublic) {
-      toast.error(` Error: ${errorMsg} `);
+    // Always show error toast
+    toast.error(`Error: ${errorMsg}`);
+
+    // Redirect only on protected 401/403
+    if (!isPublic && (status === 401 || status === 403)) {
+      setTimeout(() => {
+        localStorage.removeItem("jwtToken");
+        window.location.href = "/";
+      }, 1500);
     }
 
     return Promise.reject(error);

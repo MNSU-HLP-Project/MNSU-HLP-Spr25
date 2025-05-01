@@ -7,7 +7,7 @@ import HLPCategories from "./dashboard/studentTeacher/HLPCategories.jsx";
 import Register from "./Pages/Register.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
 import "./global.css"; // Import styles
-import StudentDetailsPage from "./students/page";
+
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
 
 // HLP Submission Workflow Components
@@ -129,16 +129,7 @@ function App() {
             }
           />
 
-          <Route
-            path="/students/"
-            element={
-              <ProtectedRoute
-                allowedRoles={["Supervisor", "Admin", "Superuser"]}
-              >
-                <StudentDetailsPage />
-              </ProtectedRoute>
-            }
-          />
+          
           <Route
             path="/edit_organization/"
             element={
