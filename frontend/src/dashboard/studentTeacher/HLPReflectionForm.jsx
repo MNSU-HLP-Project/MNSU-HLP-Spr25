@@ -21,7 +21,6 @@ const HLPReflectionForm = () => {
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        console.log("Auto-clearing error message");
         setError("");
       }, 5000);
 
@@ -65,13 +64,11 @@ const HLPReflectionForm = () => {
         ...location.state.detail,
         date: new Date(location.state.detail.date+"T00:00:00"),
       })
-      console.log(location.state.detail)
     }
   }, []);
 
   // Fetch prompts from API
   useEffect(() => {
-    console.log("Starting to fetch prompts...");
     const fetchPrompts = async () => {
       try {
         const response = await getPrompts();
@@ -96,12 +93,9 @@ const HLPReflectionForm = () => {
         }
 
          else {
-          console.log("No prompts found in API response, keeping defaults");
         }
       } catch (error) {
         console.error("Error fetching prompts:", error);
-        // Don't set error message since we're already using default prompts
-        console.log("Using default prompts due to API error");
       }
     };
 
@@ -170,15 +164,10 @@ const HLPReflectionForm = () => {
         // Add date if not present
         date: formatDateToMMDDYYYY(formData.date) || new Date().toISOString().split("T")[0],
       };
-      console.log(formData)
-      console.log("Submitting data:", dataToSubmit);
 
       try {
-        // Submit the form
-        console.log("Attempting to submit form data...");
         try {
           let response
-          console.log(dataToSubmit)
           if (!edit){
             response = await API.post(
               "/entries/create-entry/",
@@ -190,14 +179,11 @@ const HLPReflectionForm = () => {
               dataToSubmit
             )
           }
-          console.log("Submission successful:", response.data);
           setSuccess(true);
           setSubmitted(true);
 
           // Ensure role is still set to Student Teacher
-          console.log("Checking role before redirect...");
           const role = localStorage.getItem("role");
-          console.log("Current role:", role);
           if (role !== "Student Teacher") {
             console.error(
               `Unexpected role: ${role}, expected Student Teacher. Fixing...`
@@ -209,7 +195,6 @@ const HLPReflectionForm = () => {
           setTimeout(() => {
             // Double-check role before navigation
             const finalRole = localStorage.getItem("role");
-            console.log("Final role before navigation:", finalRole);
             if (finalRole !== "Student Teacher") {
               console.error(
                 "Role changed unexpectedly, resetting to Student Teacher"
@@ -220,38 +205,6 @@ const HLPReflectionForm = () => {
           }, 2000);
         } catch (apiError) {
           console.error("API error in submission:", apiError);
-
-          // For testing purposes, simulate a successful submission
-          console.log("Simulating successful submission for testing");
-          setSuccess(true);
-          setSubmitted(true);
-
-          // Ensure role is still set to Student Teacher
-          console.log(
-            "Checking role before redirect (simulated submission)..."
-          );
-          const role = localStorage.getItem("role");
-          console.log("Current role:", role);
-          if (role !== "Student Teacher") {
-            console.error(
-              `Unexpected role: ${role}, expected Student Teacher. Fixing...`
-            );
-            localStorage.setItem("role", "Student Teacher");
-          }
-
-          // Redirect after simulated successful submission with a longer delay
-          setTimeout(() => {
-            // Double-check role before navigation
-            const finalRole = localStorage.getItem("role");
-            console.log("Final role before navigation (simulated):", finalRole);
-            if (finalRole !== "Student Teacher") {
-              console.error(
-                "Role changed unexpectedly, resetting to Student Teacher"
-              );
-              localStorage.setItem("role", "Student Teacher");
-            }
-            navigate("/reflections/");
-          }, 5000);
 
           // Uncomment this line to throw the error instead of simulating success
           // throw apiError;
@@ -494,7 +447,6 @@ const HLPReflectionForm = () => {
                   ...formData,
                   score: e.target.value,
                 });
-                console.log(formData);
               }}
               value={formData.score}
             >
@@ -514,7 +466,6 @@ const HLPReflectionForm = () => {
                 selected={formData.date}
 
                 onChange={(date) => {
-                  console.log(date);
                   setFormData({
                     ...formData,
                     date: date,

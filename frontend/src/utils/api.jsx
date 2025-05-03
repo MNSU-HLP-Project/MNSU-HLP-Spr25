@@ -7,7 +7,6 @@ import API from './axios';
  * @returns {Response}
  */
 export const generateOrganization = async (org_data) => {
-    console.log(org_data)
     const response = await API.post('/user_auth/generate-org/', {
         org_data: org_data
     });

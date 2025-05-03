@@ -16,7 +16,6 @@ const ReflectionDetail = () => {
   useEffect(() => {
     // Force role check
     const role = localStorage.getItem('role');
-    console.log('ReflectionDetail - Current role:', role);
     if (role !== 'Student Teacher') {
       console.error(`Unexpected role: ${role}, expected Student Teacher. Fixing...`);
       localStorage.setItem('role', 'Student Teacher');
@@ -111,7 +110,6 @@ const ReflectionDetail = () => {
   const handleBackClick = () => {
     // Force role check before navigation
     const role = localStorage.getItem('role');
-    console.log('ReflectionDetail - handleBackClick - Current role:', role);
     if (role !== 'Student Teacher') {
       console.error(`Unexpected role: ${role}, expected Student Teacher. Fixing...`);
       localStorage.setItem('role', 'Student Teacher');

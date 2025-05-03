@@ -72,7 +72,6 @@ const ClassGenerator = ({ onClassCreated }) => {
     const updatedComponents = [...currentClasses];
     const deleted = updatedComponents.splice(index, 1);
     const response = removeClass(deleted[0]);
-    console.log(response);
     setCurrentClasses(updatedComponents);
   };
 

@@ -33,24 +33,19 @@ const ClassEditor = () => {
     const response = await API.get(
       `/user_auth/get-class-details?class_name=${className}`
     );
-    console.log(response);
     // // Set variables to the response data
     setClassDetails(response.data);
     const onlyPrompts = response.data.prompt_list.map((item) => item.prompt);
-    console.log(onlyPrompts);
     setPrompts(onlyPrompts);
   };
 
   const updateClass = async () => {
     // Updates org, errors are handled through axios
-    console.log(classDetails);
-    console.log(prompts);
     const response = await API.post("/user_auth/edit-class/", {
       class_name: classDetails.name,
       prompts: prompts,
       prompt_override: classDetails.prompt_override,
     });
-    console.log(response);
   };
 
   useEffect(() => {

@@ -46,18 +46,15 @@ const ReviewEntryDetails = () => {
             comment: comment.trim(),
             score: parseInt(entry.score) || 1 // Use entry score or default to 1, ensure it's a number
           });
-          console.log("Teacher comment added successfully");
           commentAdded = true;
         } catch (commentErr) {
           console.error("Error adding teacher comment:", commentErr);
           // Only show an alert if the comment was actually provided but failed to save
           if (comment.trim().length > 0) {
-            console.log("Comment was provided but failed to save");
             // We'll continue with the status update anyway
           }
         }
       } else {
-        console.log("No comment provided, skipping comment submission");
       }
 
       // Then update the status

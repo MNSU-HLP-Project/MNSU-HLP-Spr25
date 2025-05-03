@@ -376,7 +376,6 @@ def get_students_under_supervisor(request):
         supervisor = user.supervisor
         students = supervisor.student_teachers.all()
         serializer = StudentTeacherSerializer(students, many=True)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
         print(f"Error: {e}") #add more detailed logging here.

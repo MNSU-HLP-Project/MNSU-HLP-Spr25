@@ -121,7 +121,6 @@ const HLPReflectionList = () => {
                     </button>
                     <button
                       onClick={() => {
-                        console.log("Existing entry:", entry);
                         navigate("/submit-reflection/", {
                           state: {
                             hlp: `HLP ${hlpNumber}`,

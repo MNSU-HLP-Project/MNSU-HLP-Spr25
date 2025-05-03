@@ -18,7 +18,6 @@ const EntryForm = () => {
     e.preventDefault();
     try {
       const response = await API.post("/api/create-entry/", formData);
-      console.log("Entry created:", response.data);
       toast.success("Entry submitted successfully!");
       setFormData({ hlp_number: "", date: "", score: "", comments: "" });
     } catch (error) {

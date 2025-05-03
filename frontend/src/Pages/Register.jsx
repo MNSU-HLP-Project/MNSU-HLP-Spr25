@@ -93,7 +93,6 @@ function Register() {
 
     // If any errors exist, stop execution
     if (Object.keys(newErrors).length > 0) return;
-    console.log(formData)
     try {
         // Posting to backend for signup, all these are required
         const response = await API.post("/user_auth/signup/", {
@@ -107,7 +106,6 @@ function Register() {
         });
         // On success navigate to login page
         if (response.status === 201) {
-          console.log("Signup Successful:", response.data);
           navigate('/')
         }
     } catch (error) {
@@ -117,7 +115,6 @@ function Register() {
         // Update errors based on what is given in response
         const apiErrors = error.response.data;
         const updatedErrors = { ...newErrors };
-        console.log(apiErrors.password)
         if (apiErrors.email) updatedErrors.email = apiErrors.email;
         if (apiErrors.password) updatedErrors.password = apiErrors.password;
         if (apiErrors.detail) updatedErrors.general = apiErrors.detail;

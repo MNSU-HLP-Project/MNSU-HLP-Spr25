@@ -66,8 +66,6 @@ class EntrySerializer(serializers.ModelSerializer):
         if prompt_responses_data:
             for response_data in prompt_responses_data:
                 response_id = response_data.get('id')
-                print(response_id)
-                print(response_data)
                 if response_id:
                     pr_instance = PromptResponse.objects.filter(id=response_id).first()
                     if pr_instance:

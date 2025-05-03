@@ -68,7 +68,6 @@ const MyReflections = () => {
       try {
 
         const response = await API.get(`/entries/student/entries/${queryString}`);
-        console.log(response.data)
 
         if (Array.isArray(response.data)) {
           setEntries(response.data);

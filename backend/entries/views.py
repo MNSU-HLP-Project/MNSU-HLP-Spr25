@@ -20,7 +20,6 @@ from user_auth.models import SupervisorClass
 @api_view(["GET"])
 def get_entries(request):
     try:
-        print("Fetching all entries...")
         entries = Entry.objects.all()
         serializer = EntrySerializer(entries, many=True)
 
@@ -29,7 +28,6 @@ def get_entries(request):
             "entries": serializer.data
         }
 
-        print(f"Found {entries.count()} entries")
         return Response(response_data)
     except Exception as e:
         print(f"Error in get_entries: {str(e)}")
@@ -83,9 +81,6 @@ def create_entry(request):
         if 'user' not in data:
             data['user'] = request.user.id
 
-        # Print the data for debugging
-        print(f"Received data for create_entry: {data}")
-
         # Ensure required fields are present
         required_fields = ['hlp', 'date', 'prompt_responses']
         missing_fields = [field for field in required_fields if field not in data or not data[field]]
@@ -98,9 +93,7 @@ def create_entry(request):
 
         if serializer.is_valid():
             try:
-                print("Serializer is valid, attempting to save...")
                 entry = serializer.save()
-                print(f"Entry saved successfully with ID: {entry.id}")
 
                 # Return the full entry with all nested data
                 return_serializer = EntrySerializer(entry)
@@ -215,19 +208,16 @@ def get_entries_by_lookfor_number(request):
 def get_entries_by_supervisor_students(request):
     try:
         user = request.user
-        print(f"User requesting entries: {user.username}")
 
         # For testing/development, if user doesn't have supervisor attribute,
         # return all entries from all users
         if not hasattr(user, 'supervisor'):
-            print("User is not a supervisor, returning all entries for testing")
             student_users = User.objects.all()
         else:
             # Normal flow for supervisors
             supervisor = user.supervisor
             student_teachers = supervisor.student_teachers.all()
             student_users = [st.user for st in student_teachers]
-            print(f"Found {len(student_users)} students for supervisor")
     except Exception as e:
         print(f"Error getting student users: {str(e)}")
         # Fallback to all users for testing
@@ -294,7 +284,6 @@ def get_entry_detail(request, entry_id):
     entry = get_object_or_404(Entry, id=entry_id)
 
     # For development/testing, allow any user to view any entry
-    print(f"User {user.username} requesting entry {entry_id}")
 
     # In production, uncomment this code to enforce permissions
     # is_owner = entry.user == user
@@ -318,7 +307,7 @@ def add_teacher_comment(request, entry_id):
 
         # For development/testing, allow any user to comment
         if not hasattr(user, 'supervisor'):
-            print(f"User {user.username} is not a supervisor but will be allowed to comment for testing")
+
             # Create a dummy supervisor ID for testing
             supervisor_id = 1
             # Skip student check for testing
@@ -371,7 +360,6 @@ def update_entry_status(request, entry_id):
 
         # For development/testing, allow any user to update status
         if not hasattr(user, 'supervisor'):
-            print(f"User {user.username} is not a supervisor but will be allowed to update status for testing")
             # Skip student check for testing
             student_check_passed = True
         else:
@@ -453,11 +441,7 @@ def get_entries_by_student(request, student_id):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_entries_by_class_and_student(request, class_id, student_id):
-    print(f"REQUESTED: class_id={class_id}, student_id={student_id}")
     entries = Entry.objects.filter(user__id=student_id, sup_class__id=class_id)
-    print(f"ENTRIES FOUND: {entries.count()}")
-    for e in entries:
-        print(f"- {e.id}: user={e.user_id}, class={e.sup_class_id}")
     serializer = EntrySerializer(entries, many=True)
     return Response(serializer.data, status=200)
 
@@ -479,7 +463,7 @@ def get_entry_by_id(request, entry_id):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-            print("❌ Serializer Errors:", serializer.errors)
+            print("Serializer Errors:", serializer.errors)
             return Response(serializer.errors, status=400)
 
     except Entry.DoesNotExist:

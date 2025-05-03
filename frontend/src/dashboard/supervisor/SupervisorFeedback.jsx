@@ -125,10 +125,7 @@ const SupervisorFeedback = () => {
     setError("");
 
     try {
-      console.log("Submitting overall feedback:", {
-        comment: overallComment,
-        score: score
-      });
+
 
       try {
         // Try to submit via API
@@ -136,7 +133,6 @@ const SupervisorFeedback = () => {
           comment: overallComment,
           score: score
         });
-        console.log("Feedback submitted successfully via API");
       } catch (apiError) {
         console.error("API error in feedback submission:", apiError);
         console.error("API error details:", {
@@ -149,8 +145,7 @@ const SupervisorFeedback = () => {
         // Force role check to ensure we stay on the teacher side
         localStorage.setItem('role', 'Supervisor');
 
-        // Continue as if submission was successful for testing purposes
-        console.log("Simulating successful submission for testing");
+        
       }
 
       // Show success message regardless of API success (for testing)
@@ -204,12 +199,10 @@ const SupervisorFeedback = () => {
       setSubmitting(true);
       setError("");
 
-      console.log(`Updating entry ${entryId} status to: ${newStatus}`);
 
       try {
         // Try to update via API
         await API.patch(`/entries/${entryId}/status/`, { status: newStatus });
-        console.log("Status updated successfully via API");
       } catch (apiError) {
         console.error("API error in status update:", apiError);
         console.error("API error details:", {
@@ -222,8 +215,6 @@ const SupervisorFeedback = () => {
         // Force role check to ensure we stay on the teacher side
         localStorage.setItem('role', 'Supervisor');
 
-        // Continue as if update was successful for testing purposes
-        console.log("Simulating successful status update for testing");
       }
 
       // Update the entry in the local state
