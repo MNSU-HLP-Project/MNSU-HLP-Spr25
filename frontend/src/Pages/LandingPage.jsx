@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Auth from "./Login";
+import toast from "react-hot-toast";
 
 function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +17,17 @@ function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Show success messages from email verification or password reset
+  useEffect(() => {
+    if (location.state?.message) {
+      if (location.state.verified || location.state.passwordReset) {
+        toast.success(location.state.message);
+      }
+      // Clear the state to prevent showing the message again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">

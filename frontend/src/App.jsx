@@ -5,6 +5,8 @@ import EditOrg from "./dashboard/admin/EditOrg.jsx";
 import MainMenu from "./dashboard/MainMenu";
 import HLPCategories from "./dashboard/studentTeacher/HLPCategories.jsx";
 import Register from "./Pages/Register.jsx";
+import EmailVerification from "./Pages/EmailVerification.jsx";
+import PasswordReset from "./Pages/PasswordReset.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
 import "./global.css"; // Import styles
 
@@ -120,6 +122,8 @@ function App() {
             }
           />
           <Route path="/register/" element={<Register />} />
+          <Route path="/email-verification" element={<EmailVerification />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
           <Route
             path="/hlpselection/"
             element={

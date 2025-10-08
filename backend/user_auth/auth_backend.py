@@ -10,11 +10,21 @@ class CustomJWTAuthentication(BaseAuthentication):
         auth_header = request.headers.get('Authorization')
         path = request.path.lower()
         
-        # Allow unauthenticated access to login and signup
-        if path.endswith('/login/') or path.endswith('/signup/') or path.endswith('/getgrades/'):
+        # Allow unauthenticated access to login, signup, and password reset endpoints
+        if (path.endswith('/login/') or path.endswith('/signup/') or path.endswith('/getgrades/') or
+            path.endswith('/send-otp/') or path.endswith('/verify-otp/') or 
+            path.endswith('/password-reset-request/') or path.endswith('/password-reset/')):
             return None
+        
+        # Check if Authorization header exists
+        if not auth_header:
+            raise exceptions.AuthenticationFailed('No authorization header')
+            
         # Get the token from auth_header
-        prefix, token = auth_header.split(' ')
+        try:
+            prefix, token = auth_header.split(' ')
+        except ValueError:
+            raise exceptions.AuthenticationFailed('Invalid authorization header format')
 
 
         try:
