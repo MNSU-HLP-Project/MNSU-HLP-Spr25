@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 
 // Base URL for API
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
 });
 
 // Public paths that don't require a token
