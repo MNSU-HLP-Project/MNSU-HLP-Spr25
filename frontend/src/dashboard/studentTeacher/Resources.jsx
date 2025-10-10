@@ -514,6 +514,16 @@ export default function Resources() {
               <a href="https://share.transistor.fm/s/a4446fc4" className="block text-blue-600 hover:underline">
                 HLP Podcast
               </a>
+              {/* Chatbot link */}
+            <a
+              href="https://chatgpt.com/g/g-67b53457ec208191b9c82aa7e6bcf1a9-high-leverage-practices-hlp-gpt?model=gpt-4o"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-blue-600 hover:underline"
+            >
+              HLP Chatbot – Ask Questions & Explore
+
+            </a>
             </div>
           </div>
         </div>
