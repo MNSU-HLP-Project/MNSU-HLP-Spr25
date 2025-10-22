@@ -6,6 +6,7 @@ import MainMenu from "./dashboard/MainMenu";
 import HLPCategories from "./dashboard/studentTeacher/HLPCategories.jsx";
 import Register from "./Pages/Register.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
+import Resources from "./dashboard/studentTeacher/Resources.jsx";
 import "./global.css"; // Import styles
 
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
@@ -88,6 +89,7 @@ function App() {
           <Route path="/edit-class/" element={<ClassEditor />} />
           <Route path="/edit-classes/" element={<ClassGenerator />} />
           <Route path="/" element={<LandingPage />} />
+          <Route path="/resources" element={<Resources />} />
           <Route
             path="/mainmenu/"
             element={
@@ -175,6 +177,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
 
           {/* Supervisor Routes */}
           <Route
