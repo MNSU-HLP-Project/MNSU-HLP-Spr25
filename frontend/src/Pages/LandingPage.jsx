@@ -34,17 +34,27 @@ function LandingPage() {
       TeachTrack
     </div>
 
-    {/* Right Side Button */}
-    <div>
-      <button className={`px-4 py-1.5 border rounded-full font-medium ${
-          scrolled
-            ? "border-blue-600 text-blue-600 "
-            : "border-white text-white"
-        } transition duration-300 text-sm sm:text-base`}
-      >
-        Join through Invite
-      </button>
-    </div>
+{/* New HLP GPT Button */}
+<div>
+  <a
+    href="https://chatgpt.com/g/g-67b53457ec208191b9c82aa7e6bcf1a9-high-leverage-practices-hlp-gpt?model=gpt-4o"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <button
+      className={`px-4 py-1.5 border rounded-full font-medium ${
+        scrolled
+          ? "border-blue-600 text-blue-600 "
+          : "border-white text-white"
+      } transition duration-300 text-sm sm:text-base`}
+    >
+      Ask HLP GPT
+    </button>
+  </a>
+</div>
+
+
+
   </div>
 </nav>
 
