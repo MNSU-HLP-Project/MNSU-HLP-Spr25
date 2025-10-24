@@ -4,13 +4,13 @@ from rest_framework import status
 from django.contrib.auth import login
 from user_auth.auth_backend import IsAdmin, IsStudentTeacher, IsSupervisor, IsSuperuser, IsSupervisorOrAdminOrSuperuser
 from rest_framework.permissions import AllowAny
-from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer
+from .serializers import SignupSerializer, LoginSerializer, InvitationSerializer, OTPVerificationSerializer, PasswordResetRequestSerializer, PasswordResetSerializer
 import jwt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor,  SupervisorClass, EmailOTP
 from .serializers import ExtendUserSerializer, CurrentUserSerializer, SupervisorClassSerializer, OrganizationSerializer, StudentTeacherSerializer, SupervisorSerializer
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -262,8 +262,25 @@ class SignupView(APIView):
         # Signup logic is handled in the serializer
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            
+            # Send OTP for email verification
+            from .email_utils import create_and_send_otp
+            otp = create_and_send_otp(user.email, 'signup', user)
+            
+            if otp:
+                return Response({
+                    "message": "Account created successfully! Please check your email for verification code.",
+                    "email_sent": True,
+                    "user_email": user.email
+                }, status=status.HTTP_201_CREATED)
+            else:
+                # User created but email failed - they can request a new OTP
+                return Response({
+                    "message": "Account created but failed to send verification email. Please request a new verification code.",
+                    "email_sent": False,
+                    "user_email": user.email
+                }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -403,3 +420,124 @@ def get_class_byid(request, class_id):
         return Response({"name": sup_class.name})
     except SupervisorClass.DoesNotExist:
         return Response({"error": "Class not found"}, status=404)
+
+# Email Authentication Views
+
+class SendOTPView(APIView):
+    """Send OTP for email verification or password reset"""
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get('email')
+        otp_type = request.data.get('otp_type', 'signup')
+        
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if otp_type not in ['signup', 'password_reset']:
+            return Response({"error": "Invalid OTP type"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # For password reset, check if user exists
+        if otp_type == 'password_reset':
+            try:
+                user = User.objects.get(email=email.lower())
+            except User.DoesNotExist:
+                return Response({"error": "No account found with this email address"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            user = None
+        
+        from .email_utils import create_and_send_otp
+        
+        otp = create_and_send_otp(email.lower(), otp_type, user)
+        
+        if otp:
+            return Response({
+                "message": f"OTP sent successfully to {email}",
+                "expires_in_minutes": getattr(settings, 'OTP_EXPIRY_MINUTES', 10)
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Failed to send OTP. Please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class VerifyOTPView(APIView):
+    """Verify OTP code"""
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = OTPVerificationSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            otp_obj = serializer.validated_data['otp_object']
+            email = serializer.validated_data['email']
+            otp_type = serializer.validated_data['otp_type']
+            
+            # For signup verification, activate the user
+            if otp_type == 'signup':
+                try:
+                    user = User.objects.get(email=email.lower())
+                    user.is_active = True
+                    user.save()
+                    return Response({
+                        "message": "Email verified successfully! Your account is now active.",
+                        "user_activated": True
+                    }, status=status.HTTP_200_OK)
+                except User.DoesNotExist:
+                    return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            
+            # For password reset, just confirm verification
+            elif otp_type == 'password_reset':
+                return Response({
+                    "message": "OTP verified successfully. You can now reset your password.",
+                    "verified": True
+                }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordResetRequestView(APIView):
+    """Request password reset OTP"""
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            
+            from .email_utils import create_and_send_otp
+            
+            user = User.objects.get(email=email.lower())
+            otp = create_and_send_otp(email.lower(), 'password_reset', user)
+            
+            if otp:
+                return Response({
+                    "message": f"Password reset code sent to {email}",
+                    "expires_in_minutes": getattr(settings, 'OTP_EXPIRY_MINUTES', 10)
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Failed to send reset code. Please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordResetView(APIView):
+    """Reset password with OTP verification"""
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            new_password = serializer.validated_data['new_password']
+            
+            try:
+                user = User.objects.get(email=email.lower())
+                user.set_password(new_password)
+                user.save()
+                
+                return Response({
+                    "message": "Password reset successfully! You can now login with your new password."
+                }, status=status.HTTP_200_OK)
+                
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -8,3 +8,4 @@ simplejwt==2.0.1
 sqlparse==0.5.3
 typing==3.7.4.3
 tzdata==2025.1
+cryptography==41.0.7
