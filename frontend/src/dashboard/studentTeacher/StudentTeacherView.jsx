@@ -21,18 +21,7 @@ const StudentTeacherView = () => {
     localStorage.setItem('role', 'Student Teacher');
     navigate("/hlpcategories/");
   };
-
-  const navigateToReflections = () => {
-    // Force role check before navigation
-    localStorage.setItem('role', 'Student Teacher');
-    navigate("/reflections/");
-  };
   
-    const navigateToResources = () => {
-    localStorage.setItem("role", "Student Teacher");
-    navigate("/resources/");
-  };
-
   const navigateToResources = () => {
     localStorage.setItem("role", "Student Teacher");
     window.open("/resources", "_blank");
