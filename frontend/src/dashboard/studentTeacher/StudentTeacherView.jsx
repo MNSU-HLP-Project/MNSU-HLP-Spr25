@@ -33,6 +33,11 @@ const StudentTeacherView = () => {
     navigate("/resources/");
   };
 
+  const navigateToResources = () => {
+    localStorage.setItem("role", "Student Teacher");
+    window.open("/resources", "_blank");
+  };
+
   return (
     <>
       <button

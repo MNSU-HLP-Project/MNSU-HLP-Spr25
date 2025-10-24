@@ -4,13 +4,20 @@ from .views import (
     get_extend_users, get_students_in_class, edit_org, get_org_details,
     get_organizations, generate_org, get_student_teachers, get_supervisors,
     get_prompts_student, get_class_details, edit_class, delete_class,get_class_byid,
-    get_classes_by_loggedin_supervisor, get_students_under_supervisor )
+    get_classes_by_loggedin_supervisor, get_students_under_supervisor,
+    SendOTPView, VerifyOTPView, PasswordResetRequestView, PasswordResetView )
 
 urlpatterns = [
     # Authentication URLS
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
     path('generate-invite/', generate_invitation, name='generate-invite'),
+    
+    # Email Authentication URLs
+    path('send-otp/', SendOTPView.as_view(), name='send-otp'),
+    path('verify-otp/', VerifyOTPView.as_view(), name='verify-otp'),
+    path('password-reset-request/', PasswordResetRequestView.as_view(), name='password-reset-request'),
+    path('password-reset/', PasswordResetView.as_view(), name='password-reset'),
     
     # Models Endpoitns
     path('extend-users/', get_extend_users, name='extend-users'),
