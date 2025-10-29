@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Auth from "./Login";
+import toast from "react-hot-toast";
 
 function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +17,17 @@ function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Show success messages from email verification or password reset
+  useEffect(() => {
+    if (location.state?.message) {
+      if (location.state.verified || location.state.passwordReset) {
+        toast.success(location.state.message);
+      }
+      // Clear the state to prevent showing the message again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
@@ -34,17 +48,27 @@ function LandingPage() {
       TeachTrack
     </div>
 
-    {/* Right Side Button */}
-    <div>
-      <button className={`px-4 py-1.5 border rounded-full font-medium ${
-          scrolled
-            ? "border-blue-600 text-blue-600 "
-            : "border-white text-white"
-        } transition duration-300 text-sm sm:text-base`}
-      >
-        Join through Invite
-      </button>
-    </div>
+{/* New HLP GPT Button */}
+<div>
+  <a
+    href="https://chatgpt.com/g/g-67b53457ec208191b9c82aa7e6bcf1a9-high-leverage-practices-hlp-gpt?model=gpt-4o"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <button
+      className={`px-4 py-1.5 border rounded-full font-medium ${
+        scrolled
+          ? "border-blue-600 text-blue-600 "
+          : "border-white text-white"
+      } transition duration-300 text-sm sm:text-base`}
+    >
+      Ask HLP GPT
+    </button>
+  </a>
+</div>
+
+
+
   </div>
 </nav>
 
@@ -161,3 +185,4 @@ function LandingPage() {
 }
 
 export default LandingPage;
+
