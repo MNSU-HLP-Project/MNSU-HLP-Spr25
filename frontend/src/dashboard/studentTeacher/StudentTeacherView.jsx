@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getPrompts } from "../../utils/api";
-import toast from "react-hot-toast";
+//import toast from "react-hot-toast";
 
 const StudentTeacherView = () => {
   const navigate = useNavigate();
@@ -27,6 +27,11 @@ const StudentTeacherView = () => {
     localStorage.setItem('role', 'Student Teacher');
     navigate("/reflections/");
   };
+  
+    const navigateToResources = () => {
+    localStorage.setItem("role", "Student Teacher");
+    window.open("/resources", "_blank");
+  };
 
   return (
     <>
@@ -44,7 +49,7 @@ const StudentTeacherView = () => {
       </button>
       <button
         className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
-        onClick={() => toast.success("Resource button clicked")}
+        onClick={navigateToResources}
       >
         📖 Resources
       </button>
