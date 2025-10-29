@@ -28,9 +28,9 @@ const StudentTeacherView = () => {
     navigate("/reflections/");
   };
   
-    const navigateToResources = () => {
+  const navigateToResources = () => {
     localStorage.setItem("role", "Student Teacher");
-    window.open("/resources", "_blank");
+    window.open("/resources/", "_blank", "noopener,noreferrer");
   };
 
   return (
