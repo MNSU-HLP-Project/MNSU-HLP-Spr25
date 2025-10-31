@@ -20,15 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zbfq%7^qc)1_f*uz2n7p_n^axngglk$l5u7@rp_^**r!%*4ht#'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-zbfq%7^qc)1_f*uz2n7p_n^axngglk$l5u7@rp_^**r!%*4ht#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = []
-
-#TODO Create a secret key mechanism
-SECRET_KEY = 'secret'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
 JWT_ALGORITHM = 'HS256'  
 JWT_EXP_DELTA_SECONDS = 3600  
 # Application definition
@@ -50,14 +47,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
 ]
 
 # Allow requests from your React frontend
@@ -142,11 +139,29 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Email configuration (hardcoded for SendGrid SMTP per user request)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+DEFAULT_FROM_EMAIL = 'Teach Track HLP <teachtrack3@gmail.com>'
+
+# OTP Configuration
+OTP_EXPIRY_MINUTES = 10  # OTP expires in 10 minutes
+OTP_LENGTH = 6  # 6-digit OTP
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# Use absolute URL for static to ensure admin assets resolve correctly
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Serve static files in production with WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
