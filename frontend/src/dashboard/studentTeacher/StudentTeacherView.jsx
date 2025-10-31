@@ -22,6 +22,11 @@ const StudentTeacherView = () => {
     navigate("/hlpcategories/");
   };
   
+  const navigateToReflections = () => {
+    localStorage.setItem('role', 'Student Teacher');
+    navigate("/reflections/");
+  };
+  
   const navigateToResources = () => {
     localStorage.setItem("role", "Student Teacher");
     window.open("/resources/", "_blank", "noopener,noreferrer");
