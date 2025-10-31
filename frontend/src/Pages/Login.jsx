@@ -112,6 +112,16 @@ function Auth() {
       >
         Log In
       </button>
+
+      {/* Forgot Password Link */}
+      <div className="text-center mt-4">
+        <button
+          onClick={() => navigate('/password-reset')}
+          className="text-blue-600 hover:text-blue-800 text-sm"
+        >
+          Forgot your password?
+        </button>
+      </div>
     </div>
   );
 }

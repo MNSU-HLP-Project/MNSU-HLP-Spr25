@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+import secrets
+from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -88,3 +92,44 @@ class Invitation(models.Model):
 
     def __str__(self):
         return self.teacher.username
+
+class EmailOTP(models.Model):
+    """Model to store OTP codes for email verification and password reset"""
+    OTP_TYPE_CHOICES = [
+        ('signup', 'Signup Verification'),
+        ('password_reset', 'Password Reset'),
+    ]
+    
+    email = models.EmailField()
+    otp_code = models.CharField(max_length=10)
+    otp_type = models.CharField(max_length=20, choices=OTP_TYPE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def save(self, *args, **kwargs):
+        if not self.otp_code:
+            self.otp_code = self.generate_otp()
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=getattr(settings, 'OTP_EXPIRY_MINUTES', 10))
+        super().save(*args, **kwargs)
+    
+    def generate_otp(self):
+        """Generate a random OTP code"""
+        length = getattr(settings, 'OTP_LENGTH', 6)
+        return ''.join([str(secrets.randbelow(10)) for _ in range(length)])
+    
+    def is_expired(self):
+        """Check if OTP has expired"""
+        return timezone.now() > self.expires_at
+    
+    def is_valid(self):
+        """Check if OTP is valid (not used and not expired)"""
+        return not self.is_used and not self.is_expired()
+    
+    def __str__(self):
+        return f"{self.email} - {self.otp_type} - {self.otp_code}"

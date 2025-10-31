@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, password_validation
 from entries.serializers import PromptSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
-from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, SupervisorClass
+from .models import ExtendUser, Invitation, Organization, StudentTeacher, Supervisor, SupervisorClass, EmailOTP
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,7 +72,8 @@ class SignupSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             email=validated_data['email'].lower(),
-            password=validated_data['password']
+            password=validated_data['password'],
+            is_active=False  # User will be activated after email verification
         )
         
         # Create extend user to handle roles and organization
@@ -178,3 +179,72 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username"]
+
+class OTPVerificationSerializer(serializers.Serializer):
+    """Serializer for OTP verification"""
+    email = serializers.EmailField()
+    otp_code = serializers.CharField(max_length=10, min_length=6)
+    otp_type = serializers.ChoiceField(choices=EmailOTP.OTP_TYPE_CHOICES)
+    
+    def validate(self, data):
+        # For password_reset: only check, do not consume here. Consumption happens at reset.
+        # For signup: consume immediately on verification.
+        from .email_utils import verify_otp, check_otp
+        
+        email = data['email']
+        otp_code = data['otp_code']
+        otp_type = data['otp_type']
+        
+        if otp_type == 'password_reset':
+            success, message, otp_obj = check_otp(email, otp_code, otp_type)
+        else:
+            success, message, otp_obj = verify_otp(email, otp_code, otp_type)
+        
+        if not success:
+            raise serializers.ValidationError(message)
+        
+        data['otp_object'] = otp_obj
+        return data
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    """Serializer for password reset request"""
+    email = serializers.EmailField()
+    
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value.lower())
+            if not user.is_active:
+                raise serializers.ValidationError("Account is not active.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No account found with this email address.")
+        return value
+
+class PasswordResetSerializer(serializers.Serializer):
+    """Serializer for password reset with OTP"""
+    email = serializers.EmailField()
+    otp_code = serializers.CharField(max_length=10, min_length=6)
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+    
+    def validate(self, data):
+        from .email_utils import verify_otp
+        
+        # Consume OTP at reset time
+        success, message, otp_obj = verify_otp(data['email'], data['otp_code'], 'password_reset')
+        if not success:
+            raise serializers.ValidationError(message)
+        
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match.")
+        
+        errors = dict()
+        try:
+            password_validation.validate_password(data['new_password'], user=None)
+        except DjangoValidationError as e:
+            errors['new_password'] = list(e.messages)
+        
+        if errors:
+            raise serializers.ValidationError(errors)
+        
+        data['otp_object'] = otp_obj
+        return data

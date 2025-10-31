@@ -104,9 +104,25 @@ function Register() {
           grade_level: formData.grade_level,
           type_of_educator: formData.type_of_educator
         });
-        // On success navigate to login page
+        // On success navigate to email verification page
         if (response.status === 201) {
-          navigate('/')
+          if (response.data.email_sent) {
+            navigate('/email-verification', { 
+              state: { 
+                email: response.data.user_email,
+                message: response.data.message 
+              }
+            });
+          } else {
+            // Email failed to send, but user was created
+            navigate('/email-verification', { 
+              state: { 
+                email: response.data.user_email,
+                message: response.data.message,
+                showResend: true
+              }
+            });
+          }
         }
     } catch (error) {
       console.error("Error:", error);
