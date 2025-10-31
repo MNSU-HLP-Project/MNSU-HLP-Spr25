@@ -8,6 +8,7 @@ import Register from "./Pages/Register.jsx";
 import EmailVerification from "./Pages/EmailVerification.jsx";
 import PasswordReset from "./Pages/PasswordReset.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
+import Resources from "./dashboard/studentTeacher/Resources.jsx";
 import "./global.css"; // Import styles
 
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
@@ -31,7 +32,7 @@ import SupervisorStudents from "./dashboard/supervisor/SupervisorStudents.jsx";
 import EntriesDisplay from "./dashboard/supervisor/EntriesDisplay.jsx";
 import ReviewEntryDetails from "./dashboard/supervisor/ReviewEntryDetails.jsx";
 import { Toaster } from "react-hot-toast";
-import Resources from "./dashboard/studentTeacher/Resources.jsx";
+ 
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -91,6 +92,7 @@ function App() {
           <Route path="/edit-class/" element={<ClassEditor />} />
           <Route path="/edit-classes/" element={<ClassGenerator />} />
           <Route path="/" element={<LandingPage />} />
+          <Route path="/resources" element={<Resources />} />
           <Route
             path="/mainmenu/"
             element={
@@ -188,6 +190,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
 
           {/* Supervisor Routes */}
           <Route
