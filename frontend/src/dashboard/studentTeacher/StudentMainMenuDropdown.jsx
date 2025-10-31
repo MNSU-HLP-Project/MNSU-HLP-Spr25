@@ -75,7 +75,7 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
       </button>
       <button
         onClick={() => {
-          toast.success("Resources clicked");
+          window.open("/resources/", "_blank", "noopener,noreferrer");
           onClose?.();
         }}
         className="w-full text-left px-4 py-3 bg-green-600 text-white rounded-lg text-base font-semibold hover:bg-green-700 transition"

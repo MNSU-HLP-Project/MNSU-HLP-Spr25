@@ -32,6 +32,7 @@ import SupervisorStudents from "./dashboard/supervisor/SupervisorStudents.jsx";
 import EntriesDisplay from "./dashboard/supervisor/EntriesDisplay.jsx";
 import ReviewEntryDetails from "./dashboard/supervisor/ReviewEntryDetails.jsx";
 import { Toaster } from "react-hot-toast";
+import Resources from "./dashboard/studentTeacher/Resources.jsx";
 
 const PreLoader = ({ isVisible }) => {
   return (
@@ -170,6 +171,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["Student Teacher"]}>
                 <MyReflections />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resources/"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <Resources />
               </ProtectedRoute>
             }
           />
