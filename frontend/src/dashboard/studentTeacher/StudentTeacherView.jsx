@@ -24,11 +24,6 @@ const StudentTeacherView = () => {
   
   const navigateToResources = () => {
     localStorage.setItem("role", "Student Teacher");
-    window.open("/resources", "_blank");
-  };
-  
-  const navigateToResources = () => {
-    localStorage.setItem("role", "Student Teacher");
     window.open("/resources/", "_blank", "noopener,noreferrer");
   };
 
