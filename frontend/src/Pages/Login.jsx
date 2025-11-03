@@ -54,7 +54,18 @@ function Auth() {
 
     }
   };
-  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    buttonPress();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
 
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 sm:p-8 transition-all duration-300">
@@ -62,56 +73,60 @@ function Auth() {
         Welcome Back
       </h2>
 
-      {/* Username Input */}
-      <div className="mb-5">
-        <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
-          Username
-        </label>
-        <input
-          name="username"
-          type="text"
-          placeholder="e.g. supervisor@mnsu.edu"
-          className="w-full px-4 py-3 bg-blue-50 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 transition-all"
-          onChange={handleChange}
-          value={formData.username}
-        />
-        {errors.username && (
-          <p className="text-sm text-red-500 mt-1">{errors.username}</p>
-        )}
-      </div>
+      <form onSubmit={handleSubmit}>
+        {/* Username Input */}
+        <div className="mb-5">
+          <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
+            Username
+          </label>
+          <input
+            name="username"
+            type="text"
+            placeholder="e.g. supervisor@mnsu.edu"
+            className="w-full px-4 py-3 bg-blue-50 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 transition-all"
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            value={formData.username}
+          />
+          {errors.username && (
+            <p className="text-sm text-red-500 mt-1">{errors.username}</p>
+          )}
+        </div>
 
-      {/* Password Input */}
-      <div className="mb-5">
-        <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
-          Password
-        </label>
-        <input
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="w-full px-4 py-3 bg-blue-50 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 transition-all"
-          onChange={handleChange}
-          value={formData.password}
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-        )}
-      </div>
+        {/* Password Input */}
+        <div className="mb-5">
+          <label className="block text-base md:text-lg font-medium text-gray-700 mb-1">
+            Password
+          </label>
+          <input
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 bg-blue-50 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 transition-all"
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            value={formData.password}
+          />
+          {errors.password && (
+            <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+          )}
+        </div>
 
-      {/* General Error
-      {errors.general && (
-        <p className="text-sm text-red-500 text-center mb-4">
-          {errors.general}
-        </p>
-      )} */}
+        {/* General Error
+        {errors.general && (
+          <p className="text-sm text-red-500 text-center mb-4">
+            {errors.general}
+          </p>
+        )} */}
 
-      {/* Submit Button */}
-      <button
-        onClick={buttonPress}
-        className="w-full py-3 bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-base md:text-lg lg:text-xl text-white font-semibold rounded-lg shadow-md hover:shadow-xl transform hover:scale-[1.02] active:scale-95 transition-all duration-200 ease-in-out"
-      >
-        Log In
-      </button>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 bg-gradient-to-r from-red-500 via-blue-500 to-purple-500 text-base md:text-lg lg:text-xl text-white font-semibold rounded-lg shadow-md hover:shadow-xl transform hover:scale-[1.02] active:scale-95 transition-all duration-200 ease-in-out"
+        >
+          Log In
+        </button>
+      </form>
 
       {/* Forgot Password Link */}
       <div className="text-center mt-4">
