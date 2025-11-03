@@ -151,14 +151,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Email configuration (hardcoded for SendGrid SMTP per user request)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
-DEFAULT_FROM_EMAIL = 'Teach Track HLP <teachtrack3@gmail.com>'
+# Email configuration for SendGrid Web API (HTTP-based, Render-friendly)
+# We do not use SMTP on Render (SMTP ports are blocked). We'll call the Web API directly.
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Teach Track HLP <teachtrack3@gmail.com>')
 
 # OTP Configuration
 OTP_EXPIRY_MINUTES = 10  # OTP expires in 10 minutes
