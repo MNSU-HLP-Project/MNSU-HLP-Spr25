@@ -293,16 +293,26 @@ class LoginView(APIView):
         # If email/username and password are correct, then return jwt
         if serializer.is_valid():
             user = serializer.validated_data
+            
+            # Get or create ExtendUser if it doesn't exist (for backwards compatibility)
+            # This handles cases where superusers were created manually
+            extend_user, created = ExtendUser.objects.get_or_create(
+                user=user,
+                defaults={
+                    'role': 'Superuser' if user.is_superuser else 'StudentTeacher'
+                }
+            )
+            
             # Set up token here, 'exp' -  pyjwt built in functionality for expiration
             token = jwt.encode({
-                'role': ExtendUser.objects.get(user=user).role, 
+                'role': extend_user.role, 
                 'id': user.username, 
                 'firstname': user.first_name, 
                 'lastname': user.last_name,
                 'exp': datetime.now(tz=timezone.utc) + timedelta(hours=2) 
                 }, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
             # Return token and role as role effects main menu
-            return Response({"token": token, "role": ExtendUser.objects.get(user=user).role}, status=status.HTTP_200_OK)
+            return Response({"token": token, "role": extend_user.role}, status=status.HTTP_200_OK)
         # Return error
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
