@@ -25,11 +25,11 @@ export const generateInvite = async (class_name='') => {
     });
     // Decide on the role and update the link correctly
     if (response.data.invitation.role == 'Supervisor') {
-        return(`${window.location.origin}/register?role=sup&code=${response.data.invitation.code}`);
+        return(`${window.location.origin}/register/?role=sup&code=${response.data.invitation.code}`);
     } else if (response.data.invitation.role == 'Admin') {
-        return(`${window.location.origin}/register?role=admin&code=${response.data.invitation.code}`);
+        return(`${window.location.origin}/register/?role=admin&code=${response.data.invitation.code}`);
     } else {
-        return(`${window.location.origin}/register?role=stu&code=${response.data.invitation.code}`);
+        return(`${window.location.origin}/register/?role=stu&code=${response.data.invitation.code}`);
     }
 };
 

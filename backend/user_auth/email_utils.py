@@ -1,9 +1,10 @@
-from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from .models import EmailOTP
 import logging
+import json
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -38,17 +39,37 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
         # Create HTML email content
         html_message = render_to_string('email_otp.html', context)
         plain_message = strip_tags(html_message)
-        
-        # Send email
-        send_mail(
-            subject=subject,
-            message=plain_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-        
+
+        # Send via SendGrid Web API (HTTP). SMTP is blocked on Render.
+        if not getattr(settings, 'SENDGRID_API_KEY', None):
+            raise ValueError("SENDGRID_API_KEY is not configured in environment")
+
+        api_url = 'https://api.sendgrid.com/v3/mail/send'
+        headers = {
+            'Authorization': f"Bearer {settings.SENDGRID_API_KEY}",
+            'Content-Type': 'application/json',
+        }
+        from_email = settings.DEFAULT_FROM_EMAIL
+
+        data = {
+            "personalizations": [
+                {
+                    "to": [{"email": email}],
+                    "subject": subject,
+                }
+            ],
+            "from": {"email": from_email.split('<')[-1].rstrip('>') if '<' in from_email else from_email, "name": from_email.split('<')[0].strip() if '<' in from_email else from_email},
+            "content": [
+                {"type": "text/plain", "value": plain_message},
+                {"type": "text/html", "value": html_message},
+            ],
+        }
+
+        response = requests.post(api_url, headers=headers, data=json.dumps(data), timeout=10)
+        if response.status_code not in (200, 202):
+            logger.error(f"SendGrid API error ({response.status_code}): {response.text}")
+            raise RuntimeError("Failed to send email via SendGrid")
+
         logger.info(f"OTP email sent successfully to {email} for {otp_type}")
         return True
         

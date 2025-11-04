@@ -1,8 +1,29 @@
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 export default function Resources() {
+  const navigate = useNavigate();
+  const handleBackClick = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/mainmenu/");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">HLP Resources</h1>
+    <div className="min-h-[100dvh] flex flex-col justify-start bg-gradient-to-b from-gray-100 to-white p-6">
+      <div className="max-w-6xl mx-auto w-full">
+        <div className="flex justify-between items-center mt-4 mb-4">
+          <FaArrowLeft
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+            onClick={handleBackClick}
+          />
+          <h1 className="text-3xl md:text-4xl font-bold border-b-2 border-gray-300 pb-1">
+            HLP Resources
+          </h1>
+          <div className="w-8 md:w-10" />
+        </div>
 
         <div className="space-y-8">
           {/* General Information */}
