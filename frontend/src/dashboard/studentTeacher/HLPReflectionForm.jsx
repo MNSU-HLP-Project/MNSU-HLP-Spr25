@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../../utils/axios";
@@ -8,6 +8,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { formatDateToMMDDYYYY } from "../../utils/utilFunc";
 
+// Create default prompts outside component
+const defaultPrompts = [
+  { id: 1, prompt: "How did you implement this HLP in your teaching?" },
+  { id: 2, prompt: "What challenges did you face?" },
+  { id: 3, prompt: "What would you do differently next time?" },
+];
+
 const HLPReflectionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,7 +22,7 @@ const HLPReflectionForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [prompts, setPrompts] = useState([]);
+  const [prompts, setPrompts] = useState(defaultPrompts);
 
   // Clear error message after 5 seconds
   useEffect(() => {
@@ -44,17 +51,13 @@ const HLPReflectionForm = () => {
     hlp: hlpNumber,
     lookfor_number: 0,
     week_number: 1,
-    prompt_responses: [],
+    prompt_responses: defaultPrompts.map((prompt) => ({
+      prompt: prompt.id,
+      reflection: "",
+    })),
     score:-1,
     date: Date()
   });
-
-  // Create default prompts
-  const defaultPrompts = [
-    { id: 1, prompt: "How did you implement this HLP in your teaching?" },
-    { id: 2, prompt: "What challenges did you face?" },
-    { id: 3, prompt: "What would you do differently next time?" },
-  ];
 
   // Initialize with default prompts
   useEffect(() => {
@@ -90,12 +93,33 @@ const HLPReflectionForm = () => {
             ...prev,
             prompt_responses: initialPromptResponses,
           }));
-        }
-
-         else {
+        } else {
+          // If no prompts from API, use default prompts
+          console.warn("No prompts received, using default prompts");
+          setPrompts(defaultPrompts);
+          const initialPromptResponses = defaultPrompts.map((prompt) => ({
+            prompt: prompt.id,
+            reflection: "",
+          }));
+          setFormData((prev) => ({
+            ...prev,
+            prompt_responses: initialPromptResponses,
+          }));
         }
       } catch (error) {
         console.error("Error fetching prompts:", error);
+        // Use default prompts if API call fails
+        console.warn("Failed to fetch prompts from API, using default prompts");
+        setPrompts(defaultPrompts);
+        const initialPromptResponses = defaultPrompts.map((prompt) => ({
+          prompt: prompt.id,
+          reflection: "",
+        }));
+        setFormData((prev) => ({
+          ...prev,
+          prompt_responses: initialPromptResponses,
+        }));
+        setError("Could not load custom prompts. Using default prompts.");
       }
     };
 
@@ -527,44 +551,52 @@ const HLPReflectionForm = () => {
           )}
 
           <div className="space-y-6">
-            {prompts.map((prompt, index) => (
-              <div
-                key={prompt.id}
-                className="bg-white p-5 rounded-lg border border-purple-200 shadow-sm transition-all duration-300 hover:shadow-md"
-              >
-                <h3 className="font-semibold mb-3 text-purple-700 border-b border-purple-100 pb-2">
-                  {prompt.prompt}
-                </h3>
+            {prompts.length > 0 ? (
+              prompts.map((prompt, index) => (
+                <div
+                  key={prompt.id || index}
+                  className="bg-white p-5 rounded-lg border border-purple-200 shadow-sm transition-all duration-300 hover:shadow-md"
+                >
+                  <h3 className="font-semibold mb-3 text-purple-700 border-b border-purple-100 pb-2">
+                    {prompt.prompt || prompt.text || "Reflection Prompt"}
+                  </h3>
 
-                {/* Display previous response if editing */}
-                {edit && prompt.reflection && (
-                  <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-800 font-medium mb-1">Your Previous Response:</p>
-                    <p className="text-gray-700">{prompt.reflection}</p>
+                  {/* Display previous response if editing */}
+                  {edit && prompt.reflection && (
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-800 font-medium mb-1">Your Previous Response:</p>
+                      <p className="text-gray-700">{prompt.reflection}</p>
+                    </div>
+                  )}
+
+                  {/* Optional reflection with better styling */}
+                  <div>
+                    <label className="block text-gray-700 mb-2 font-medium">
+                      {edit ? "Edit Your Comments:" : "Comments:"}
+                    </label>
+                    <textarea
+                      className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      rows="5"
+                      value={formData.prompt_responses[index]?.reflection || ""}
+                      onChange={(e) =>
+                        handlePromptResponseChange(
+                          index,
+                          "reflection",
+                          e.target.value
+                        )
+                      }
+                      placeholder={edit ? "Edit your previous response here..." : "Add your reflection here..."}
+                    ></textarea>
                   </div>
-                )}
-
-                {/* Optional reflection with better styling */}
-                <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    {edit ? "Edit Your Comments:" : "Comments:"}
-                  </label>
-                  <textarea
-                    className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                    rows="3"
-                    value={formData.prompt_responses[index]?.reflection || ""}
-                    onChange={(e) =>
-                      handlePromptResponseChange(
-                        index,
-                        "reflection",
-                        e.target.value
-                      )
-                    }
-                    placeholder={edit ? "Edit your previous response here..." : "Add your reflection here..."}
-                  ></textarea>
                 </div>
+              ))
+            ) : (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-yellow-800 font-medium">
+                  No reflection prompts available. Please refresh the page or contact your supervisor.
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 

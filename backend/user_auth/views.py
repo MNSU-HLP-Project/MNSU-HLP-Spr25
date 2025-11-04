@@ -75,17 +75,33 @@ def edit_class(request):
 @api_view(['GET'])
 @permission_classes([IsStudentTeacher])
 def get_prompts_student(request):
-    user = request.user
-    student = StudentTeacher.objects.get(user=user)
-    sup_class = student.class_name
-    override = sup_class.prompt_override
-    if override:
-        prompt_list = sup_class.prompt_list
-    else:
-        org = ExtendUser.objects.get(user=user).org
-        prompt_list = org.prompt_list
-    serializer = PromptSerializer(prompt_list, many=True)
-    return Response(serializer.data)
+    try:
+        user = request.user
+        student = StudentTeacher.objects.get(user=user)
+        sup_class = student.class_name
+        
+        if not sup_class:
+            return Response({'error': 'Student teacher is not assigned to a class'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        override = sup_class.prompt_override
+        if override:
+            prompt_list = sup_class.prompt_list.all()
+        else:
+            extend_user = ExtendUser.objects.get(user=user)
+            if not extend_user.org:
+                return Response({'error': 'Student teacher is not assigned to an organization'}, status=status.HTTP_400_BAD_REQUEST)
+            org = extend_user.org
+            prompt_list = org.prompt_list.all()
+        
+        serializer = PromptSerializer(prompt_list, many=True)
+        return Response(serializer.data)
+    except StudentTeacher.DoesNotExist:
+        return Response({'error': 'Student teacher profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    except ExtendUser.DoesNotExist:
+        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Error in get_prompts_student: {str(e)}")
+        return Response({'error': f'Error retrieving prompts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 @api_view(['GET'])
 @permission_classes([IsSupervisorOrAdminOrSuperuser])
@@ -189,11 +205,11 @@ def edit_org(request):
         # First clear the prompt list
         prompt_list.clear()
         for prompt in prompts:
-            # See if a prompt exists
-            prompt_data = Prompt.objects.filter(prompt=prompt).first()
-            # If not create a new one and add
+            # See if a prompt exists for this organization
+            prompt_data = Prompt.objects.filter(prompt=prompt, organization=org).first()
+            # If not create a new one with organization set
             if not prompt_data:
-               prompt_data = Prompt.objects.create(prompt=prompt) 
+               prompt_data = Prompt.objects.create(prompt=prompt, organization=org) 
             prompt_list.add(prompt_data)
         org.save()
         return Response('Organization Updated Succesfully')      
