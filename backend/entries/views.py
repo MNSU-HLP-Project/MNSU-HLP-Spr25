@@ -14,6 +14,7 @@ from rest_framework.renderers import JSONRenderer
 from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import date
+from django.utils import timezone
 from user_auth.models import SupervisorClass
 
 
@@ -332,7 +333,8 @@ def add_teacher_comment(request, entry_id):
     data = request.data.copy()
     data['entry'] = entry_id
     data['supervisor'] = supervisor_id  # Use the supervisor_id we determined earlier
-    data['date'] = date.today()
+    # Use timezone-aware date to ensure consistency with Django settings
+    data['date'] = timezone.now().date()
 
     # Check if this is for a specific prompt response
     prompt_response_id = data.get('prompt_response', None)

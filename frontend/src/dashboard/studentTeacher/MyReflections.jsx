@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
+import { formatDateStringToLocale } from "../../utils/utilFunc";
 
 const MyReflections = () => {
   const navigate = useNavigate();
@@ -362,7 +363,7 @@ const MyReflections = () => {
                 <div className={`mt-3 p-3 rounded ${entry.status === "revision" ? "bg-yellow-50 border border-yellow-200" : "bg-blue-50"}`}>
                   <h4 className={`font-semibold ${entry.status === "revision" ? "text-yellow-800" : "text-blue-800"}`}>Teacher Feedback:</h4>
                   <p className="text-gray-700 mt-1">{entry.teacher_comments[0].comment}</p>
-                  <p className="text-sm text-gray-500 mt-1">- {entry.teacher_comments[0].supervisor_name} on {new Date(entry.teacher_comments[0].date).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500 mt-1">- {entry.teacher_comments[0].supervisor_name} on {formatDateStringToLocale(entry.teacher_comments[0].date)}</p>
                 </div>
               )}
             </div>
