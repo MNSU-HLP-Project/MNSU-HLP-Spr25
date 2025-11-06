@@ -238,7 +238,10 @@ def get_entries_by_supervisor_students(request):
     if week:
         query &= Q(week_number=week)
     if status_filter:
-        query &= Q(status=status_filter)
+        if status_filter == 'pending':
+            query &= Q(status__in=['pending', 'revised'])
+        else:
+            query &= Q(status=status_filter)
     if student_id:
         query &= Q(user_id=student_id)
 
@@ -267,7 +270,10 @@ def get_student_entries(request):
     if week:
         query &= Q(week_number=week)
     if status_filter:
-        query &= Q(status=status_filter)
+        if status_filter == 'pending':
+            query &= Q(status__in=['pending', 'revised'])
+        else:
+            query &= Q(status=status_filter)
 
     entries = Entry.objects.filter(query).order_by('-created_at')
     serializer = EntrySerializer(entries, many=True)
