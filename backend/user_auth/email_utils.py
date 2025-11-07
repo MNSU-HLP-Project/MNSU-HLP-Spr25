@@ -87,9 +87,14 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                 "source": "hlp_tracker"
             },
             # Add headers for better deliverability and spam prevention
+            # Outlook/Hotmail requires specific headers for better deliverability
             "headers": {
                 "X-Mailer": "HLP Tracker",
                 "X-Entity-Ref-ID": f"hlp-{otp_type}",
+                "List-Unsubscribe": f"<mailto:no-reply@myhlptracker.com?subject=unsubscribe>",
+                "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+                "X-Auto-Response-Suppress": "All",  # Prevents Outlook auto-replies
+                "Auto-Submitted": "auto-generated",  # Marks as transactional email
             },
             # Mail settings for transactional emails (prevents spam filtering)
             "mail_settings": {
