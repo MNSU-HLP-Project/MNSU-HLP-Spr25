@@ -56,6 +56,10 @@ class EntrySerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])
+        # Ensure score is set to '0' if not provided or empty
+        score = validated_data.get('score', None)
+        if score in [None, '', 'NA', '-1']:
+            validated_data['score'] = '0'
         # Update Entry fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -93,6 +97,10 @@ class EntryCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         prompt_responses_data = validated_data.pop('prompt_responses', [])
+        # Ensure score is set to '0' if not provided or empty
+        score = validated_data.get('score', None)
+        if score in [None, '', 'NA', '-1']:
+            validated_data['score'] = '0'
         request = self.context.get('request')
         try:
             # Get user and class
