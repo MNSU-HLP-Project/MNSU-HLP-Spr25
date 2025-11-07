@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Use PostgreSQL if DATABASE_URL is set (Render production), otherwise use SQLite (local development)
+# Use PostgreSQL if DATABASE_URL is set (production), otherwise use SQLite (local development)
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
