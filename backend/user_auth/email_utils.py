@@ -86,9 +86,20 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                 "email_type": otp_type,
                 "source": "hlp_tracker"
             },
-            # Add headers for better deliverability
+            # Add headers for better deliverability and spam prevention
             "headers": {
                 "X-Mailer": "HLP Tracker",
+                "List-Unsubscribe": "<mailto:unsubscribe@myhlptracker.com>",
+                "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+            },
+            # Mail settings for transactional emails (prevents spam filtering)
+            "mail_settings": {
+                "bypass_list_management": {
+                    "enable": False
+                },
+                "footer": {
+                    "enable": False
+                }
             }
         }
 
