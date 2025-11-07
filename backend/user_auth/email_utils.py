@@ -20,7 +20,7 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
     """
     try:
         if otp_type == 'signup':
-            subject = 'Verify your HLP account email address'
+            subject = 'Your HLP account verification code'
             context = {
                 'user_name': user_name or 'User',
                 'otp_code': otp_code,
@@ -87,10 +87,14 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                 "source": "hlp_tracker"
             },
             # Add headers for better deliverability and spam prevention
+            # Outlook/Hotmail requires specific headers for better deliverability
             "headers": {
                 "X-Mailer": "HLP Tracker",
-                "List-Unsubscribe": "<mailto:unsubscribe@myhlptracker.com>",
+                "X-Entity-Ref-ID": f"hlp-{otp_type}",
+                "List-Unsubscribe": f"<mailto:no-reply@myhlptracker.com?subject=unsubscribe>",
                 "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+                "X-Auto-Response-Suppress": "All",  # Prevents Outlook auto-replies
+                "Auto-Submitted": "auto-generated",  # Marks as transactional email
             },
             # Mail settings for transactional emails (prevents spam filtering)
             "mail_settings": {
@@ -98,6 +102,21 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                     "enable": False
                 },
                 "footer": {
+                    "enable": False
+                },
+                "sandbox_mode": {
+                    "enable": False
+                }
+            },
+            # Tracking settings - disable for transactional emails (better deliverability)
+            "tracking_settings": {
+                "click_tracking": {
+                    "enable": False
+                },
+                "open_tracking": {
+                    "enable": False
+                },
+                "subscription_tracking": {
                     "enable": False
                 }
             }
