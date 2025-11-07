@@ -20,14 +20,14 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
     """
     try:
         if otp_type == 'signup':
-            subject = 'Verify Your Email - HLP Account'
+            subject = 'Verify your HLP account email address'
             context = {
                 'user_name': user_name or 'User',
                 'otp_code': otp_code,
                 'email_type': 'signup'
             }
         elif otp_type == 'password_reset':
-            subject = 'Password Reset Code - HLP Account'
+            subject = 'Your HLP password reset code'
             context = {
                 'user_name': user_name or 'User',
                 'otp_code': otp_code,
@@ -50,7 +50,18 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
             'Content-Type': 'application/json',
         }
         from_email = settings.DEFAULT_FROM_EMAIL
+        
+        # Parse from_email - handle both "Name <email@domain.com>" and "email@domain.com" formats
+        if '<' in from_email:
+            # Format: "Name <email@domain.com>"
+            email_address = from_email.split('<')[-1].rstrip('>')
+            email_name = from_email.split('<')[0].strip()
+        else:
+            # Format: "email@domain.com" - use email as address and default name
+            email_address = from_email
+            email_name = "HLP Tracker"  # Default name for plain email addresses
 
+        # Build SendGrid payload with proper headers for better deliverability
         data = {
             "personalizations": [
                 {
@@ -58,11 +69,27 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                     "subject": subject,
                 }
             ],
-            "from": {"email": from_email.split('<')[-1].rstrip('>') if '<' in from_email else from_email, "name": from_email.split('<')[0].strip() if '<' in from_email else from_email},
+            "from": {
+                "email": email_address,
+                "name": email_name
+            },
+            "reply_to": {
+                "email": email_address,  # Use same domain for reply-to
+                "name": email_name
+            },
             "content": [
                 {"type": "text/plain", "value": plain_message},
                 {"type": "text/html", "value": html_message},
             ],
+            "categories": ["otp", "transactional"],  # Help SendGrid categorize emails
+            "custom_args": {
+                "email_type": otp_type,
+                "source": "hlp_tracker"
+            },
+            # Add headers for better deliverability
+            "headers": {
+                "X-Mailer": "HLP Tracker",
+            }
         }
 
         response = requests.post(api_url, headers=headers, data=json.dumps(data), timeout=10)

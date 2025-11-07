@@ -39,6 +39,19 @@ function PasswordReset() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (step === 1) {
+        handleRequestReset();
+      } else if (step === 2) {
+        handleVerifyOTP();
+      } else if (step === 3) {
+        handleResetPassword();
+      }
+    }
+  };
+
   const handleRequestReset = async () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "Email is required.";
@@ -210,6 +223,7 @@ function PasswordReset() {
           type="email"
           value={formData.email}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Enter your email"
         />
@@ -257,6 +271,7 @@ function PasswordReset() {
           type="text"
           value={formData.otp_code}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg tracking-widest"
           placeholder="000000"
           maxLength="6"
@@ -318,6 +333,7 @@ function PasswordReset() {
           type="password"
           value={formData.new_password}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Enter new password"
         />
@@ -335,6 +351,7 @@ function PasswordReset() {
           type="password"
           value={formData.confirm_password}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Confirm new password"
         />
