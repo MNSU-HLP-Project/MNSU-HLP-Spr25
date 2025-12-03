@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft, FaCheck, FaRedo } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
+import { formatDateStringToLocale } from "../../utils/utilFunc";
 
 const SupervisorFeedback = () => {
   const navigate = useNavigate();
@@ -151,6 +152,15 @@ const SupervisorFeedback = () => {
       // Show success message regardless of API success (for testing)
       setSuccess("Feedback submitted successfully!");
 
+      // Helper function to get local date string (not UTC)
+      const getLocalDateString = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
       // Update the entry in state to show the new comment
       setEntry(prev => ({
         ...prev,
@@ -159,7 +169,7 @@ const SupervisorFeedback = () => {
           {
             comment: overallComment,
             score: score,
-            date: new Date().toISOString().split('T')[0],
+            date: getLocalDateString(),
             supervisor_name: "You" // This will be replaced with actual name from backend
           }
         ]
@@ -508,7 +518,7 @@ const SupervisorFeedback = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            {new Date(comment.date).toLocaleDateString()}
+                            {formatDateStringToLocale(comment.date)}
                           </p>
                         </div>
                       ))}
@@ -625,7 +635,7 @@ const SupervisorFeedback = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        {new Date(comment.date).toLocaleDateString()}
+                        {formatDateStringToLocale(comment.date)}
                       </p>
                     </div>
                   </div>

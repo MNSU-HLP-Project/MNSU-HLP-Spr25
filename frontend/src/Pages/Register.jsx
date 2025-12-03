@@ -150,8 +150,7 @@ function Register() {
         {roleSignup} Sign Up
       </h2>
 
-
-        <>
+        <form onSubmit={(e) => { e.preventDefault(); buttonPress(); }}>
           <div className="mt-4 flex gap-2">
             <input
               name="firstName"
@@ -212,7 +211,7 @@ function Register() {
               <p className="text-red-500 text-sm mt-1">{errors.type_of_educator}</p>
             )}
           </div>)}
-        </>
+        
       
 
       <div className="mt-4">
@@ -264,10 +263,11 @@ function Register() {
 
       <button
         className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        onClick={buttonPress}
+        type="submit"
       >
         Create Account
       </button>
+    </form>
     </div>
     </div>
   );

@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Use PostgreSQL if DATABASE_URL is set (Render production), otherwise use SQLite (local development)
+# Use PostgreSQL if DATABASE_URL is set (production), otherwise use SQLite (local development)
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
@@ -154,7 +154,7 @@ USE_TZ = True
 # Email configuration for SendGrid Web API (HTTP-based, Render-friendly)
 # We do not use SMTP on Render (SMTP ports are blocked). We'll call the Web API directly.
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', '')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Teach Track HLP <teachtrack3@gmail.com>')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'no-reply@myhlptracker.com')
 
 # OTP Configuration
 OTP_EXPIRY_MINUTES = 10  # OTP expires in 10 minutes

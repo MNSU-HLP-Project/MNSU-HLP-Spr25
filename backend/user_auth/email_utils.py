@@ -20,14 +20,14 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
     """
     try:
         if otp_type == 'signup':
-            subject = 'Verify Your Email - HLP Account'
+            subject = 'Your HLP account verification code'
             context = {
                 'user_name': user_name or 'User',
                 'otp_code': otp_code,
                 'email_type': 'signup'
             }
         elif otp_type == 'password_reset':
-            subject = 'Password Reset Code - HLP Account'
+            subject = 'Your HLP password reset code'
             context = {
                 'user_name': user_name or 'User',
                 'otp_code': otp_code,
@@ -50,7 +50,18 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
             'Content-Type': 'application/json',
         }
         from_email = settings.DEFAULT_FROM_EMAIL
+        
+        # Parse from_email - handle both "Name <email@domain.com>" and "email@domain.com" formats
+        if '<' in from_email:
+            # Format: "Name <email@domain.com>"
+            email_address = from_email.split('<')[-1].rstrip('>')
+            email_name = from_email.split('<')[0].strip()
+        else:
+            # Format: "email@domain.com" - use email as address and default name
+            email_address = from_email
+            email_name = "HLP Tracker"  # Default name for plain email addresses
 
+        # Build SendGrid payload with proper headers for better deliverability
         data = {
             "personalizations": [
                 {
@@ -58,11 +69,57 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
                     "subject": subject,
                 }
             ],
-            "from": {"email": from_email.split('<')[-1].rstrip('>') if '<' in from_email else from_email, "name": from_email.split('<')[0].strip() if '<' in from_email else from_email},
+            "from": {
+                "email": email_address,
+                "name": email_name
+            },
+            "reply_to": {
+                "email": email_address,  # Use same domain for reply-to
+                "name": email_name
+            },
             "content": [
                 {"type": "text/plain", "value": plain_message},
                 {"type": "text/html", "value": html_message},
             ],
+            "categories": ["otp", "transactional"],  # Help SendGrid categorize emails
+            "custom_args": {
+                "email_type": otp_type,
+                "source": "hlp_tracker"
+            },
+            # Add headers for better deliverability and spam prevention
+            # Outlook/Hotmail requires specific headers for better deliverability
+            "headers": {
+                "X-Mailer": "HLP Tracker",
+                "X-Entity-Ref-ID": f"hlp-{otp_type}",
+                "List-Unsubscribe": f"<mailto:no-reply@myhlptracker.com?subject=unsubscribe>",
+                "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+                "X-Auto-Response-Suppress": "All",  # Prevents Outlook auto-replies
+                "Auto-Submitted": "auto-generated",  # Marks as transactional email
+            },
+            # Mail settings for transactional emails (prevents spam filtering)
+            "mail_settings": {
+                "bypass_list_management": {
+                    "enable": False
+                },
+                "footer": {
+                    "enable": False
+                },
+                "sandbox_mode": {
+                    "enable": False
+                }
+            },
+            # Tracking settings - disable for transactional emails (better deliverability)
+            "tracking_settings": {
+                "click_tracking": {
+                    "enable": False
+                },
+                "open_tracking": {
+                    "enable": False
+                },
+                "subscription_tracking": {
+                    "enable": False
+                }
+            }
         }
 
         response = requests.post(api_url, headers=headers, data=json.dumps(data), timeout=10)

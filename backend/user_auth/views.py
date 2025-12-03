@@ -76,16 +76,26 @@ def edit_class(request):
 @permission_classes([IsStudentTeacher])
 def get_prompts_student(request):
     user = request.user
-    student = StudentTeacher.objects.get(user=user)
-    sup_class = student.class_name
-    override = sup_class.prompt_override
-    if override:
-        prompt_list = sup_class.prompt_list
-    else:
-        org = ExtendUser.objects.get(user=user).org
-        prompt_list = org.prompt_list
-    serializer = PromptSerializer(prompt_list, many=True)
-    return Response(serializer.data)
+    try:
+        student = StudentTeacher.objects.get(user=user)
+        sup_class = student.class_name
+        if not sup_class:
+            return Response({"error": "Student is not assigned to a class"}, status=404)
+        override = sup_class.prompt_override
+        if override:
+            prompt_list = sup_class.prompt_list
+        else:
+            extend_user = ExtendUser.objects.filter(user=user).first()
+            if not extend_user or not extend_user.org:
+                return Response({"error": "User organization not found"}, status=404)
+            org = extend_user.org
+            prompt_list = org.prompt_list
+        serializer = PromptSerializer(prompt_list, many=True)
+        return Response(serializer.data)
+    except StudentTeacher.DoesNotExist:
+        return Response({"error": "Student teacher record not found"}, status=404)
+    except ExtendUser.DoesNotExist:
+        return Response({"error": "User profile not found"}, status=404)
         
 @api_view(['GET'])
 @permission_classes([IsSupervisorOrAdminOrSuperuser])
@@ -128,7 +138,7 @@ def generate_org(request):
     """
     # Get the data for the org
     org_data = request.data['org_data']
-    admin = org_data['admin_email']
+    admin = org_data['admin_email'].lower()  # Store in lowercase for consistency
     name = org_data['org_name']
     # Check if it exists
     if Organization.objects.filter(name=name).first():
@@ -159,7 +169,7 @@ def get_org_details(request):
         _type_: returns the prompts and organization data that is serialized
     """
     user = request.user
-    org =  Organization.objects.filter(admin_email = user.email).first()
+    org = Organization.objects.filter(admin_email__iexact=user.email).first()
     if org:
         prompt_list = org.prompt_list
         prompts = []
@@ -177,7 +187,7 @@ def edit_org(request):
     # Get User
     user = request.user
     # Get organization user is under
-    org =  Organization.objects.filter(admin_email = user.email).first()
+    org = Organization.objects.filter(admin_email__iexact=user.email).first()
     if org:
         # Get the org details from request data
         org_details = request.data['org_details']
@@ -211,10 +221,14 @@ def generate_invitation(request, max=50):
     
     # Get role
     teacher = request.user
-    role = ExtendUser.objects.get(user=teacher).role
+    extend_user = ExtendUser.objects.filter(user=teacher).first()
+    if not extend_user:
+        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    role = extend_user.role
     
     # Get org
-    org = ExtendUser.objects.get(user=teacher).org
+    org = extend_user.org
 
     # Check if user is one of authorized roles
     if ExtendUser.objects.filter(user=teacher, role__in=['Supervisor', 'Admin','Superuser']).exists() is False:
@@ -223,7 +237,12 @@ def generate_invitation(request, max=50):
     # TODO: Might want to not hard code this
     if role == 'Supervisor':
         # If supervisor we need to handle classes, check if it exists
-        invitation = Invitation.objects.filter(teacher=teacher, class_name=SupervisorClass.objects.get(name=class_name, user=teacher)).first()
+        try:
+            sup_class_obj = SupervisorClass.objects.get(name=class_name, user=teacher)
+            invitation = Invitation.objects.filter(teacher=teacher, class_name=sup_class_obj).first()
+        except SupervisorClass.DoesNotExist:
+            return Response({'error': f'Class "{class_name}" not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         # If the invitation is valid, pass to serializer and then return it
         if invitation and invitation.use_count < invitation.max_uses:
             return Response({'invitation':InvitationSerializer(invitation).data})
@@ -232,7 +251,7 @@ def generate_invitation(request, max=50):
             invitation.delete()
         # Set up for invitation
         newrole = 'Student Teacher'
-        sup_class = SupervisorClass.objects.get(name=class_name, user=teacher)
+        sup_class = sup_class_obj
     else: 
         # Look for an invitation first
         invitation = Invitation.objects.filter(teacher=teacher).first()
@@ -262,25 +281,47 @@ class SignupView(APIView):
         # Signup logic is handled in the serializer
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            
-            # Send OTP for email verification
-            from .email_utils import create_and_send_otp
-            otp = create_and_send_otp(user.email, 'signup', user)
-            
-            if otp:
+            try:
+                user = serializer.save()
+                
+                # Send OTP for email verification (don't fail signup if email fails)
+                try:
+                    from .email_utils import create_and_send_otp
+                    otp = create_and_send_otp(user.email, 'signup', user)
+                    
+                    if otp:
+                        return Response({
+                            "message": "Account created successfully! Please check your email for verification code.",
+                            "email_sent": True,
+                            "user_email": user.email
+                        }, status=status.HTTP_201_CREATED)
+                    else:
+                        # User created but email failed - they can request a new OTP
+                        return Response({
+                            "message": "Account created but failed to send verification email. Please request a new verification code.",
+                            "email_sent": False,
+                            "user_email": user.email
+                        }, status=status.HTTP_201_CREATED)
+                except Exception as email_error:
+                    # Log email error but don't fail the signup
+                    import traceback
+                    print(f"Email sending error (non-critical): {str(email_error)}")
+                    print(traceback.format_exc())
+                    return Response({
+                        "message": "Account created successfully! However, we couldn't send the verification email. Please use 'Resend Code' on the verification page.",
+                        "email_sent": False,
+                        "user_email": user.email
+                    }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                # Log the error for debugging
+                import traceback
+                error_trace = traceback.format_exc()
+                print(f"ERROR in signup: {str(e)}")
+                print(error_trace)
+                # Return a user-friendly error message
                 return Response({
-                    "message": "Account created successfully! Please check your email for verification code.",
-                    "email_sent": True,
-                    "user_email": user.email
-                }, status=status.HTTP_201_CREATED)
-            else:
-                # User created but email failed - they can request a new OTP
-                return Response({
-                    "message": "Account created but failed to send verification email. Please request a new verification code.",
-                    "email_sent": False,
-                    "user_email": user.email
-                }, status=status.HTTP_201_CREATED)
+                    "error": f"An error occurred during signup: {str(e)}"
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -453,6 +494,13 @@ class SendOTPView(APIView):
                 user = User.objects.get(email=email.lower())
             except User.DoesNotExist:
                 return Response({"error": "No account found with this email address"}, status=status.HTTP_404_NOT_FOUND)
+        elif otp_type == 'signup':
+            # For signup, try to find the user (may be inactive)
+            try:
+                user = User.objects.get(email=email.lower())
+            except User.DoesNotExist:
+                # User doesn't exist yet - that's okay for signup
+                user = None
         else:
             user = None
         
@@ -512,14 +560,20 @@ class PasswordResetRequestView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data['email']
             
-            from .email_utils import create_and_send_otp
+            try:
+                user = User.objects.get(email=email.lower())
+            except User.DoesNotExist:
+                # Don't reveal if email exists or not for security
+                return Response({
+                    "message": "If an account exists with this email, a password reset code has been sent."
+                }, status=status.HTTP_200_OK)
             
-            user = User.objects.get(email=email.lower())
+            from .email_utils import create_and_send_otp
             otp = create_and_send_otp(email.lower(), 'password_reset', user)
             
             if otp:
                 return Response({
-                    "message": f"Password reset code sent to {email}",
+                    "message": "If an account exists with this email, a password reset code has been sent.",
                     "expires_in_minutes": getattr(settings, 'OTP_EXPIRY_MINUTES', 10)
                 }, status=status.HTTP_200_OK)
             else:

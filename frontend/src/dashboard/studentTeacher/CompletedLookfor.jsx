@@ -5,6 +5,7 @@ import { FaArrowLeft, FaBars } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MainMenuDropdown from "./StudentMainMenuDropdown";
 import API from "../../utils/axios";
+import { formatDateStringToLocale } from "../../utils/utilFunc";
 
 const HLPReflectionList = () => {
   const navigate = useNavigate();
@@ -163,9 +164,7 @@ const HLPReflectionList = () => {
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
                             - {entry.teacher_comments[0].supervisor_name} on{" "}
-                            {new Date(
-                              entry.teacher_comments[0].date
-                            ).toLocaleDateString()}
+                            {formatDateStringToLocale(entry.teacher_comments[0].date)}
                           </p>
                         </div>
                       )}

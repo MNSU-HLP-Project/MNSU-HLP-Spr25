@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
-import { formatDateToMMDDYYYY } from "../../utils/utilFunc";
+import { formatDateToMMDDYYYY, formatDateStringToLocale } from "../../utils/utilFunc";
 
 const ReflectionDetail = () => {
   const navigate = useNavigate();
@@ -246,7 +246,7 @@ const ReflectionDetail = () => {
                       <div key={comment.id} className="mt-2">
                         <p className="text-gray-700">{comment.comment}</p>
                         <p className="text-sm text-gray-500 mt-1">
-                          - {comment.supervisor_name} on {new Date(comment.date).toLocaleDateString()}
+                          - {comment.supervisor_name} on {formatDateStringToLocale(comment.date)}
                         </p>
                       </div>
                     ))}
@@ -293,7 +293,7 @@ const ReflectionDetail = () => {
                 <p className="text-gray-700 font-medium">{comment.comment}</p>
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-sm text-gray-500">
-                    - {comment.supervisor_name} on {new Date(comment.date).toLocaleDateString()}
+                    - {comment.supervisor_name} on {formatDateStringToLocale(comment.date)}
                   </p>
                   <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
                     Score: {comment.score}

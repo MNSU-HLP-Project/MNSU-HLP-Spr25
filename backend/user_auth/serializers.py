@@ -124,9 +124,15 @@ class LoginSerializer(serializers.Serializer):
         Returns:
             _type_: user when signed in
         """
+        # Try to authenticate with username or email
         user = authenticate(username=data['username'], password=data['password']) or authenticate(email=data['username'], password=data['password'])
-        if user and user.is_active:
+        
+        if user:
+            if not user.is_active:
+                raise serializers.ValidationError("Your account is not active. Please verify your email address.")
             return user
+        
+        # For security, don't reveal if username/email exists or not
         raise serializers.ValidationError("Invalid credentials.")
 
 class OrganizationSerializer(serializers.ModelSerializer):
