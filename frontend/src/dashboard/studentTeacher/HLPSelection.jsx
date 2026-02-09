@@ -72,7 +72,7 @@ const HLPSelection = () => {
         Choose a HLP
       </p>
       {/* Pillars Section */}
-      <h2 className="mt-4 text-xl font-semibold text-center">Pillar HLP’s</h2>
+      <h2 className="mt-4 text-xl font-semibold text-center">Pillar HLPs</h2>
       <div className="flex flex-row-2 md:flex-row-4 justify-center gap-3 mt-3 px-4">
         {pillars.map((pillarId) => (
           <div
@@ -91,7 +91,7 @@ const HLPSelection = () => {
       </div>
 
       {/* Embedded HLPs Section */}
-      <h2 className="mt-4 text-xl font-semibold text-center">Embedded HLP’s</h2>
+      <h2 className="mt-4 text-xl font-semibold text-center">Embedded HLPs</h2>
       <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 mt-3 px-4">
         {embedded.map((embeddedId) => (
           <div
