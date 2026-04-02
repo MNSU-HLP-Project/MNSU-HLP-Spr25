@@ -45,7 +45,7 @@ function LandingPage() {
         scrolled ? "text-blue-600" : "text-white"
       }`}
     >
-      TeachTrack
+      MyHLPTracker
     </div>
 
 {/* New HLP GPT Button */}
@@ -80,7 +80,7 @@ function LandingPage() {
           <div className="absolute inset-0 bg-white bg-opacity-10 blur-3xl rounded-full transform -translate-y-1/4 scale-150 z-0"></div>
           <div className="relative z-10">
             <h1 className="text-4xl sm:text-6xl font-extrabold mb-4 sm:mb-6 tracking-tight">
-              TeachTrack
+              MyHLPTracker
             </h1>
             <h2 className="text-lg sm:text-3xl mb-6 sm:mb-8 font-light">
               Master your High-Leverage Practices (HLPs) with ease!
@@ -112,7 +112,7 @@ function LandingPage() {
 <section className="w-full pt-6 sm:pt-8 px-2 bg-white">
   <div className="container mx-auto max-w-6xl">
     <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-gray-800">
-      Why TeachTrack?
+      Why MyHLPTracker?
     </h2>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
       {[

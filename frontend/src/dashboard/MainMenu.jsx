@@ -20,7 +20,7 @@ const MainMenu = () => {
     <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6 pb-16 items-center relative font-sans">
       {/* Title */}
       <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 mt-12 md:mt-20 tracking-tight">
-        TeachTrack
+        MyHLPTracker
       </h1>
 
       {/* Role Component */}
@@ -40,11 +40,12 @@ const MainMenu = () => {
             localStorage.removeItem("role");
             navigate("/");
           }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 w-32 md:w-36 px-5 py-3 md:py-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 font-semibold text-base md:text-lg transition-all z-50"
+          className="fixed bottom-12 left-1/2 -translate-x-1/2 w-32 md:w-36 px-5 py-3 md:py-4 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 font-semibold text-base md:text-lg transition-all z-40"
         >
           Log Out
         </button>
       </div>
+
     </div>
   );
 };

@@ -32,14 +32,14 @@ import SupervisorStudents from "./dashboard/supervisor/SupervisorStudents.jsx";
 import EntriesDisplay from "./dashboard/supervisor/EntriesDisplay.jsx";
 import ReviewEntryDetails from "./dashboard/supervisor/ReviewEntryDetails.jsx";
 import { Toaster } from "react-hot-toast";
- 
+import Footer from "./Components/Footer";
 
 const PreLoader = ({ isVisible }) => {
   return (
     <div className={`preloader-container ${isVisible ? "" : "fade-out"}`}>
       <div className="wave-background"></div>
       <div className="loader-container">
-        <div className="loader-text">TeachTrack</div>
+        <div className="loader-text">MyHLPTracker</div>
       </div>
     </div>
   );
@@ -88,6 +88,7 @@ function App() {
           }}
         />
 
+        <Footer />
         <Routes>
           <Route path="/edit-class/" element={<ClassEditor />} />
           <Route path="/edit-classes/" element={<ClassGenerator />} />
