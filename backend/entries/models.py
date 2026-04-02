@@ -39,6 +39,12 @@ class Entry(models.Model):
     comments = models.TextField(default="")
     teacher_reply = models.TextField(default="", blank=True)
 
+    ENTRY_TYPE_CHOICES = [
+        ('practice', 'Practice'),
+        ('observation', 'Observation'),
+    ]
+    entry_type = models.CharField(max_length=12, choices=ENTRY_TYPE_CHOICES, default='practice')
+
     # New fields for HLP submission workflow
     STATUS_CHOICES = [
         ('pending', 'Pending Review'),
