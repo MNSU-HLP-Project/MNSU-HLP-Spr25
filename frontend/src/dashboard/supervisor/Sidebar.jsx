@@ -16,7 +16,7 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-white shadow-md p-6 border-r border-gray-200">
       <h1 className="text-2xl font-extrabold text-blue-700 mb-8 tracking-tight">
-        TeachTrack
+        MyHLPTracker
       </h1>
       <nav className="space-y-4">
         <NavLink to="/mainmenu" className={getLinkClasses("/mainmenu")}>

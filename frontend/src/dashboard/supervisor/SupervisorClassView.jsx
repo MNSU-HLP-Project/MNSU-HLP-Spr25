@@ -27,7 +27,7 @@ const SupervisorClassView = () => {
       <main className="flex-1 p-8">
         <div className="flex justify-between items-center mb-10">
           <h1 className="text-4xl font-extrabold text-black drop-shadow-sm">
-            TeachTrack
+            MyHLPTracker
           </h1>
           {window.screen.width <= 600 && <MenuDropdown />}
         </div>

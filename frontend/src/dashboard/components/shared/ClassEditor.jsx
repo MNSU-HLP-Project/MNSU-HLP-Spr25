@@ -80,7 +80,7 @@ const ClassEditor = () => {
 
         {/* Centered Title */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 tracking-wide drop-shadow-lg">
-          TeachTrack
+          MyHLPTracker
         </h1>
       </div>
 
