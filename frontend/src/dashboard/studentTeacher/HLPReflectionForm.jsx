@@ -15,6 +15,12 @@ const defaultPrompts = [
   { id: 3, prompt: "What would you do differently next time?" },
 ];
 
+const observationPromptOverrides = [
+  "What did you observe about this HLP in teaching?",
+  "What challenges did you observe?",
+  "What would you suggest doing differently next time?",
+];
+
 const HLPReflectionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,7 +62,8 @@ const HLPReflectionForm = () => {
       reflection: "",
     })),
     score:-1,
-    date: Date()
+    date: Date(),
+    entry_type: 'practice',
   });
 
   // Initialize with default prompts
@@ -177,7 +184,8 @@ const HLPReflectionForm = () => {
         ...formData,
         id: formData.id,
         score: formData.score,
-        lookfor_number: parseInt(formData.lookfor_number, 10) || 0,
+        entry_type: formData.entry_type || 'practice',
+        lookfor_number: formData.entry_type === 'observation' ? 0 : (parseInt(formData.lookfor_number, 10) || 0),
         // Make sure prompt_responses have all required fields
         prompt_responses: formData.prompt_responses.map((pr) => ({
           id: pr.id,
@@ -414,6 +422,40 @@ const HLPReflectionForm = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
       >
+        {/* Entry Type Toggle */}
+        <div className="mb-6 bg-gradient-to-r from-gray-50 to-slate-50 p-5 rounded-xl shadow-md border border-gray-200">
+          <h2 className="text-lg font-semibold mb-3 text-gray-700">How are you engaging with this HLP?</h2>
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => setFormData((prev) => ({ ...prev, entry_type: 'practice', }))}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold border-2 transition-all ${
+                formData.entry_type === 'practice'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'
+              }`}
+            >
+              I Practiced This HLP
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData((prev) => ({ ...prev, entry_type: 'observation', lookfor_number: 0, score: -1, }))}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold border-2 transition-all ${
+                formData.entry_type === 'observation'
+                  ? 'bg-teal-600 text-white border-teal-600 shadow-md'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-teal-400'
+              }`}
+            >
+              I Observed This HLP
+            </button>
+          </div>
+          {formData.entry_type === 'observation' && (
+            <p className="mt-3 text-sm text-teal-700 bg-teal-50 border border-teal-200 rounded-lg px-4 py-2">
+              Observation mode: look-for and self-score are not required. Use the reflection prompts below to describe what you observed.
+            </p>
+          )}
+        </div>
+
         {/* Look-fors Section */}
         <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4 text-indigo-800 flex items-center">
@@ -434,6 +476,7 @@ const HLPReflectionForm = () => {
             Select Look-fors to Address
           </h2>
 
+          {formData.entry_type === 'practice' && (
           <div className="mb-4">
             <label className="block text-gray-700 mb-2 font-medium">
               Choose Look-for:
@@ -481,6 +524,7 @@ const HLPReflectionForm = () => {
               <option value={3}>3</option>
             </select>
           </div>
+          )}
           <div className="mb-6">
             <label className="block text-gray-700 mb-2 font-medium">
               Date of Entry:
@@ -501,7 +545,7 @@ const HLPReflectionForm = () => {
               />
             </div>
           </div>
-          {formData.lookfor_number > 0 &&
+          {formData.entry_type === 'practice' && formData.lookfor_number > 0 &&
             hlpData?.lookFors[formData.lookfor_number] && (
               <div className="p-4 bg-white rounded-lg border border-indigo-200 shadow-sm">
                 <h3 className="font-semibold mb-2 text-indigo-700">
@@ -558,7 +602,9 @@ const HLPReflectionForm = () => {
                   className="bg-white p-5 rounded-lg border border-purple-200 shadow-sm transition-all duration-300 hover:shadow-md"
                 >
                   <h3 className="font-semibold mb-3 text-purple-700 border-b border-purple-100 pb-2">
-                    {prompt.prompt || prompt.text || "Reflection Prompt"}
+                    {formData.entry_type === 'observation'
+                      ? (observationPromptOverrides[index] || prompt.prompt || prompt.text || "Reflection Prompt")
+                      : (prompt.prompt || prompt.text || "Reflection Prompt")}
                   </h3>
 
                   {/* Display previous response if editing */}

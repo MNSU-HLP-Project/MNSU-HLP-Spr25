@@ -47,7 +47,7 @@ class EntrySerializer(serializers.ModelSerializer):
         model = Entry
         fields = [
             'id', 'user_detail', 'prompt_responses', 'teacher_comments',
-            'hlp', 'lookfor_number', 'score', 'date', 'status'
+            'hlp', 'lookfor_number', 'score', 'date', 'status', 'entry_type', 'week_number'
         ]
     
     def get_teacher_comments(self, obj):
@@ -92,7 +92,7 @@ class EntryCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
         fields = [
-            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'week_number', 'prompt_responses'
+            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'week_number', 'prompt_responses', 'entry_type'
         ]  # user will be taken from request context
 
     def create(self, validated_data):

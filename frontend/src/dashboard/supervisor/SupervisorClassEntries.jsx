@@ -6,6 +6,7 @@ import { FaArrowLeft, FaUser, FaCalendarAlt, FaEye, FaFilter } from "react-icons
 import Sidebar from "./Sidebar";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
+import ClassCharts from "./ClassCharts";
 
 const SupervisorClassEntries = () => {
   const { classId } = useParams();
@@ -189,6 +190,9 @@ const SupervisorClassEntries = () => {
             );
           })
         )}
+
+        {/* Charts */}
+        {!loading && !error && <ClassCharts entries={entries} />}
       </main>
     </div>
   );
