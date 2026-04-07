@@ -15,6 +15,7 @@ const HLPReflectionList = () => {
   const [loading, setLoading] = useState(true);
   const [expandedEntryId, setExpandedEntryId] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [draft, setDraft] = useState(null);
 
   const handleBackClick = () => navigate(-1);
 
@@ -23,10 +24,14 @@ const HLPReflectionList = () => {
   };
 
   useEffect(() => {
-    const fetchReflections = async () => {
+    const fetchData = async () => {
       try {
-        const entries = await getStudentEntries({ hlp: hlpNumber });
+        const [entries, draftRes] = await Promise.all([
+          getStudentEntries({ hlp: hlpNumber }),
+          API.get(`/entries/draft/?hlp=${hlpNumber}`).catch(() => ({ data: { draft: null } })),
+        ]);
         setEntries(entries);
+        setDraft(draftRes.data.draft);
       } catch (err) {
         console.error("Error fetching reflections:", err);
       } finally {
@@ -34,7 +39,7 @@ const HLPReflectionList = () => {
       }
     };
 
-    fetchReflections();
+    fetchData();
   }, [hlpNumber]);
 
   return (
@@ -176,19 +181,24 @@ const HLPReflectionList = () => {
           )}
         </div>
 
-        {/* New Reflection Button */}
+        {/* New / Continue Reflection Button */}
         <div className="mt-8 flex justify-center">
           <button
-            className="w-full p-4 md:p-5 border-2 border-blue-700 text-white bg-blue-700 rounded-lg hover:bg-blue-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl max-w-xl"
+            className={`w-full p-4 md:p-5 border-2 text-white rounded-lg flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl max-w-xl ${
+              draft
+                ? "border-amber-600 bg-amber-600 hover:bg-amber-700"
+                : "border-blue-700 bg-blue-700 hover:bg-blue-800"
+            }`}
             onClick={() =>
               navigate("/submit-reflection/", {
                 state: {
                   hlp: `HLP ${hlpNumber}`,
+                  draft: draft || null,
                 },
               })
             }
           >
-            📚 Add New Reflection on this HLP
+            {draft ? "✏️ Continue Draft Reflection" : "📚 Add New Reflection on this HLP"}
           </button>
         </div>
       </div>

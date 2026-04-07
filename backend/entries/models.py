@@ -47,6 +47,7 @@ class Entry(models.Model):
 
     # New fields for HLP submission workflow
     STATUS_CHOICES = [
+        ('draft', 'Draft'),
         ('pending', 'Pending Review'),
         ('revised', 'Revised Submission'),
         ('approved', 'Approved'),
