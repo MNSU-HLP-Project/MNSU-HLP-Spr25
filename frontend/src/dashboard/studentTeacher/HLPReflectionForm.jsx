@@ -29,6 +29,9 @@ const HLPReflectionForm = () => {
   const [success, setSuccess] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [prompts, setPrompts] = useState(defaultPrompts);
+  const [draftId, setDraftId] = useState(null);
+  const [draftSaving, setDraftSaving] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
 
   // Clear error message after 5 seconds
   useEffect(() => {
@@ -43,7 +46,8 @@ const HLPReflectionForm = () => {
 
   // Get the HLP number from location state
   const hlpNumber = location.state?.hlp?.replace("HLP ", "") || "";
-  const edit = location.state.edit
+  const edit = location.state.edit;
+  const draftFromNav = location.state.draft || null;
   const submitMsg = edit ? "Edit Reflection" : "Submit Reflection"
   const hlpData = hlpNumber ? HLP_LookFors[hlpNumber] : null;
 
@@ -66,14 +70,25 @@ const HLPReflectionForm = () => {
     entry_type: 'practice',
   });
 
-  // Initialize with default prompts
+  // Initialize with edit data, draft from navigation, or blank form
   useEffect(() => {
-    if (edit){
-      setPrompts(location.state.detail.prompt_responses)
+    if (edit) {
+      setPrompts(location.state.detail.prompt_responses);
       setFormData({
         ...location.state.detail,
-        date: new Date(location.state.detail.date+"T00:00:00"),
-      })
+        date: new Date(location.state.detail.date + "T00:00:00"),
+      });
+      return;
+    }
+    if (draftFromNav) {
+      setDraftId(draftFromNav.id);
+      // Spread draft data into form (date, hlp, week, etc.)
+      // prompt_responses are handled in fetchPrompts to keep correct prompt titles
+      setFormData((prev) => ({
+        ...prev,
+        ...draftFromNav,
+        date: new Date(draftFromNav.date + "T00:00:00"),
+      }));
     }
   }, []);
 
@@ -87,40 +102,31 @@ const HLPReflectionForm = () => {
         setError("");
 
         // Only update prompts if we got a valid response with data
-        if (response.data && response.data.length > 0) {
-          setPrompts(response.data);
-          let initialPromptResponses
-          // Initialize prompt responses with API data
-           initialPromptResponses = response.data.map((prompt) => ({
-            prompt: prompt.id,
-            reflection: "",
-          }))
-
-          setFormData((prev) => ({
-            ...prev,
-            prompt_responses: initialPromptResponses,
-          }));
-        } else {
-          // If no prompts from API, use default prompts
+        const promptList = (response.data && response.data.length > 0) ? response.data : defaultPrompts;
+        if (!response.data || response.data.length === 0) {
           console.warn("No prompts received, using default prompts");
-          setPrompts(defaultPrompts);
-          const initialPromptResponses = defaultPrompts.map((prompt) => ({
-            prompt: prompt.id,
-            reflection: "",
-          }));
-          setFormData((prev) => ({
-            ...prev,
-            prompt_responses: initialPromptResponses,
-          }));
         }
+
+        setPrompts(promptList);
+
+        // Pre-fill reflections from draft if available, otherwise blank
+        const initialPromptResponses = promptList.map((prompt, index) => ({
+          prompt: prompt.id,
+          reflection: draftFromNav?.prompt_responses?.[index]?.reflection || "",
+          id: draftFromNav?.prompt_responses?.[index]?.id,
+        }));
+
+        setFormData((prev) => ({
+          ...prev,
+          prompt_responses: initialPromptResponses,
+        }));
       } catch (error) {
         console.error("Error fetching prompts:", error);
-        // Use default prompts if API call fails
-        console.warn("Failed to fetch prompts from API, using default prompts");
         setPrompts(defaultPrompts);
-        const initialPromptResponses = defaultPrompts.map((prompt) => ({
+        const initialPromptResponses = defaultPrompts.map((prompt, index) => ({
           prompt: prompt.id,
-          reflection: "",
+          reflection: draftFromNav?.prompt_responses?.[index]?.reflection || "",
+          id: draftFromNav?.prompt_responses?.[index]?.id,
         }));
         setFormData((prev) => ({
           ...prev,
@@ -130,7 +136,7 @@ const HLPReflectionForm = () => {
       }
     };
 
-    if (!edit){
+    if (!edit) {
       fetchPrompts();
     }
   }, []); // Empty dependency array to run only once on mount
@@ -158,6 +164,39 @@ const HLPReflectionForm = () => {
       ...prev,
       prompt_responses: updatedResponses,
     }));
+  };
+
+  // Save current form as a draft
+  const handleSaveDraft = async () => {
+    setDraftSaving(true);
+    setDraftSaved(false);
+    try {
+      const dataToSave = {
+        ...formData,
+        status: 'draft',
+        entry_type: formData.entry_type || 'practice',
+        lookfor_number: formData.entry_type === 'observation' ? 0 : (parseInt(formData.lookfor_number, 10) || 0),
+        prompt_responses: formData.prompt_responses.map((pr) => ({
+          id: pr.id,
+          prompt: pr.prompt,
+          reflection: pr.reflection || "",
+        })),
+        date: formatDateToMMDDYYYY(formData.date) || new Date().toISOString().split("T")[0],
+      };
+
+      if (draftId) {
+        await API.post("/entries/edit-entry/", { ...dataToSave, id: draftId });
+      } else {
+        const res = await API.post("/entries/create-entry/", dataToSave);
+        setDraftId(res.data.entry.id);
+      }
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 3000);
+    } catch (err) {
+      setError("Failed to save draft. Please try again.");
+    } finally {
+      setDraftSaving(false);
+    }
   };
 
   // Handle form submission
@@ -199,17 +238,13 @@ const HLPReflectionForm = () => {
 
       try {
         try {
-          let response
-          if (!edit){
-            response = await API.post(
-              "/entries/create-entry/",
-              dataToSubmit
-            );
+          if (!edit && !draftId) {
+            await API.post("/entries/create-entry/", dataToSubmit);
+          } else if (draftId) {
+            // Submit existing draft — change status to pending
+            await API.post("/entries/edit-entry/", { ...dataToSubmit, id: draftId, status: 'pending' });
           } else {
-            response = await API.post(
-              "/entries/edit-entry/",
-              dataToSubmit
-            )
+            await API.post("/entries/edit-entry/", dataToSubmit);
           }
           setSuccess(true);
           setSubmitted(true);
@@ -651,7 +686,19 @@ const HLPReflectionForm = () => {
         {/* Weekly Goals Section */}
 
         {/* Submit Button */}
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-end gap-3 mt-8">
+          {/* Save Draft — only shown on new entries, not edits */}
+          {!edit && !submitted && (
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              disabled={draftSaving || submitted}
+              className="py-3 px-6 rounded-lg border-2 border-gray-400 text-gray-700 bg-white hover:bg-gray-50 transition-all shadow flex items-center font-semibold text-lg disabled:opacity-50"
+            >
+              {draftSaving ? "Saving..." : draftSaved ? "Draft Saved!" : draftId ? "Update Draft" : "Save Draft"}
+            </button>
+          )}
+
           <button
             type="submit"
             className={`py-3 px-8 rounded-lg transition-all transform shadow-lg flex items-center font-bold text-lg ${

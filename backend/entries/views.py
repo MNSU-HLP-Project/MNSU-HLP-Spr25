@@ -53,6 +53,9 @@ def edit_entry(request):
     except Entry.DoesNotExist:
         return Response({'error': "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # Track previous status before update
+    previous_status = entry.status
+
     # Check if this is a revision of a previously reviewed entry
     was_revision_needed = entry.status == 'revision'
 
@@ -65,6 +68,30 @@ def edit_entry(request):
     serializer = EntrySerializer(entry, data=data, partial=True)  # partial=True allows partial updates
     if serializer.is_valid():
         updated_entry = serializer.save()
+
+        # If a draft was just submitted (status changed from draft to pending), notify supervisor
+        new_status = updated_entry.status
+        if previous_status == 'draft' and new_status == 'pending':
+            try:
+                if updated_entry.sup_class and updated_entry.sup_class.user and updated_entry.sup_class.user.email:
+                    supervisor = updated_entry.sup_class.user
+                    teacher = updated_entry.user
+                    teacher_name = teacher.get_full_name() or teacher.username
+                    subject = f"New HLP Entry Submitted by {teacher_name}"
+                    html_message = f"""
+                    <p>Hello {supervisor.get_full_name() or supervisor.username},</p>
+                    <p><strong>{teacher_name}</strong> has submitted a new HLP entry for your review.</p>
+                    <ul>
+                        <li><strong>Date:</strong> {updated_entry.date}</li>
+                        <li><strong>HLP:</strong> {updated_entry.hlp}</li>
+                        <li><strong>Type:</strong> {updated_entry.get_entry_type_display()}</li>
+                        <li><strong>Week:</strong> {updated_entry.week_number}</li>
+                    </ul>
+                    <p>Please log in to MyHLPTracker to review the entry.</p>
+                    """
+                    send_notification_email(supervisor.email, subject, html_message)
+            except Exception as e:
+                logger.warning(f"Failed to send supervisor notification for draft submission {entry_id}: {str(e)}")
 
         # Add a note in the response if this was a revision
         response_data = serializer.data
@@ -100,33 +127,34 @@ def create_entry(request):
             try:
                 entry = serializer.save()
 
-                # Notify supervisor that a new entry was submitted
-                try:
-                    print(f"[EMAIL] Entry created. sup_class={entry.sup_class}, sup_user={entry.sup_class.user if entry.sup_class else None}")
-                    if entry.sup_class and entry.sup_class.user and entry.sup_class.user.email:
-                        supervisor = entry.sup_class.user
-                        teacher = entry.user
-                        teacher_name = teacher.get_full_name() or teacher.username
-                        subject = f"New HLP Entry Submitted by {teacher_name}"
-                        html_message = f"""
-                        <p>Hello {supervisor.get_full_name() or supervisor.username},</p>
-                        <p><strong>{teacher_name}</strong> has submitted a new HLP entry for your review.</p>
-                        <ul>
-                            <li><strong>Date:</strong> {entry.date}</li>
-                            <li><strong>HLP:</strong> {entry.hlp}</li>
-                            <li><strong>Type:</strong> {entry.get_entry_type_display()}</li>
-                            <li><strong>Week:</strong> {entry.week_number}</li>
-                        </ul>
-                        <p>Please log in to MyHLPTracker to review the entry.</p>
-                        """
-                        print(f"[EMAIL] Sending supervisor notification to {supervisor.email}")
-                        result = send_notification_email(supervisor.email, subject, html_message)
-                        print(f"[EMAIL] Send result: {result}")
-                    else:
-                        print(f"[EMAIL] Skipped: no supervisor email found")
-                except Exception as e:
-                    print(f"[EMAIL] Error sending supervisor notification: {str(e)}")
-                    logger.warning(f"Failed to send supervisor notification for entry {entry.id}: {str(e)}")
+                # Notify supervisor — skip for drafts
+                if entry.status != 'draft':
+                    try:
+                        print(f"[EMAIL] Entry created. sup_class={entry.sup_class}, sup_user={entry.sup_class.user if entry.sup_class else None}")
+                        if entry.sup_class and entry.sup_class.user and entry.sup_class.user.email:
+                            supervisor = entry.sup_class.user
+                            teacher = entry.user
+                            teacher_name = teacher.get_full_name() or teacher.username
+                            subject = f"New HLP Entry Submitted by {teacher_name}"
+                            html_message = f"""
+                            <p>Hello {supervisor.get_full_name() or supervisor.username},</p>
+                            <p><strong>{teacher_name}</strong> has submitted a new HLP entry for your review.</p>
+                            <ul>
+                                <li><strong>Date:</strong> {entry.date}</li>
+                                <li><strong>HLP:</strong> {entry.hlp}</li>
+                                <li><strong>Type:</strong> {entry.get_entry_type_display()}</li>
+                                <li><strong>Week:</strong> {entry.week_number}</li>
+                            </ul>
+                            <p>Please log in to MyHLPTracker to review the entry.</p>
+                            """
+                            print(f"[EMAIL] Sending supervisor notification to {supervisor.email}")
+                            result = send_notification_email(supervisor.email, subject, html_message)
+                            print(f"[EMAIL] Send result: {result}")
+                        else:
+                            print(f"[EMAIL] Skipped: no supervisor email found")
+                    except Exception as e:
+                        print(f"[EMAIL] Error sending supervisor notification: {str(e)}")
+                        logger.warning(f"Failed to send supervisor notification for entry {entry.id}: {str(e)}")
 
                 # Return the full entry with all nested data
                 return_serializer = EntrySerializer(entry)
@@ -262,8 +290,8 @@ def get_entries_by_supervisor_students(request):
     status_filter = request.GET.get('status', None)
     student_id = request.GET.get('student_id', None)
 
-    # Start with base query
-    query = Q(user__in=student_users)
+    # Start with base query — supervisors never see drafts
+    query = Q(user__in=student_users) & ~Q(status='draft')
 
     # Apply filters if provided
     if hlp:
@@ -282,6 +310,22 @@ def get_entries_by_supervisor_students(request):
     serializer = EntrySerializer(entries, many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_draft_entry(request):
+    """Return the current user's draft for a given HLP, if one exists."""
+    hlp = request.GET.get('hlp', None)
+    if not hlp:
+        return Response({"error": "hlp parameter is required"}, status=400)
+
+    draft = Entry.objects.filter(user=request.user, hlp=hlp, status='draft').order_by('-updated_at').first()
+    if not draft:
+        return Response({"draft": None}, status=200)
+
+    serializer = EntrySerializer(draft)
+    return Response({"draft": serializer.data}, status=200)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

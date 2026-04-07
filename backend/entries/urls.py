@@ -5,6 +5,7 @@ from .views import (
     get_entries_by_supervisor_students, get_student_entries, get_entry_detail,
     get_entries_by_class, get_entries_by_student, get_entries_by_class_and_student,
     add_teacher_comment, update_entry_status, get_prompts, get_entry_by_id,
+    get_draft_entry,
 )
 
 
@@ -32,5 +33,5 @@ urlpatterns = [
     path("entries/<int:entry_id>/comment/", add_teacher_comment, name="add_teacher_comment"),
     path("entries/<int:entry_id>/status/", update_entry_status, name="update_entry_status"),
     path("prompts/", get_prompts, name="get_prompts"),
-    
+    path("draft/", get_draft_entry, name="get_draft_entry"),
 ]

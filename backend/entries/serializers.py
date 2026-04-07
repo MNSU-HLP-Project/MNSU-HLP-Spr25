@@ -92,7 +92,8 @@ class EntryCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
         fields = [
-            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'week_number', 'prompt_responses', 'entry_type'
+
+            'user', 'hlp', 'lookfor_number', 'score', 'date', 'comments', 'week_number', 'prompt_responses', 'entry_type', 'status'
         ]  # user will be taken from request context
 
     def create(self, validated_data):
