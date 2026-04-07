@@ -134,6 +134,68 @@ def send_otp_email(email, otp_code, otp_type, user_name=None):
         logger.error(f"Failed to send OTP email to {email}: {str(e)}")
         return False
 
+def send_notification_email(to_email, subject, html_message):
+    """
+    Send a general notification email via SendGrid.
+
+    Args:
+        to_email (str): Recipient email address
+        subject (str): Email subject
+        html_message (str): HTML body content
+
+    Returns:
+        bool: True if sent successfully, False otherwise
+    """
+    try:
+        if not getattr(settings, 'SENDGRID_API_KEY', None):
+            raise ValueError("SENDGRID_API_KEY is not configured in environment")
+
+        plain_message = strip_tags(html_message)
+        from_email = settings.DEFAULT_FROM_EMAIL
+
+        if '<' in from_email:
+            email_address = from_email.split('<')[-1].rstrip('>')
+            email_name = from_email.split('<')[0].strip()
+        else:
+            email_address = from_email
+            email_name = "HLP Tracker"
+
+        data = {
+            "personalizations": [{"to": [{"email": to_email}], "subject": subject}],
+            "from": {"email": email_address, "name": email_name},
+            "reply_to": {"email": email_address, "name": email_name},
+            "content": [
+                {"type": "text/plain", "value": plain_message},
+                {"type": "text/html", "value": html_message},
+            ],
+            "tracking_settings": {
+                "click_tracking": {"enable": False},
+                "open_tracking": {"enable": False},
+            },
+        }
+
+        response = requests.post(
+            'https://api.sendgrid.com/v3/mail/send',
+            headers={
+                'Authorization': f"Bearer {settings.SENDGRID_API_KEY}",
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(data),
+            timeout=10,
+        )
+
+        if response.status_code not in (200, 202):
+            logger.error(f"SendGrid API error ({response.status_code}): {response.text}")
+            return False
+
+        logger.info(f"Notification email sent to {to_email}: {subject}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to send notification email to {to_email}: {str(e)}")
+        return False
+
+
 def create_and_send_otp(email, otp_type, user=None):
     """
     Create an OTP record and send it via email
