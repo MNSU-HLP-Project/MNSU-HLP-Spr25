@@ -16,6 +16,10 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.utils import timezone
 from user_auth.models import SupervisorClass
+from user_auth.email_utils import send_notification_email
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(["GET"])
@@ -95,6 +99,34 @@ def create_entry(request):
         if serializer.is_valid():
             try:
                 entry = serializer.save()
+
+                # Notify supervisor that a new entry was submitted
+                try:
+                    print(f"[EMAIL] Entry created. sup_class={entry.sup_class}, sup_user={entry.sup_class.user if entry.sup_class else None}")
+                    if entry.sup_class and entry.sup_class.user and entry.sup_class.user.email:
+                        supervisor = entry.sup_class.user
+                        teacher = entry.user
+                        teacher_name = teacher.get_full_name() or teacher.username
+                        subject = f"New HLP Entry Submitted by {teacher_name}"
+                        html_message = f"""
+                        <p>Hello {supervisor.get_full_name() or supervisor.username},</p>
+                        <p><strong>{teacher_name}</strong> has submitted a new HLP entry for your review.</p>
+                        <ul>
+                            <li><strong>Date:</strong> {entry.date}</li>
+                            <li><strong>HLP:</strong> {entry.hlp}</li>
+                            <li><strong>Type:</strong> {entry.get_entry_type_display()}</li>
+                            <li><strong>Week:</strong> {entry.week_number}</li>
+                        </ul>
+                        <p>Please log in to MyHLPTracker to review the entry.</p>
+                        """
+                        print(f"[EMAIL] Sending supervisor notification to {supervisor.email}")
+                        result = send_notification_email(supervisor.email, subject, html_message)
+                        print(f"[EMAIL] Send result: {result}")
+                    else:
+                        print(f"[EMAIL] Skipped: no supervisor email found")
+                except Exception as e:
+                    print(f"[EMAIL] Error sending supervisor notification: {str(e)}")
+                    logger.warning(f"Failed to send supervisor notification for entry {entry.id}: {str(e)}")
 
                 # Return the full entry with all nested data
                 return_serializer = EntrySerializer(entry)
@@ -352,6 +384,30 @@ def add_teacher_comment(request, entry_id):
     serializer = TeacherCommentSerializer(data=data)
     if serializer.is_valid():
         comment = serializer.save()
+
+        # Notify teacher that feedback was received
+        try:
+            teacher = entry.user
+            if teacher and teacher.email:
+                supervisor_user = request.user
+                supervisor_name = supervisor_user.get_full_name() or supervisor_user.username
+                teacher_name = teacher.get_full_name() or teacher.username
+                subject = "You have received feedback on your HLP Entry"
+                html_message = f"""
+                <p>Hello {teacher_name},</p>
+                <p>Your supervisor <strong>{supervisor_name}</strong> has provided feedback on your HLP entry.</p>
+                <ul>
+                    <li><strong>Entry Date:</strong> {entry.date}</li>
+                    <li><strong>HLP:</strong> {entry.hlp}</li>
+                    <li><strong>Score:</strong> {comment.score}</li>
+                    <li><strong>Comment:</strong> {comment.comment}</li>
+                </ul>
+                <p>Please log in to MyHLPTracker to view the full feedback.</p>
+                """
+                send_notification_email(teacher.email, subject, html_message)
+        except Exception as e:
+            logger.warning(f"Failed to send teacher notification for comment {comment.id}: {str(e)}")
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -387,6 +443,33 @@ def update_entry_status(request, entry_id):
 
         entry.status = new_status
         entry.save()
+
+        # Notify teacher when supervisor approves or requests revision
+        if new_status in ('approved', 'revision'):
+            try:
+                teacher = entry.user
+                if teacher and teacher.email:
+                    supervisor_name = user.get_full_name() or user.username
+                    teacher_name = teacher.get_full_name() or teacher.username
+                    if new_status == 'approved':
+                        subject = "Your HLP Entry has been Approved"
+                        status_line = "Your entry has been <strong>approved</strong> by your supervisor."
+                    else:
+                        subject = "Your HLP Entry Needs Revision"
+                        status_line = "Your supervisor has requested <strong>revisions</strong> on your entry."
+                    html_message = f"""
+                    <p>Hello {teacher_name},</p>
+                    <p>{status_line}</p>
+                    <ul>
+                        <li><strong>Supervisor:</strong> {supervisor_name}</li>
+                        <li><strong>Entry Date:</strong> {entry.date}</li>
+                        <li><strong>HLP:</strong> {entry.hlp}</li>
+                    </ul>
+                    <p>Please log in to MyHLPTracker to view the details.</p>
+                    """
+                    send_notification_email(teacher.email, subject, html_message)
+            except Exception as e:
+                logger.warning(f"Failed to send status notification for entry {entry_id}: {str(e)}")
 
         return Response({'message': f'Entry status updated to {new_status}.'}, status=status.HTTP_200_OK)
 
