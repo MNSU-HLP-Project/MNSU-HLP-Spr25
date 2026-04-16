@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
-import { formatDateToMMDDYYYY, formatDateStringToLocale } from "../../utils/utilFunc";
+import { formatDateStringToLocale } from "../../utils/utilFunc";
+import { RUBRIC_CRITERIA, RUBRIC_SCORE_LABELS, RUBRIC_MAX_SCORE } from "../../utils/rubric";
 
 const ReflectionDetail = () => {
   const navigate = useNavigate();
@@ -288,19 +289,54 @@ const ReflectionDetail = () => {
             Teacher Feedback
           </h2>
           <div className="space-y-4">
-            {entry.teacher_comments.map((comment) => (
-              <div key={comment.id} className={`p-4 rounded-lg ${entry.status === "revision" ? "bg-yellow-50 border border-yellow-200" : "bg-blue-50"}`}>
-                <p className="text-gray-700 font-medium">{comment.comment}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-sm text-gray-500">
-                    - {comment.supervisor_name} on {formatDateStringToLocale(comment.date)}
-                  </p>
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                    Score: {comment.score}
-                  </span>
+            {entry.teacher_comments.map((comment) => {
+              const hasCriteriaScores = RUBRIC_CRITERIA.some((c) => comment[c.key] > 0);
+              return (
+                <div key={comment.id} className={`p-4 rounded-lg ${entry.status === "revision" ? "bg-yellow-50 border border-yellow-200" : "bg-blue-50"}`}>
+                  <p className="text-gray-700 font-medium">{comment.comment}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-sm text-gray-500">
+                      - {comment.supervisor_name} on {formatDateStringToLocale(comment.date)}
+                    </p>
+                    {comment.score > 0 && (
+                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                        Score: {comment.score} / {RUBRIC_MAX_SCORE}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Rubric breakdown — shown only for approved entries with criterion data */}
+                  {entry.status === "approved" && hasCriteriaScores && (
+                    <div className="mt-4 border border-blue-200 rounded-lg overflow-hidden">
+                      <div className="bg-blue-100 px-4 py-2 flex items-center justify-between">
+                        <span className="text-sm font-semibold text-blue-800">Rubric Score Breakdown</span>
+                        <span className="text-sm font-bold text-blue-800">{comment.score} / {RUBRIC_MAX_SCORE}</span>
+                      </div>
+                      <div className="divide-y divide-blue-100">
+                        {RUBRIC_CRITERIA.map((criterion) => {
+                          const val = comment[criterion.key];
+                          if (!val) return null;
+                          const colors = {
+                            4: "bg-green-100 text-green-800 border-green-300",
+                            3: "bg-blue-100 text-blue-800 border-blue-300",
+                            2: "bg-amber-100 text-amber-800 border-amber-300",
+                            1: "bg-red-100 text-red-800 border-red-300",
+                          };
+                          return (
+                            <div key={criterion.key} className="flex items-center justify-between px-4 py-2 bg-white text-sm">
+                              <span className="text-gray-700 font-medium">{criterion.label}</span>
+                              <span className={`px-2 py-0.5 rounded-full border text-xs font-semibold ${colors[val]}`}>
+                                {RUBRIC_SCORE_LABELS[val]} ({val}/4)
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

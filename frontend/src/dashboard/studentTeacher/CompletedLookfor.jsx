@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getStudentEntries } from "../../utils/api";
-import { FaArrowLeft, FaBars } from "react-icons/fa";
+import { FaArrowLeft, FaBars, FaHome } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MainMenuDropdown from "./StudentMainMenuDropdown";
 import API from "../../utils/axios";
@@ -46,10 +46,16 @@ const HLPReflectionList = () => {
     <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
-        <FaArrowLeft
-          className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
-          onClick={handleBackClick}
-        />
+        <div className="flex items-center gap-3">
+          <FaArrowLeft
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+            onClick={handleBackClick}
+          />
+          <FaHome
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform text-blue-600"
+            onClick={() => navigate("/mainmenu/")}
+          />
+        </div>
         <div className="mb-6 text-black text-center py-3">
         <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
           HLP #{hlpNumber}: {HLP_LookFors[hlpNumber].title}

@@ -4,6 +4,7 @@ import { FaArrowLeft, FaCheck, FaRedo } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { formatDateStringToLocale } from "../../utils/utilFunc";
+import { RUBRIC_CRITERIA, RUBRIC_SCORE_LABELS, RUBRIC_MAX_SCORE, computeRubricTotal, defaultCriteriaScores } from "../../utils/rubric";
 
 const SupervisorFeedback = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const SupervisorFeedback = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [overallComment, setOverallComment] = useState("");
-  const [score, setScore] = useState(1);
+  const [criteriaScores, setCriteriaScores] = useState(defaultCriteriaScores());
   const [submitting, setSubmitting] = useState(false);
 
   // Check role on component mount
@@ -108,12 +109,10 @@ const SupervisorFeedback = () => {
     setOverallComment(e.target.value);
   };
 
-  // Handle score change
-  const handleScoreChange = (e) => {
-    setScore(parseInt(e.target.value, 10));
+  // Handle per-criterion score change
+  const handleCriterionChange = (key, value) => {
+    setCriteriaScores((prev) => ({ ...prev, [key]: value }));
   };
-
-  // Removed prompt comment handling
 
   // Submit overall feedback
   const submitOverallFeedback = async () => {
@@ -122,17 +121,22 @@ const SupervisorFeedback = () => {
       return;
     }
 
+    const total = computeRubricTotal(criteriaScores);
+    if (total === null) {
+      setError("Please score at least one rubric criterion before submitting.");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
     try {
-
-
       try {
         // Try to submit via API
         await API.post(`/entries/${entryId}/comment/`, {
           comment: overallComment,
-          score: score
+          score: total,
+          ...criteriaScores,
         });
       } catch (apiError) {
         console.error("API error in feedback submission:", apiError);
@@ -177,6 +181,7 @@ const SupervisorFeedback = () => {
 
       // Clear the form
       setOverallComment("");
+      setCriteriaScores(defaultCriteriaScores());
 
       // Navigate back to supervisor review page after a delay
       setTimeout(() => {
@@ -643,7 +648,7 @@ const SupervisorFeedback = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                     </svg>
-                    Score: {comment.score}
+                    Score: {comment.score} / {RUBRIC_MAX_SCORE}
                   </span>
                 </div>
                 <div className="bg-white p-4 rounded-lg border border-blue-100">
@@ -680,28 +685,79 @@ const SupervisorFeedback = () => {
           ></textarea>
         </div>
 
-        <div className="mb-6 bg-white p-6 rounded-lg border border-indigo-200 shadow-sm">
-          <label className="block text-indigo-800 font-medium mb-3 text-lg flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-            Score (0-2):
-          </label>
-          <div className="relative">
-            <select
-              className="w-full p-4 border-2 border-indigo-300 rounded-lg appearance-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white pr-10 text-lg"
-              value={score}
-              onChange={handleScoreChange}
-            >
-              <option value={0}>0 - Does not meet expectations</option>
-              <option value={1}>1 - Partially meets expectations</option>
-              <option value={2}>2 - Meets or exceeds expectations</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-700">
-              <svg className="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+        {/* Rubric Scoring */}
+        <div className="mb-6 bg-white rounded-lg border border-indigo-200 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 bg-indigo-50 border-b border-indigo-200">
+            <span className="text-indigo-800 font-medium text-lg flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
-            </div>
+              Reflection Rubric
+            </span>
+            {(() => {
+              const total = computeRubricTotal(criteriaScores);
+              return total !== null ? (
+                <span className="text-indigo-700 font-bold text-lg bg-white border border-indigo-200 px-4 py-1 rounded-full">
+                  Total: {total} / {RUBRIC_MAX_SCORE}
+                </span>
+              ) : null;
+            })()}
+          </div>
+
+          {/* Reference table */}
+          <div className="overflow-x-auto border-b border-indigo-100">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="text-left px-4 py-3 font-semibold text-gray-600 w-48 border-r border-gray-200">Criteria</th>
+                  <th className="px-4 py-3 font-semibold text-green-700 border-r border-gray-200">Exceeds (4)</th>
+                  <th className="px-4 py-3 font-semibold text-blue-700 border-r border-gray-200">Meets (3)</th>
+                  <th className="px-4 py-3 font-semibold text-amber-700 border-r border-gray-200">Approaching (2)</th>
+                  <th className="px-4 py-3 font-semibold text-red-700">Does Not Yet Meet (1)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RUBRIC_CRITERIA.map((criterion, i) => (
+                  <tr key={criterion.key} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-4 py-3 font-medium text-gray-700 border-r border-gray-200 align-top">{criterion.label}</td>
+                    <td className="px-4 py-3 text-gray-600 border-r border-gray-200 align-top">{criterion.scores[4]}</td>
+                    <td className="px-4 py-3 text-gray-600 border-r border-gray-200 align-top">{criterion.scores[3]}</td>
+                    <td className="px-4 py-3 text-gray-600 border-r border-gray-200 align-top">{criterion.scores[2]}</td>
+                    <td className="px-4 py-3 text-gray-600 align-top">{criterion.scores[1]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Scoring buttons */}
+          <div className="p-6 space-y-5">
+            {RUBRIC_CRITERIA.map((criterion) => (
+              <div key={criterion.key} className="border border-indigo-100 rounded-lg p-4 bg-indigo-50">
+                <p className="font-medium text-indigo-800 mb-3">{criterion.label}</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {[4, 3, 2, 1].map((val) => {
+                    const selected = criteriaScores[criterion.key] === val;
+                    const colors = {
+                      4: selected ? "bg-green-600 text-white border-green-600" : "bg-white text-green-700 border-green-300 hover:bg-green-50",
+                      3: selected ? "bg-blue-600 text-white border-blue-600"  : "bg-white text-blue-700 border-blue-300 hover:bg-blue-50",
+                      2: selected ? "bg-amber-500 text-white border-amber-500" : "bg-white text-amber-700 border-amber-300 hover:bg-amber-50",
+                      1: selected ? "bg-red-500 text-white border-red-500"    : "bg-white text-red-700 border-red-300 hover:bg-red-50",
+                    };
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => handleCriterionChange(criterion.key, val)}
+                        className={`border-2 rounded-lg px-3 py-2 text-sm font-medium transition text-center ${colors[val]}`}
+                      >
+                        {RUBRIC_SCORE_LABELS[val]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

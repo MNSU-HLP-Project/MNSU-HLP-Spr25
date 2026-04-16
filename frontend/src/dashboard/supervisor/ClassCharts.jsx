@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { FaExpand, FaCompress } from "react-icons/fa";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, Tooltip as PieTooltip,
@@ -105,7 +106,7 @@ const CustomLineTooltip = ({ active, payload, label }) => {
 
 const getUniqueHLPs = (entries) => [...new Set(entries.map((e) => e.hlp))].sort((a, b) => Number(a) - Number(b));
 
-const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value }) => {
+const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -121,6 +122,7 @@ const ClassCharts = ({ entries }) => {
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [selectedHlp, setSelectedHlp] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const [fullscreenChart, setFullscreenChart] = useState(null); // 'pie' | 'line' | null
 
   const students = useMemo(() => getStudents(entries), [entries]);
   const allHlps = useMemo(() => getUniqueHLPs(entries), [entries]);
@@ -189,34 +191,28 @@ const ClassCharts = ({ entries }) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Pie Chart */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-600 mb-3">
-                HLP Distribution{selectedStudent ? ` — ${selectedStudent.name}` : " — All Students"}
-              </h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-gray-600">
+                  HLP Distribution{selectedStudent ? ` — ${selectedStudent.name}` : " — All Students"}
+                </h3>
+                {pieData.length > 0 && (
+                  <button onClick={() => setFullscreenChart("pie")} className="text-gray-400 hover:text-gray-700 transition" title="Fullscreen">
+                    <FaExpand />
+                  </button>
+                )}
+              </div>
               {pieData.length === 0 ? (
                 <p className="text-sm text-gray-400">No data available.</p>
               ) : (
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      dataKey="value"
-                      labelLine={false}
-                      label={<CustomPieLabel />}
-                    >
+                    <Pie data={pieData} cx="50%" cy="50%" outerRadius={100} dataKey="value" labelLine={false} label={<CustomPieLabel />}>
                       {pieData.map((entry) => (
                         <Cell key={entry.hlp} fill={getGroupColor(entry.hlp)} />
                       ))}
                     </Pie>
                     <PieTooltip formatter={(value, name) => [`${value} reflection${value !== 1 ? "s" : ""}`, name]} />
-                    <Legend
-                      formatter={(value, entry) => {
-                        const hlp = HLP_LookFors[entry.payload.hlp];
-                        return `${value}${hlp ? `: ${hlp.title.substring(0, 30)}…` : ""}`;
-                      }}
-                    />
+                    <Legend formatter={(value, entry) => { const hlp = HLP_LookFors[entry.payload.hlp]; return `${value}${hlp ? `: ${hlp.title.substring(0, 30)}…` : ""}`; }} />
                   </PieChart>
                 </ResponsiveContainer>
               )}
@@ -224,16 +220,17 @@ const ClassCharts = ({ entries }) => {
 
             {/* Line Chart */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-600 mb-3">
-                {selectedStudent
-                  ? `HLP Scores Over Time — ${selectedStudent.name}`
-                  : "HLP Scores Over Time — Select a student to view"}
-              </h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-gray-600">
+                  {selectedStudent ? `HLP Scores Over Time — ${selectedStudent.name}` : "HLP Scores Over Time — Select a student to view"}
+                </h3>
+                <button onClick={() => setFullscreenChart("line")} className="text-gray-400 hover:text-gray-700 transition" title="Fullscreen">
+                  <FaExpand />
+                </button>
+              </div>
               {!selectedStudentId ? (
                 <div className="flex items-center justify-center h-[260px] bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                  <p className="text-sm text-gray-400 text-center px-4">
-                    Select a student from the dropdown to see their score progression over time.
-                  </p>
+                  <p className="text-sm text-gray-400 text-center px-4">Select a student from the dropdown to see their score progression over time.</p>
                 </div>
               ) : lineData.length === 0 ? (
                 <p className="text-sm text-gray-400">No scored entries to display.</p>
@@ -242,25 +239,101 @@ const ClassCharts = ({ entries }) => {
                   <LineChart data={lineData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis domain={[0, 3]} ticks={[0, 1, 2, 3]} tick={{ fontSize: 11 }} />
+                    <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11 }} />
                     <Tooltip content={<CustomLineTooltip />} />
                     <Legend />
                     {hlps.map((hlp, i) => (
-                      <Line
-                        key={hlp}
-                        type="monotone"
-                        dataKey={`HLP ${hlp}`}
-                        stroke={LINE_COLORS[i % LINE_COLORS.length]}
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        connectNulls
-                      />
+                      <Line key={hlp} type="monotone" dataKey={`HLP ${hlp}`} stroke={LINE_COLORS[i % LINE_COLORS.length]} strokeWidth={2} dot={{ r: 4 }} connectNulls />
                     ))}
                   </LineChart>
                 </ResponsiveContainer>
               )}
             </div>
           </div>
+
+          {/* Fullscreen overlay */}
+          {fullscreenChart && (
+            <div className="fixed inset-0 bg-white z-50 flex flex-col p-6" onClick={() => setFullscreenChart(null)}>
+              <div className="flex flex-col gap-3 mb-4" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-700">
+                    {fullscreenChart === "pie"
+                      ? `HLP Distribution${selectedStudent ? ` — ${selectedStudent.name}` : " — All Students"}`
+                      : `HLP Scores Over Time${selectedStudent ? ` — ${selectedStudent.name}` : " — All Students"}`}
+                  </h3>
+                  <button onClick={() => setFullscreenChart(null)} className="text-gray-500 hover:text-gray-800 transition flex items-center gap-2 text-sm font-medium">
+                    <FaCompress /> Close
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Filter by Student</label>
+                    <select
+                      className="p-2 rounded border border-gray-300 w-full sm:w-64 text-sm"
+                      value={selectedStudentId}
+                      onChange={(e) => setSelectedStudentId(e.target.value)}
+                    >
+                      <option value="">All Students (class overview)</option>
+                      {students.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Filter by HLP</label>
+                    <select
+                      className="p-2 rounded border border-gray-300 w-full sm:w-64 text-sm"
+                      value={selectedHlp}
+                      onChange={(e) => setSelectedHlp(e.target.value)}
+                    >
+                      <option value="">All HLPs</option>
+                      {allHlps.map((hlp) => (
+                        <option key={hlp} value={hlp}>
+                          HLP {hlp}{HLP_LookFors[hlp]?.title ? `: ${HLP_LookFors[hlp].title.substring(0, 40)}…` : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1" onClick={(e) => e.stopPropagation()}>
+                {fullscreenChart === "pie" ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={pieData} cx="50%" cy="50%" outerRadius="40%" dataKey="value" labelLine={false} label={<CustomPieLabel />}>
+                        {pieData.map((entry) => (
+                          <Cell key={entry.hlp} fill={getGroupColor(entry.hlp)} />
+                        ))}
+                      </Pie>
+                      <PieTooltip formatter={(value, name) => [`${value} reflection${value !== 1 ? "s" : ""}`, name]} />
+                      <Legend formatter={(value, entry) => { const hlp = HLP_LookFors[entry.payload.hlp]; return `${value}${hlp ? `: ${hlp.title.substring(0, 50)}…` : ""}`; }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : !selectedStudentId ? (
+                  <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                    <p className="text-sm text-gray-400 text-center px-4">Select a student from the dropdown above to see their score progression over time.</p>
+                  </div>
+                ) : lineData.length === 0 ? (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-sm text-gray-400">No scored entries to display.</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={lineData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="date" tick={{ fontSize: 13 }} />
+                      <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 13 }} />
+                      <Tooltip content={<CustomLineTooltip />} />
+                      <Legend />
+                      {hlps.map((hlp, i) => (
+                        <Line key={hlp} type="monotone" dataKey={`HLP ${hlp}`} stroke={LINE_COLORS[i % LINE_COLORS.length]} strokeWidth={3} dot={{ r: 5 }} connectNulls />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

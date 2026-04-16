@@ -15,6 +15,7 @@ import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx"
 
 // HLP Submission Workflow Components
 import HLPReflectionForm from "./dashboard/studentTeacher/HLPReflectionForm.jsx";
+import DraftReflections from "./dashboard/studentTeacher/DraftReflections.jsx";
 
 import HLPReflectionList from "./dashboard/studentTeacher/CompletedLookfor.jsx";
 
@@ -88,7 +89,6 @@ function App() {
           }}
         />
 
-        <Footer />
         <Routes>
           <Route path="/edit-class/" element={<ClassEditor />} />
           <Route path="/edit-classes/" element={<ClassGenerator />} />
@@ -176,6 +176,14 @@ function App() {
             }
           />
           <Route
+            path="/drafts/"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <DraftReflections />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/resources/"
             element={
               <ProtectedRoute allowedRoles={["Student Teacher", "Supervisor"]}>
@@ -233,6 +241,7 @@ function App() {
             }
           />
         </Routes>
+        <Footer />
       </div>
     </>
   );

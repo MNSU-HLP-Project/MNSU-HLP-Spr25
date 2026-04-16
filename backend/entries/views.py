@@ -337,6 +337,7 @@ def get_student_entries(request):
     hlp = request.GET.get('hlp', None)
     week = request.GET.get('week', None)
     status_filter = request.GET.get('status', None)
+    entry_type = request.GET.get('entry_type', None)
 
     # Start with base query
     query = Q(user=user)
@@ -351,6 +352,8 @@ def get_student_entries(request):
             query &= Q(status__in=['pending', 'revised'])
         else:
             query &= Q(status=status_filter)
+    if entry_type:
+        query &= Q(entry_type=entry_type)
 
     entries = Entry.objects.filter(query).order_by('-created_at')
     serializer = EntrySerializer(entries, many=True)

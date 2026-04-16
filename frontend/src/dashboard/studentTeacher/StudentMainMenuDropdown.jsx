@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainMenuDropdown = ({ className = "", onClose }) => {
   const navigate = useNavigate();
   const dropdownRef = useRef();
-  const [supervisor, setSupervisor] = useState(localStorage.getItem('role')=='Supervisor')
+  const supervisor = localStorage.getItem('role') === 'Supervisor';
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -56,11 +55,17 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
       </div>
 
       }
-      {!supervisor && 
+      {!supervisor &&
       <div
         ref={dropdownRef}
         className={`absolute right-2 top-10 w-64 max-w-[90vw] bg-white border border-gray-300 rounded-xl shadow-xl z-50 p-4 space-y-3 ${className}`}
       >
+      <button
+        onClick={() => handleNavigation("/mainmenu/")}
+        className="w-full text-left px-4 py-3 bg-gray-700 text-white rounded-lg text-base font-semibold hover:bg-gray-800 transition"
+      >
+        🏠 Home
+      </button>
       <button
         onClick={() => handleNavigation("/hlpcategories/")}
         className="w-full text-left px-4 py-3 bg-blue-600 text-white rounded-lg text-base font-semibold hover:bg-blue-700 transition"
@@ -72,6 +77,12 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
         className="w-full text-left px-4 py-3 bg-purple-600 text-white rounded-lg text-base font-semibold hover:bg-purple-700 transition"
       >
         📝 My Reflections
+      </button>
+      <button
+        onClick={() => handleNavigation("/drafts/")}
+        className="w-full text-left px-4 py-3 bg-amber-600 text-white rounded-lg text-base font-semibold hover:bg-amber-700 transition"
+      >
+        ✏️ Draft Reflections
       </button>
       <button
         onClick={() => {
