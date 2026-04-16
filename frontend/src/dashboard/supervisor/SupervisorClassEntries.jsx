@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../../utils/axios";
 
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaEye, FaFilter } from "react-icons/fa";
+import { FaArrowLeft, FaHome, FaUser, FaCalendarAlt, FaEye } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
@@ -20,7 +20,8 @@ const SupervisorClassEntries = () => {
   const [filters, setFilters] = useState({
     hlp: "",
     week: "",
-    status: "pending"
+    status: "pending",
+    student: ""
   });
 
   useEffect(() => {
@@ -41,14 +42,25 @@ const SupervisorClassEntries = () => {
     fetchData();
   }, [classId]);
 
+  // Derive unique students from loaded entries
+  const studentOptions = entries.reduce((acc, entry) => {
+    const id = entry.user_detail?.id;
+    if (id && !acc.find(s => s.id === id)) {
+      acc.push({
+        id,
+        name: `${entry.user_detail.first_name} ${entry.user_detail.last_name}`.trim()
+      });
+    }
+    return acc;
+  }, []);
+
   useEffect(() => {
-    const filtered = entries.filter((entry) => {
-      return (
-        (filters.hlp === "" || entry.hlp.toLowerCase().includes(filters.hlp.toLowerCase())) &&
-        (filters.week === "" || entry.week_number.toString() === filters.week) &&
-        (filters.status === "" || entry.status === filters.status)
-      );
-    });
+    const filtered = entries.filter((entry) => (
+      (filters.hlp === "" || entry.hlp.toLowerCase().includes(filters.hlp.toLowerCase())) &&
+      (filters.week === "" || entry.week_number.toString() === filters.week) &&
+      (filters.status === "" || entry.status === filters.status) &&
+      (filters.student === "" || entry.user_detail?.id?.toString() === filters.student)
+    ));
     setFilteredEntries(filtered);
   }, [filters, entries]);
 
@@ -87,6 +99,13 @@ const SupervisorClassEntries = () => {
             >
               <FaArrowLeft />
             </button>
+            <button
+              onClick={() => navigate("/mainmenu/")}
+              className="text-white text-xl hover:opacity-80"
+              title="Home"
+            >
+              <FaHome />
+            </button>
             <div>
               <h1 className="text-xl font-bold">Student Reflections</h1>
               <p className="text-sm text-white-100">Viewing all class entries for: <span className="font-semibold">{className}</span></p>
@@ -97,7 +116,7 @@ const SupervisorClassEntries = () => {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <input
             type="text"
             placeholder="Filter by HLP"
@@ -125,6 +144,17 @@ const SupervisorClassEntries = () => {
             <option value="revised">Revised Submissions</option>
             <option value="approved">Approved</option>
             <option value="revision">Needs Revision</option>
+          </select>
+          <select
+            name="student"
+            value={filters.student}
+            onChange={handleFilterChange}
+            className="p-2 rounded border w-full"
+          >
+            <option value="">All Students</option>
+            {studentOptions.map((s) => (
+              <option key={s.id} value={s.id.toString()}>{s.name}</option>
+            ))}
           </select>
         </div>
 

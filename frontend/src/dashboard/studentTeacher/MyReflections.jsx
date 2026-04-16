@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaFilter, FaEye } from "react-icons/fa";
+import { FaArrowLeft, FaFilter, FaEye, FaHome } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { formatDateStringToLocale } from "../../utils/utilFunc";
@@ -13,7 +13,8 @@ const MyReflections = () => {
   const [filters, setFilters] = useState({
     hlp: "",
     week: "",
-    status: ""
+    status: "",
+    entry_type: ""
   });
   const [showFilters, setShowFilters] = useState(false);
   const [expandedHLPs, setExpandedHLPs] = useState({});
@@ -63,6 +64,7 @@ const MyReflections = () => {
       if (filterParams.hlp) params.append("hlp", filterParams.hlp);
       if (filterParams.week) params.append("week", filterParams.week);
       if (filterParams.status) params.append("status", filterParams.status);
+      if (filterParams.entry_type) params.append("entry_type", filterParams.entry_type);
 
       const queryString = params.toString() ? `?${params.toString()}` : "";
 
@@ -123,7 +125,8 @@ const MyReflections = () => {
     setFilters({
       hlp: "",
       week: "",
-      status: ""
+      status: "",
+      entry_type: ""
     });
     fetchEntries();
     setShowFilters(false);
@@ -182,10 +185,14 @@ const MyReflections = () => {
     <div className="min-h-[100dvh] bg-gradient-to-b from-blue-200 p-4">
       {/* Header */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <FaArrowLeft
-            className="text-2xl cursor-pointer mr-4"
+            className="text-2xl cursor-pointer"
             onClick={handleBackClick}
+          />
+          <FaHome
+            className="text-2xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+            onClick={() => navigate("/mainmenu/")}
           />
           <h1 className="text-2xl font-bold">My Reflections</h1>
         </div>
@@ -203,7 +210,7 @@ const MyReflections = () => {
       {showFilters && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
           <h2 className="text-lg font-semibold mb-3">Filters</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-gray-700 mb-1">HLP Number:</label>
               <input
@@ -239,6 +246,19 @@ const MyReflections = () => {
                 <option value="pending">Pending Review</option>
                 <option value="approved">Approved</option>
                 <option value="revision">Needs Revision</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 mb-1">Type:</label>
+              <select
+                name="entry_type"
+                value={filters.entry_type}
+                onChange={handleFilterChange}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">All</option>
+                <option value="practice">Implemented (Practice)</option>
+                <option value="observation">Observed</option>
               </select>
             </div>
           </div>

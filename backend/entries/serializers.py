@@ -28,10 +28,13 @@ class PromptResponseSerializer(serializers.ModelSerializer):
 class TeacherCommentSerializer(serializers.ModelSerializer):
     supervisor_name = serializers.SerializerMethodField()
 
-
     class Meta:
         model = TeacherComment
-        fields = ['id', 'entry', 'supervisor', 'supervisor_name', 'comment', 'score', 'date', 'seen', 'prompt_response']
+        fields = [
+            'id', 'entry', 'supervisor', 'supervisor_name', 'comment', 'score', 'date', 'seen', 'prompt_response',
+            'criterion_self_rating', 'criterion_hlp_alignment', 'criterion_evidence_growth',
+            'criterion_specific_evidence', 'criterion_next_steps', 'criterion_organization',
+        ]
 
     def get_supervisor_name(self, obj):
         if obj.supervisor and obj.supervisor.user:

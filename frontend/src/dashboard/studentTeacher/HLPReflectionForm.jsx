@@ -7,6 +7,8 @@ import { getPrompts } from "../../utils/api";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { formatDateToMMDDYYYY } from "../../utils/utilFunc";
+import { SCORE_OPTIONS } from "../../utils/scoreLabels";
+import { RUBRIC_CRITERIA, RUBRIC_MAX_SCORE } from "../../utils/rubric";
 
 // Create default prompts outside component
 const defaultPrompts = [
@@ -544,20 +546,24 @@ const HLPReflectionForm = () => {
             </label>
             <select
               className="w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  score: e.target.value,
-                });
-              }}
+              onChange={(e) => setFormData({ ...formData, score: e.target.value })}
               value={formData.score}
             >
               <option value={-1}>Choose a Score</option>
-              <option value={0}>0</option>
-              <option value={1}>1</option>
-              <option value={2}>2</option>
-              <option value={3}>3</option>
+              {SCORE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.value} – {opt.label}
+                </option>
+              ))}
             </select>
+            {formData.score > 0 && (() => {
+              const selected = SCORE_OPTIONS.find((o) => o.value === Number(formData.score));
+              return selected ? (
+                <p className="mt-2 text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2">
+                  {selected.description}
+                </p>
+              ) : null;
+            })()}
           </div>
           )}
           <div className="mb-6">
@@ -597,6 +603,46 @@ const HLPReflectionForm = () => {
                 </div>
               </div>
             )}
+        </div>
+
+        {/* Reflection Rubric Reference */}
+        <div className="mb-6 bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-semibold mb-3 text-indigo-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            How Your Reflection Will Be Scored
+            <span className="ml-3 text-sm font-normal text-indigo-600 bg-indigo-100 border border-indigo-200 px-3 py-0.5 rounded-full">
+              Total: {RUBRIC_MAX_SCORE} pts
+            </span>
+          </h2>
+          <p className="text-sm text-indigo-700 mb-4">
+            Your supervisor will evaluate your reflection using the rubric below. Each of the 6 criteria is scored 1–4.
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-indigo-100">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-indigo-100">
+                  <th className="text-left px-3 py-2 font-semibold text-indigo-800 w-36 border-r border-indigo-200">Criteria</th>
+                  <th className="px-3 py-2 font-semibold text-green-700 border-r border-indigo-200">Exceeds (4)</th>
+                  <th className="px-3 py-2 font-semibold text-blue-700 border-r border-indigo-200">Meets (3)</th>
+                  <th className="px-3 py-2 font-semibold text-amber-700 border-r border-indigo-200">Approaching (2)</th>
+                  <th className="px-3 py-2 font-semibold text-red-700">Does Not Yet Meet (1)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RUBRIC_CRITERIA.map((criterion, i) => (
+                  <tr key={criterion.key} className={i % 2 === 0 ? "bg-white" : "bg-indigo-50"}>
+                    <td className="px-3 py-2 font-medium text-indigo-800 border-r border-indigo-100 align-top">{criterion.label}</td>
+                    <td className="px-3 py-2 text-gray-600 border-r border-indigo-100 align-top">{criterion.scores[4]}</td>
+                    <td className="px-3 py-2 text-gray-600 border-r border-indigo-100 align-top">{criterion.scores[3]}</td>
+                    <td className="px-3 py-2 text-gray-600 border-r border-indigo-100 align-top">{criterion.scores[2]}</td>
+                    <td className="px-3 py-2 text-gray-600 align-top">{criterion.scores[1]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Prompts Section */}

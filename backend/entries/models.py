@@ -28,13 +28,14 @@ class Entry(models.Model):
     hlp = models.TextField()
     lookfor_number = models.IntegerField(default=0)
     SCORE_CHOICES = [
-        ('0', '0'),
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3'),
+        ('1', '1 – Not Yet Implemented'),
+        ('2', '2 – Awareness'),
+        ('3', '3 – Beginning Implementation'),
+        ('4', '4 – Emerging Implementation'),
+        ('5', '5 – Proficient Implementation'),
         ('-1', 'No Choice'),
     ]
-    score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='NA')
+    score = models.CharField(max_length=2, choices=SCORE_CHOICES, default='-1')
     date = models.DateField(default=date.today)
     comments = models.TextField(default="")
     teacher_reply = models.TextField(default="", blank=True)
@@ -72,6 +73,14 @@ class TeacherComment(models.Model):
     score = models.IntegerField()
     date = models.DateField(default=date.today)
     seen = models.BooleanField(default=False)
+
+    # Rubric criterion scores (1=Does Not Yet Meet, 2=Approaching, 3=Meets, 4=Exceeds)
+    criterion_self_rating = models.IntegerField(null=True, blank=True)
+    criterion_hlp_alignment = models.IntegerField(null=True, blank=True)
+    criterion_evidence_growth = models.IntegerField(null=True, blank=True)
+    criterion_specific_evidence = models.IntegerField(null=True, blank=True)
+    criterion_next_steps = models.IntegerField(null=True, blank=True)
+    criterion_organization = models.IntegerField(null=True, blank=True)
 
     # New field to allow comments on specific prompts
     prompt_response = models.ForeignKey(PromptResponse, on_delete=models.CASCADE, null=True, blank=True, related_name='teacher_comments')
