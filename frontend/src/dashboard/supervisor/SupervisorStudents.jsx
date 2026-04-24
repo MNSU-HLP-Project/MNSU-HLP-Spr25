@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import API from '../../utils/axios';
-import { FaArrowLeft, FaUserGraduate, FaEye } from 'react-icons/fa';
+import { FaArrowLeft, FaUserGraduate, FaEye, FaHome } from 'react-icons/fa';
 import Sidebar from './Sidebar';
 import MenuDropdown from '../studentTeacher/MenuDropdown';
 
@@ -49,6 +49,13 @@ const SupervisorStudents = () => {
               title="Go Back"
             >
               <FaArrowLeft />
+            </button>
+            <button
+              onClick={() => navigate("/mainmenu/")}
+              className="text-white text-xl hover:opacity-80"
+              title="Home"
+            >
+              <FaHome />
             </button>
             <div>
               <h1 className="text-xl md-text-2xl font-bold">Students in Class</h1>

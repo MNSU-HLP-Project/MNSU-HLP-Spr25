@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { generateClass, getClasses, removeClass } from "../../../utils/api";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHome } from "react-icons/fa";
+import ConfirmDialog from "../../../Components/ConfirmDialog";
 
 const ClassGenerator = ({ onClassCreated }) => {
   const [class_data, setClassData] = useState({});
@@ -10,6 +11,7 @@ const ClassGenerator = ({ onClassCreated }) => {
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [currentClasses, setCurrentClasses] = useState([]);
+  const [confirmIndex, setConfirmIndex] = useState(null);
   const navigate = useNavigate();
   const handleBackClick = () => navigate(-1);
   const handleLogout = () => navigate("/");
@@ -67,24 +69,39 @@ const ClassGenerator = ({ onClassCreated }) => {
     </div>
   );
 
-  const removeClassFromList = (index) => {
-    // Remove components when pressing button
+  const confirmRemove = (index) => setConfirmIndex(index);
+
+  const removeClassFromList = () => {
     const updatedComponents = [...currentClasses];
-    const deleted = updatedComponents.splice(index, 1);
-    const response = removeClass(deleted[0]);
+    const deleted = updatedComponents.splice(confirmIndex, 1);
+    removeClass(deleted[0]);
     setCurrentClasses(updatedComponents);
+    setConfirmIndex(null);
   };
 
   return (
-    // <div className="min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
     <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-blue-200 via-white to-blue-100 p-6">
+      <ConfirmDialog
+        open={confirmIndex !== null}
+        title="Remove class?"
+        message={confirmIndex !== null ? `"${currentClasses[confirmIndex]}" and all its data will be permanently removed.` : ""}
+        confirmLabel="Remove"
+        onConfirm={removeClassFromList}
+        onCancel={() => setConfirmIndex(null)}
+      />
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-3">
         <button
           onClick={handleBackClick}
-          className="text-2xl cursor-pointer mr-4"
+          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-900 transition"
         >
-          <FaArrowLeft className="mr-2" />
+          <FaArrowLeft />
+        </button>
+        <button
+          onClick={() => navigate("/mainmenu/")}
+          className="text-2xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+        >
+          <FaHome />
         </button>
         <h1 className="text-3xl font-bold text-center mt-4  text-gray-800">
           My Classes
@@ -107,7 +124,7 @@ const ClassGenerator = ({ onClassCreated }) => {
                 Edit
               </button>
               <button
-                onClick={() => removeClassFromList(index)}
+                onClick={() => confirmRemove(index)}
                 className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
               >
                 Remove

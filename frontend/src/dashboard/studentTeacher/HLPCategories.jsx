@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowLeft, FaBars } from "react-icons/fa";
+import { FaArrowLeft, FaBars, FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import MainMenuDropdown from "./StudentMainMenuDropdown"; 
 
@@ -39,10 +39,16 @@ export default function HLPCategories() {
       {/* Header */}
       <div>
         <div className="flex justify-between items-center mt-4 mb-4">
-          <FaArrowLeft
-            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
-            onClick={handleBackClick}
-          />
+          <div className="flex items-center gap-3">
+            <FaArrowLeft
+              className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+              onClick={handleBackClick}
+            />
+            <FaHome
+              className="text-2xl md:text-3xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+              onClick={() => navigate("/mainmenu/")}
+            />
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold border-b-2 border-gray-300 pb-1">
             HLP Categories
           </h1>

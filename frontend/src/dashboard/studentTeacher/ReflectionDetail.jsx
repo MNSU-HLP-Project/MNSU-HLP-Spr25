@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHome } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { formatDateStringToLocale } from "../../utils/utilFunc";
@@ -192,10 +192,14 @@ const ReflectionDetail = () => {
     <div className="min-h-[100dvh] bg-gray-100 p-4">
       {/* Header */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <FaArrowLeft
-            className="text-2xl cursor-pointer mr-4"
+            className="text-2xl cursor-pointer"
             onClick={handleBackClick}
+          />
+          <FaHome
+            className="text-2xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+            onClick={() => navigate("/mainmenu/")}
           />
           <h1 className="text-2xl font-bold">Reflection Details</h1>
         </div>
@@ -279,6 +283,66 @@ const ReflectionDetail = () => {
         </div>
       )}
 
+      {/* Rubric Table — shown once graded */}
+      {entry.teacher_comments && entry.teacher_comments.length > 0 &&
+        RUBRIC_CRITERIA.some((c) => entry.teacher_comments[0][c.key] > 0) && (() => {
+          const gradedComment = entry.teacher_comments[0];
+          const colColors = {
+            4: { header: "text-green-700", highlight: "bg-green-100 font-semibold text-green-900 ring-2 ring-green-400" },
+            3: { header: "text-blue-700",  highlight: "bg-blue-100 font-semibold text-blue-900 ring-2 ring-blue-400" },
+            2: { header: "text-amber-700", highlight: "bg-amber-100 font-semibold text-amber-900 ring-2 ring-amber-400" },
+            1: { header: "text-red-700",   highlight: "bg-red-100 font-semibold text-red-900 ring-2 ring-red-400" },
+          };
+          return (
+            <div className="mb-4 bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl shadow-md">
+              <h2 className="text-xl font-semibold mb-3 text-indigo-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                How Your Reflection Was Scored
+                <span className="ml-3 text-sm font-normal text-indigo-600 bg-indigo-100 border border-indigo-200 px-3 py-0.5 rounded-full">
+                  Total: {gradedComment.score} / {RUBRIC_MAX_SCORE} pts
+                </span>
+              </h2>
+              <p className="text-sm text-indigo-700 mb-4">
+                Your supervisor evaluated your reflection using the rubric below. Your score for each criterion is highlighted.
+              </p>
+              <div className="overflow-x-auto rounded-lg border border-indigo-100">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="bg-indigo-100">
+                      <th className="text-left px-3 py-2 font-semibold text-indigo-800 w-36 border-r border-indigo-200">Criteria</th>
+                      <th className={`px-3 py-2 font-semibold border-r border-indigo-200 ${colColors[4].header}`}>Exceeds (4)</th>
+                      <th className={`px-3 py-2 font-semibold border-r border-indigo-200 ${colColors[3].header}`}>Meets (3)</th>
+                      <th className={`px-3 py-2 font-semibold border-r border-indigo-200 ${colColors[2].header}`}>Approaching (2)</th>
+                      <th className={`px-3 py-2 font-semibold ${colColors[1].header}`}>Does Not Yet Meet (1)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {RUBRIC_CRITERIA.map((criterion, i) => {
+                      const scored = gradedComment[criterion.key];
+                      return (
+                        <tr key={criterion.key} className={i % 2 === 0 ? "bg-white" : "bg-indigo-50"}>
+                          <td className="px-3 py-2 font-medium text-indigo-800 border-r border-indigo-100 align-top">{criterion.label}</td>
+                          {[4, 3, 2, 1].map((level, idx) => (
+                            <td
+                              key={level}
+                              className={`px-3 py-2 align-top border-indigo-100 ${idx < 3 ? "border-r" : ""} ${scored === level ? colColors[level].highlight : "text-gray-600"}`}
+                            >
+                              {criterion.scores[level]}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })()
+      }
+
       {/* Overall Teacher Comments */}
       {entry.teacher_comments && entry.teacher_comments.length > 0 && (
         <div className={`bg-white p-6 rounded-lg shadow-md mb-4 ${entry.status === "revision" ? "border-2 border-yellow-300" : ""}`}>
@@ -305,8 +369,8 @@ const ReflectionDetail = () => {
                     )}
                   </div>
 
-                  {/* Rubric breakdown — shown only for approved entries with criterion data */}
-                  {entry.status === "approved" && hasCriteriaScores && (
+                  {/* Rubric breakdown — shown for any graded entry with criterion data */}
+                  {hasCriteriaScores && (
                     <div className="mt-4 border border-blue-200 rounded-lg overflow-hidden">
                       <div className="bg-blue-100 px-4 py-2 flex items-center justify-between">
                         <span className="text-sm font-semibold text-blue-800">Rubric Score Breakdown</span>
@@ -323,11 +387,14 @@ const ReflectionDetail = () => {
                             1: "bg-red-100 text-red-800 border-red-300",
                           };
                           return (
-                            <div key={criterion.key} className="flex items-center justify-between px-4 py-2 bg-white text-sm">
-                              <span className="text-gray-700 font-medium">{criterion.label}</span>
-                              <span className={`px-2 py-0.5 rounded-full border text-xs font-semibold ${colors[val]}`}>
-                                {RUBRIC_SCORE_LABELS[val]} ({val}/4)
-                              </span>
+                            <div key={criterion.key} className="px-4 py-3 bg-white text-sm">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-gray-700 font-medium">{criterion.label}</span>
+                                <span className={`px-2 py-0.5 rounded-full border text-xs font-semibold ${colors[val]}`}>
+                                  {RUBRIC_SCORE_LABELS[val]} ({val}/4)
+                                </span>
+                              </div>
+                              <p className="text-gray-500 text-xs italic">{criterion.scores[val]}</p>
                             </div>
                           );
                         })}

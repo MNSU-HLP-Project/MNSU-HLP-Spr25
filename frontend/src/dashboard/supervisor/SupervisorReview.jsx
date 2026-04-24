@@ -1,10 +1,12 @@
 // src/pages/SupervisorReview.jsx
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import API from "../../utils/axios"; // make sure your API instance is correctly configured
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaHome } from "react-icons/fa";
+import API from "../../utils/axios";
 
 const SupervisorReview = () => {
   const { classId, studentId } = useParams();
+  const navigate = useNavigate();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,7 +35,15 @@ const SupervisorReview = () => {
     <div className="flex min-h-[100dvh] bg-gradient-to-b from-blue-100 to-white">
       {window.screen.width > 600 && <Sidebar />}
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Student Reflections</h1>
+      <div className="flex items-center gap-3 mb-4">
+        <button onClick={() => navigate(-1)} className="text-2xl text-gray-700 hover:text-gray-900 transition" title="Go back">
+          <FaArrowLeft />
+        </button>
+        <button onClick={() => navigate("/mainmenu/")} className="text-2xl text-blue-600 hover:scale-110 transition-transform" title="Home">
+          <FaHome />
+        </button>
+        <h1 className="text-2xl font-bold">Student Reflections</h1>
+      </div>
       {entries.length === 0 ? (
         <p>No reflections found for this student.</p>
       ) : (
