@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaArrowLeft, FaCheck, FaRedo } from "react-icons/fa";
+import { FaArrowLeft, FaCheck, FaRedo, FaHome } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { formatDateStringToLocale } from "../../utils/utilFunc";
@@ -358,8 +358,12 @@ const SupervisorFeedback = () => {
       <div className="bg-gradient-to-r from-indigo-600 to-purple-700 p-5 rounded-xl shadow-lg mb-6 flex items-center justify-between text-white">
         <div className="flex items-center">
           <FaArrowLeft
-            className="text-2xl cursor-pointer mr-4 hover:text-indigo-200 transition-colors"
+            className="text-2xl cursor-pointer mr-3 hover:text-indigo-200 transition-colors"
             onClick={handleBackClick}
+          />
+          <FaHome
+            className="text-2xl cursor-pointer mr-4 hover:text-indigo-200 transition-colors"
+            onClick={() => navigate("/mainmenu/")}
           />
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">Review Reflection</h1>

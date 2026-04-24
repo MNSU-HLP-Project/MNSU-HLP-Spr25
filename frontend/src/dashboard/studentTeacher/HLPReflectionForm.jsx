@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHome } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { getPrompts } from "../../utils/api";
@@ -379,8 +379,12 @@ const HLPReflectionForm = () => {
         className={`p-5 rounded-xl shadow-lg mb-6 flex items-center text-white ${bgColorClass}`}
       >
         <FaArrowLeft
-          className="text-2xl cursor-pointer mr-4 hover:text-blue-200 transition-colors"
+          className="text-2xl cursor-pointer mr-3 hover:text-blue-200 transition-colors"
           onClick={handleBackClick}
+        />
+        <FaHome
+          className="text-2xl cursor-pointer mr-4 hover:text-blue-200 transition-colors"
+          onClick={() => navigate("/mainmenu/")}
         />
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">

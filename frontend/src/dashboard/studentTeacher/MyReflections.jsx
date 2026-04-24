@@ -313,7 +313,17 @@ const MyReflections = () => {
               {Object.entries(groupEntriesByHLP()).map(([hlp, hlpEntries]) => {
   const hlpData = HLP_LookFors[hlp] || {};
   const isOpen = expandedHLPs[hlp] || false;
-  const hasRevisionStatus = hlpEntries.some((entry) => entry.status === "revision");
+  const statusCounts = hlpEntries.reduce((acc, e) => {
+    acc[e.status] = (acc[e.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  const STATUS_BADGE = {
+    approved:  { label: "Approved",        classes: "bg-green-100 text-green-800 border-green-300" },
+    pending:   { label: "Pending Review",   classes: "bg-blue-100 text-blue-800 border-blue-300" },
+    revised:   { label: "Revised",          classes: "bg-purple-100 text-purple-800 border-purple-300" },
+    revision:  { label: "Revision Needed",  classes: "bg-yellow-100 text-yellow-800 border-yellow-300" },
+  };
 
   return (
     <div key={hlp} className="bg-white rounded-lg shadow-md">
@@ -322,29 +332,24 @@ const MyReflections = () => {
         onClick={() => toggleHLP(hlp)}
         className="p-4 cursor-pointer flex justify-between items-center bg-gray-100 rounded-t-lg hover:bg-gray-200 transition"
       >
-        <h2 className="text-lg font-semibold">
-          HLP {hlp}: {hlpData.title || "Unknown HLP"}
-          {hasRevisionStatus && (
-             <div className="flex items-center ml-2 text-yellow-500">
-             <svg
-               xmlns="http://www.w3.org/2000/svg"
-               className="h-5 w-5"
-               fill="none"
-               viewBox="0 0 24 24"
-               stroke="currentColor"
-             >
-               <path
-                 strokeLinecap="round"
-                 strokeLinejoin="round"
-                 strokeWidth={2}
-                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-               />
-             </svg>
-             <span className="ml-1 text-sm font-medium">Revision Needed</span>
-           </div>
-          )}
-        </h2>
-        <button className="text-blue-600 font-medium">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-lg font-semibold">
+            HLP {hlp}: {hlpData.title || "Unknown HLP"}
+          </h2>
+          <div className="flex flex-wrap gap-1.5">
+            {Object.entries(statusCounts).map(([status, count]) => {
+              const badge = STATUS_BADGE[status];
+              if (!badge) return null;
+              return (
+                <span key={status} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-medium ${badge.classes}`}>
+                  {badge.label}
+                  {count > 1 && <span className="font-bold">×{count}</span>}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        <button className="text-blue-600 font-medium ml-4 shrink-0">
           {isOpen ? "Hide Entries" : "Show Entries"}
         </button>
       </div>

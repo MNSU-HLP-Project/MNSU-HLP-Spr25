@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 import { getClasses, getStudentsForClass } from "../../utils/api";
 import Sidebar from "./Sidebar";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
@@ -26,9 +27,15 @@ const SupervisorClassView = () => {
 
       <main className="flex-1 p-8">
         <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-extrabold text-black drop-shadow-sm">
-            MyHLPTracker
-          </h1>
+          <div className="flex items-center gap-3">
+            <FaHome
+              className="text-2xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+              onClick={() => navigate("/mainmenu/")}
+            />
+            <h1 className="text-4xl font-extrabold text-black drop-shadow-sm">
+              MyHLPTracker
+            </h1>
+          </div>
           {window.screen.width <= 600 && <MenuDropdown />}
         </div>
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import API from "../../utils/axios";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const EditOrg = () => {
@@ -70,12 +70,18 @@ const EditOrg = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-200 via-white to-blue-100 flex flex-col">
       <div className="relative pt-6 pb-2 flex items-center justify-center">
 
-        <div className="absolute left-4 top-6">
+        <div className="absolute left-4 top-6 flex items-center gap-3">
           <button
             onClick={handleBackClick}
             className="text-2xl cursor-pointer text-gray-700 hover:text-gray-900 transition"
           >
             <FaArrowLeft />
+          </button>
+          <button
+            onClick={() => navigate("/mainmenu/")}
+            className="text-2xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+          >
+            <FaHome />
           </button>
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 tracking-wide drop-shadow-lg">

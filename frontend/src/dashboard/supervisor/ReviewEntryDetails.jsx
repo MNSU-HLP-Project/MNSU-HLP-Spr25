@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import API from "../../utils/axios";
 
 import Sidebar from "./Sidebar";
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo, FaChevronDown, FaChevronUp, FaHome } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
 import FEEDBACK_TEMPLATES from "../../utils/feedbackTemplates";
@@ -128,6 +128,13 @@ const ReviewEntryDetails = () => {
               title="Go back"
             >
               <FaArrowLeft />
+            </button>
+            <button
+              onClick={() => navigate("/mainmenu/")}
+              className="text-white text-xl hover:opacity-80 transition"
+              title="Home"
+            >
+              <FaHome />
             </button>
             <div>
               <h1 className="text-xl md-text-2xl font-bold">Review Entry Details</h1>

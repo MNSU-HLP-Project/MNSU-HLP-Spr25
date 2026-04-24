@@ -1,6 +1,6 @@
 import React from "react";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
-import { FaArrowLeft, FaBars } from "react-icons/fa";
+import { FaArrowLeft, FaBars, FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -51,10 +51,16 @@ const HLPSelection = () => {
     <div className="min-h-[100dvh] bg-gradient-to-b from-gray-100 to-white p-6 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
-        <FaArrowLeft
-          className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
-          onClick={handleBackClick}
-        />
+        <div className="flex items-center gap-3">
+          <FaArrowLeft
+            className="text-2xl md:text-3xl cursor-pointer hover:scale-110 transition-transform"
+            onClick={handleBackClick}
+          />
+          <FaHome
+            className="text-2xl md:text-3xl cursor-pointer text-blue-600 hover:scale-110 transition-transform"
+            onClick={() => navigate("/mainmenu/")}
+          />
+        </div>
         <h1 className="text-3xl md:text-4xl text-center font-bold text-gray-800 border-b-2 border-gray-300 p-2">
           {groupTitle}
         </h1>
