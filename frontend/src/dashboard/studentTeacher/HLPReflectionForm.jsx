@@ -50,7 +50,7 @@ const HLPReflectionForm = () => {
   const hlpNumber = location.state?.hlp?.replace("HLP ", "") || "";
   const edit = location.state.edit;
   const draftFromNav = location.state.draft || null;
-  const submitMsg = edit ? "Edit Reflection" : "Submit Reflection"
+  const submitMsg = edit ? "Submit" : "Submit Reflection"
   const hlpData = hlpNumber ? HLP_LookFors[hlpNumber] : null;
 
   //Getting color form the group
@@ -416,7 +416,7 @@ const HLPReflectionForm = () => {
           <div>
             <p className="font-bold text-lg">Success!</p>
             <p className="text-green-800">
-              Your reflection has been {edit ? 'edited': 'submitted'} successfully!
+              Your reflection has been submitted successfully!
             </p>
             <p className="text-sm mt-2">
               You will be redirected to your reflections page in a moment...
