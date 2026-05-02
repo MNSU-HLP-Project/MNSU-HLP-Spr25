@@ -429,7 +429,7 @@ const ReflectionDetail = () => {
               Make Requested Revisions
             </>
           ) : (
-            "Edit Reflection"
+            "Edit"
           )}
         </button>
       </div>
