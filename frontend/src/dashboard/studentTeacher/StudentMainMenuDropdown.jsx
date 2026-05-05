@@ -85,6 +85,12 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
         ✏️ Draft Reflections
       </button>
       <button
+        onClick={() => handleNavigation("/assigned-hlps/")}
+        className="w-full text-left px-4 py-3 bg-teal-600 text-white rounded-lg text-base font-semibold hover:bg-teal-700 transition"
+      >
+        📋 Assigned HLPs
+      </button>
+      <button
         onClick={() => {
           window.open("/resources/", "_blank", "noopener,noreferrer");
           onClose?.();

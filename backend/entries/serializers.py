@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user_auth.models import SupervisorClass
-from .models import Entry, TeacherComment, Prompt, PromptResponse
+from .models import Entry, TeacherComment, Prompt, PromptResponse, HLPAssignment
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -152,3 +152,28 @@ class EntryCreateSerializer(serializers.ModelSerializer):
             print(f"Error creating entry: {str(e)}")
             raise serializers.ValidationError(f"Error creating entry: {str(e)}")
 
+
+class HLPAssignmentSerializer(serializers.ModelSerializer):
+    students = UserSerializer(many=True, read_only=True)
+    student_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    class_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HLPAssignment
+        fields = [
+            'id', 'supervisor', 'sup_class', 'class_name',
+            'students', 'student_ids',
+            'hlp', 'lookfor_number', 'due_date', 'note', 'created_at',
+        ]
+        read_only_fields = ['supervisor', 'created_at']
+
+    def get_class_name(self, obj):
+        return obj.sup_class.name if obj.sup_class else ''
+
+    def create(self, validated_data):
+        student_ids = validated_data.pop('student_ids', [])
+        assignment = HLPAssignment.objects.create(**validated_data)
+        if student_ids:
+            students = User.objects.filter(id__in=student_ids)
+            assignment.students.set(students)
+        return assignment
