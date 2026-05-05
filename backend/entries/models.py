@@ -87,3 +87,21 @@ class TeacherComment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.supervisor.user.username} on Entry {self.entry.id} - Score: {self.score}"
+
+
+class HLPAssignment(models.Model):
+    supervisor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hlp_assignments_created')
+    sup_class = models.ForeignKey('user_auth.SupervisorClass', on_delete=models.CASCADE, related_name='hlp_assignments')
+    # Empty = assigned to whole class; non-empty = specific students only
+    students = models.ManyToManyField(User, related_name='hlp_assignments', blank=True)
+    hlp = models.TextField()
+    lookfor_number = models.IntegerField(default=0)
+    due_date = models.DateField()
+    note = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['due_date']
+
+    def __str__(self):
+        return f"HLP {self.hlp} assigned to {self.sup_class.name}"

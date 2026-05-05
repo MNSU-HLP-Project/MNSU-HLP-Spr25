@@ -6,6 +6,8 @@ from .views import (
     get_entries_by_class, get_entries_by_student, get_entries_by_class_and_student,
     add_teacher_comment, update_entry_status, get_prompts, get_entry_by_id,
     get_draft_entry,
+    create_hlp_assignment, get_supervisor_assignments, get_student_assignments,
+    delete_hlp_assignment,
 )
 
 
@@ -34,4 +36,10 @@ urlpatterns = [
     path("entries/<int:entry_id>/status/", update_entry_status, name="update_entry_status"),
     path("prompts/", get_prompts, name="get_prompts"),
     path("draft/", get_draft_entry, name="get_draft_entry"),
+
+    # HLP Assignment endpoints
+    path("assignments/", get_supervisor_assignments, name="get_supervisor_assignments"),
+    path("assignments/create/", create_hlp_assignment, name="create_hlp_assignment"),
+    path("assignments/student/", get_student_assignments, name="get_student_assignments"),
+    path("assignments/<int:assignment_id>/delete/", delete_hlp_assignment, name="delete_hlp_assignment"),
 ]

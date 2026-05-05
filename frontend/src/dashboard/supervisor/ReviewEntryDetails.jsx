@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import API from "../../utils/axios";
 
 import Sidebar from "./Sidebar";
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo, FaChevronDown, FaChevronUp, FaHome } from "react-icons/fa";
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaBookmark, FaCheck, FaRedo, FaChevronDown, FaChevronUp, FaHome, FaPrint } from "react-icons/fa";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
 import FEEDBACK_TEMPLATES from "../../utils/feedbackTemplates";
@@ -120,7 +120,7 @@ const ReviewEntryDetails = () => {
 
       <main className="flex-1 p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow">
+        <div className="flex items-center justify-between mb-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow print:hidden">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
@@ -140,9 +140,24 @@ const ReviewEntryDetails = () => {
               <h1 className="text-xl md-text-2xl font-bold">Review Entry Details</h1>
               <p className="text-sm text-purple-100">Full reflection breakdown</p>
             </div>
-            
+
           {window.screen.width <= 600 && <MenuDropdown />}
           </div>
+
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium px-3 py-2 rounded-lg transition border border-white/40"
+            title="Print or save as PDF"
+          >
+            <FaPrint />
+            Print / PDF
+          </button>
+        </div>
+
+        {/* Print-only title block */}
+        <div className="hidden print:block mb-6">
+          <h1 className="text-2xl font-bold">HLP Entry Review</h1>
+          <p className="text-sm text-gray-500">MyHLPTracker — printed {new Date().toLocaleDateString()}</p>
         </div>
 
         {/* Content */}
@@ -215,7 +230,7 @@ const ReviewEntryDetails = () => {
             </div>
 
             {/* Rubric Scoring */}
-            <div className="border border-indigo-200 rounded-lg overflow-hidden">
+            <div className="border border-indigo-200 rounded-lg overflow-hidden print:hidden">
               <div className="flex items-center justify-between px-4 py-3 bg-indigo-50 border-b border-indigo-200">
                 <span className="text-sm font-semibold text-indigo-700">Reflection Rubric (Total: {RUBRIC_MAX_SCORE} pts)</span>
                 {(() => {
@@ -286,7 +301,7 @@ const ReviewEntryDetails = () => {
             </div>
 
             {/* Pre-loaded Feedback Templates */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden print:hidden">
               <button
                 type="button"
                 onClick={() => setTemplatesOpen((o) => !o)}
@@ -324,7 +339,7 @@ const ReviewEntryDetails = () => {
             </div>
 
             {/* Comment Box */}
-            <div>
+            <div className="print:hidden">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Supervisor Comment
               </label>
@@ -339,13 +354,13 @@ const ReviewEntryDetails = () => {
 
             {/* Success Message */}
             {success && (
-              <div className="text-green-600 font-medium">
+              <div className="text-green-600 font-medium print:hidden">
                 ✅ Action completed successfully!
               </div>
             )}
 
             {/* Action Buttons */}
-            <div className="flex justify-end mt-4 space-x-3">
+            <div className="flex justify-end mt-4 space-x-3 print:hidden">
               {/* Needs Revision Button */}
               <button
                 onClick={() => handleAction("revision")}

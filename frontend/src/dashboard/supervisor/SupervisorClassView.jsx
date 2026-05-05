@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
-import { getClasses, getStudentsForClass } from "../../utils/api";
+import { FaHome, FaClipboardList } from "react-icons/fa";
+import { getClasses } from "../../utils/api";
+import API from "../../utils/axios";
 import Sidebar from "./Sidebar";
 import MenuDropdown from "../studentTeacher/MenuDropdown";
 
 const SupervisorClassView = () => {
   const [classes, setClasses] = useState([]);
+  const [assignmentCounts, setAssignmentCounts] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +16,21 @@ const SupervisorClassView = () => {
       try {
         const data = await getClasses();
         setClasses(data);
+
+        // Fetch assignment counts for each class in parallel
+        const counts = await Promise.all(
+          data.map(async (cls) => {
+            try {
+              const res = await API.get(`/entries/assignments/?class_id=${cls.id}`);
+              return { id: cls.id, count: res.data.length };
+            } catch {
+              return { id: cls.id, count: 0 };
+            }
+          })
+        );
+        const map = {};
+        counts.forEach(({ id, count }) => { map[id] = count; });
+        setAssignmentCounts(map);
       } catch (error) {
         console.error("Failed to fetch classes", error);
       }
@@ -49,19 +66,28 @@ const SupervisorClassView = () => {
                 className="bg-white border border-gray-200 px-6 py-5 rounded-xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer"
                 onClick={() => navigate(`/supervisor/students/${cls.id}`)}
               >
-                <h2 className="text-xl font-bold flex items-center space-x-2 text-blue-700">
-                  <span>📄</span>
-                  <span>{cls.name}</span>
-                </h2>
+                <div className="flex items-start justify-between">
+                  <h2 className="text-xl font-bold flex items-center space-x-2 text-blue-700">
+                    <span>📄</span>
+                    <span>{cls.name}</span>
+                  </h2>
+
+                  {assignmentCounts[cls.id] > 0 && (
+                    <span className="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                      <FaClipboardList className="text-[10px]" />
+                      {assignmentCounts[cls.id]} assignment{assignmentCounts[cls.id] !== 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
+
                 <p className="text-sm text-gray-500 mt-1">
-                  Click card to view individual student reflections
+                  Click card to manage students and HLP assignments
                 </p>
 
-                {/* ✅ New Button */}
                 <button
                   className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent card click
+                    e.stopPropagation();
                     navigate(`/entries/by-class/${cls.id}`);
                   }}
                 >

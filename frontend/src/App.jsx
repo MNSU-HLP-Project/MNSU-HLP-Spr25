@@ -21,6 +21,7 @@ import HLPReflectionList from "./dashboard/studentTeacher/CompletedLookfor.jsx";
 
 import MyReflections from "./dashboard/studentTeacher/MyReflections.jsx";
 import ReflectionDetail from "./dashboard/studentTeacher/ReflectionDetail.jsx";
+import AssignedHLPs from "./dashboard/studentTeacher/AssignedHLPs.jsx";
 import SupervisorReview from "./dashboard/supervisor/SupervisorReview.jsx";
 import SupervisorFeedback from "./dashboard/supervisor/SupervisorFeedback.jsx";
 
@@ -180,6 +181,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["Student Teacher"]}>
                 <DraftReflections />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assigned-hlps/"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <AssignedHLPs />
               </ProtectedRoute>
             }
           />

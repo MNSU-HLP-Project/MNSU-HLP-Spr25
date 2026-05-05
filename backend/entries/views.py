@@ -1,9 +1,9 @@
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.response import Response
-from .models import Entry, Prompt, PromptResponse, TeacherComment
+from .models import Entry, Prompt, PromptResponse, TeacherComment, HLPAssignment
 from .serializers import (EntrySerializer, EntryCreateSerializer, PromptSerializer,
                           PromptResponseSerializer,
-                          TeacherCommentSerializer)
+                          TeacherCommentSerializer, HLPAssignmentSerializer)
 from rest_framework import serializers
 
 from rest_framework.permissions import IsAuthenticated
@@ -606,3 +606,67 @@ def get_entry_by_id(request, entry_id):
 
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=404)
+
+
+# ── HLP Assignment Views ──────────────────────────────────────────────────────
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_hlp_assignment(request):
+    """Supervisor creates an HLP assignment for a class or specific students."""
+    data = request.data.copy()
+    data['supervisor'] = request.user.id
+
+    serializer = HLPAssignmentSerializer(data=data)
+    if serializer.is_valid():
+        assignment = serializer.save(supervisor=request.user)
+        return Response(HLPAssignmentSerializer(assignment).data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_supervisor_assignments(request):
+    """Return all HLP assignments created by the requesting supervisor."""
+    class_id = request.GET.get('class_id', None)
+    qs = HLPAssignment.objects.filter(supervisor=request.user)
+    if class_id:
+        qs = qs.filter(sup_class__id=class_id)
+    serializer = HLPAssignmentSerializer(qs, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_student_assignments(request):
+    """Return HLP assignments visible to the requesting student.
+
+    An assignment is visible if:
+    - students list is empty (whole-class assignment), OR
+    - the student is explicitly in the students list.
+    """
+    user = request.user
+    try:
+        sup_class = SupervisorClass.objects.get(students__id=user.id)
+    except SupervisorClass.DoesNotExist:
+        return Response([], status=status.HTTP_200_OK)
+
+    from django.db.models import Q
+    qs = HLPAssignment.objects.filter(sup_class=sup_class).filter(
+        Q(students__isnull=True) | Q(students=user)
+    ).distinct()
+
+    serializer = HLPAssignmentSerializer(qs, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_hlp_assignment(request, assignment_id):
+    """Supervisor deletes one of their assignments."""
+    try:
+        assignment = HLPAssignment.objects.get(id=assignment_id, supervisor=request.user)
+    except HLPAssignment.DoesNotExist:
+        return Response({"error": "Assignment not found."}, status=status.HTTP_404_NOT_FOUND)
+    assignment.delete()
+    return Response({"message": "Assignment deleted."}, status=status.HTTP_204_NO_CONTENT)

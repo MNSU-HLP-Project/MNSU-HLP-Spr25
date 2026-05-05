@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaArrowLeft, FaHome } from "react-icons/fa";
+import { FaArrowLeft, FaHome, FaPrint } from "react-icons/fa";
 import API from "../../utils/axios";
 import HLP_LookFors from "../../assets/HLP_Lookfors";
 import { formatDateStringToLocale } from "../../utils/utilFunc";
@@ -191,7 +191,7 @@ const ReflectionDetail = () => {
   return (
     <div className="min-h-[100dvh] bg-gray-100 p-4">
       {/* Header */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex items-center justify-between">
+      <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex items-center justify-between print:hidden">
         <div className="flex items-center gap-3">
           <FaArrowLeft
             className="text-2xl cursor-pointer"
@@ -203,9 +203,25 @@ const ReflectionDetail = () => {
           />
           <h1 className="text-2xl font-bold">Reflection Details</h1>
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusBadgeColor(entry.status)}`}>
-          {formatStatus(entry.status)}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusBadgeColor(entry.status)}`}>
+            {formatStatus(entry.status)}
+          </span>
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-3 py-2 rounded-lg transition border border-gray-300"
+            title="Print or save as PDF"
+          >
+            <FaPrint className="text-base" />
+            Print / PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Print-only title block */}
+      <div className="hidden print:block mb-6">
+        <h1 className="text-2xl font-bold">HLP Reflection Details</h1>
+        <p className="text-sm text-gray-500">MyHLPTracker — printed {new Date().toLocaleDateString()}</p>
       </div>
 
       {/* HLP Info */}
@@ -410,7 +426,7 @@ const ReflectionDetail = () => {
 
       {/* Edit:  Removed this from the details page and added edit functionality in the completedlookfors page */}
 
-      <div className="flex justify-end mt-6">
+      <div className="flex justify-end mt-6 print:hidden">
         <button
           onClick={() =>
             navigate("/submit-reflection/", {

@@ -36,6 +36,11 @@ const StudentTeacherView = () => {
     navigate("/drafts/");
   };
 
+  const navigateToAssignedHLPs = () => {
+    localStorage.setItem("role", "Student Teacher");
+    navigate("/assigned-hlps/");
+  };
+
   return (
     <>
       <button
@@ -55,6 +60,12 @@ const StudentTeacherView = () => {
         onClick={navigateToDrafts}
       >
         ✏️ Draft Reflections
+      </button>
+      <button
+        className="w-full p-4 md:p-5 border-2 border-teal-600 text-white bg-teal-600 rounded-lg hover:bg-teal-700 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+        onClick={navigateToAssignedHLPs}
+      >
+        📋 Assigned HLPs
       </button>
       <button
         className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"

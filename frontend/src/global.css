@@ -139,3 +139,23 @@
   visibility: visible;
   transform: translateY(0);
 }
+
+/* ── Print styles ─────────────────────────────────────────── */
+@media print {
+  /* Remove browser default header/footer */
+  @page { margin: 1.5cm; }
+
+  /* Kill backgrounds and shadows for ink efficiency */
+  body { background: white !important; }
+
+  /* Force white backgrounds on cards */
+  .bg-gray-100,
+  .bg-gradient-to-b { background: white !important; }
+
+  /* Hide footer globally when printing */
+  footer { display: none !important; }
+
+  /* Tables and content should not break mid-page */
+  table { page-break-inside: avoid; }
+  .mb-4, .mb-6 { page-break-inside: avoid; }
+}
