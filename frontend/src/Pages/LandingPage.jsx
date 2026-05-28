@@ -51,6 +51,21 @@ function LandingPage() {
 {/* Nav Buttons */}
 <div className="flex items-center gap-2 sm:gap-3">
   <a
+    href="https://mnscu-my.sharepoint.com/personal/hz8244rc_minnstate_edu/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhz8244rc%5Fminnstate%5Fedu%2FDocuments%2FScholarship%2FMyHLPTracker%2FHow%2DTo%20Handouts%2FMyHLPTracker%5FRegister%20for%20Student%20Account%2Epdf&parent=%2Fpersonal%2Fhz8244rc%5Fminnstate%5Fedu%2FDocuments%2FScholarship%2FMyHLPTracker%2FHow%2DTo%20Handouts&ga=1"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <button
+      className={`px-4 py-1.5 border rounded-full font-medium ${
+        scrolled
+          ? "border-purple-600 text-purple-600"
+          : "border-white text-white"
+      } transition duration-300 text-sm sm:text-base`}
+    >
+      Student Guide
+    </button>
+  </a>
+  <a
     href="https://mnscu-my.sharepoint.com/personal/hz8244rc_minnstate_edu/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhz8244rc%5Fminnstate%5Fedu%2FDocuments%2FScholarship%2FMyHLPTracker%2FHow%2DTo%20Handouts%2FMyHLPTracker%5FRegister%20for%20a%20Supervisor%20Account%2Epdf&parent=%2Fpersonal%2Fhz8244rc%5Fminnstate%5Fedu%2FDocuments%2FScholarship%2FMyHLPTracker%2FHow%2DTo%20Handouts&ga=1"
     target="_blank"
     rel="noopener noreferrer"
@@ -62,7 +77,7 @@ function LandingPage() {
           : "border-white text-white"
       } transition duration-300 text-sm sm:text-base`}
     >
-      Getting Started Guide
+      Supervisor Guide
     </button>
   </a>
   <a
