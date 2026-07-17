@@ -16,6 +16,6 @@ dist/
 # macOS
 .DS_Store
 *.sqlite3
-/venv/
+venv/
 backend/db.sqlite3
 .env
