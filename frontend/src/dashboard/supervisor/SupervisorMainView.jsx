@@ -64,6 +64,13 @@ const SupervisorMainView = () => {
       </button>
 
       <button
+        className="w-3/4 p-4 md:p-5 border-2 border-indigo-700 text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+        onClick={() => navigate("/supervisor/modules/")}
+      >
+        📘 Modules
+      </button>
+
+      <button
         className="w-3/4 p-4 md:p-5 border-2 border-orange-600 text-white bg-orange-600 rounded-lg hover:bg-orange-700 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
         onClick={() => window.open("/resources/", "_blank", "noopener,noreferrer")}
       >
