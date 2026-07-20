@@ -9,6 +9,7 @@ import EmailVerification from "./Pages/EmailVerification.jsx";
 import PasswordReset from "./Pages/PasswordReset.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
 import Resources from "./dashboard/studentTeacher/Resources.jsx";
+import Modules from "./dashboard/studentTeacher/Modules.jsx";
 import "./global.css"; // Import styles
 
 import SupervisorClassView from "./dashboard/supervisor/SupervisorClassView.jsx";
@@ -189,6 +190,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["Student Teacher"]}>
                 <AssignedHLPs />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/modules/"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <Modules />
               </ProtectedRoute>
             }
           />
