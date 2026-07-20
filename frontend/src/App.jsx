@@ -10,6 +10,7 @@ import PasswordReset from "./Pages/PasswordReset.jsx";
 import HLPSelection from "./dashboard/studentTeacher/HLPSelection.jsx";
 import Resources from "./dashboard/studentTeacher/Resources.jsx";
 import Modules from "./dashboard/studentTeacher/Modules.jsx";
+import ModuleDetail from "./dashboard/studentTeacher/ModuleDetail.jsx";
 import SupervisorModules from "./dashboard/supervisor/Modules.jsx";
 import "./global.css"; // Import styles
 
@@ -203,7 +204,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/modules/:moduleId"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <ModuleDetail />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/supervisor/modules/"
             element={
