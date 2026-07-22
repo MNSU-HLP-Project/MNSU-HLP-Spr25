@@ -3,9 +3,11 @@ import { FaArrowLeft, FaBars, FaHome } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import MainMenuDropdown from "./StudentMainMenuDropdown";
 import overviewData from "./overviewData";
+import hlp7Data from "./hlp7Data";
+import hlp9Data from "./hlp9Data";
+import hlp10Data from "./hlp10Data";
 
-// Turns "[Label](url)" into a real clickable link. Any other text
-// passes through unchanged.
+// Turns "[Label](url)" into a real clickable link
 function parseInline(text) {
   const parts = [];
   const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -38,8 +40,7 @@ function parseInline(text) {
   return parts;
 }
 
-// Turns simple text (with #, ###, -, |, and [label](url) markers)
-// into formatted paragraphs, headings, bullet lists, links, and tables.
+// Turns simple text (with #, ###, -, |, and [label](url) markers) into formatted paragraphs, headings, bullet lists, links, and tables.
 function FormattedText({ text }) {
   const lines = text.split("\n");
   const blocks = [];
@@ -187,6 +188,9 @@ function StepContent({ item }) {
 
 const moduleData = {
   overview: overviewData,
+  hlp7: hlp7Data,
+  hlp9: hlp9Data,
+  hlp10: hlp10Data,
 };
 
 export default function ModuleDetail() {
