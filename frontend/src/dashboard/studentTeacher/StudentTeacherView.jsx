@@ -41,9 +41,14 @@ const StudentTeacherView = () => {
     navigate("/assigned-hlps/");
   };
 
-  const navigateToModules = () => {
+  const navigateToTeacherModules = () => {
     localStorage.setItem("role", "Student Teacher");
-    navigate("/modules/");
+    navigate("/modules/teachers");
+  };
+
+  const navigateToLeaderModules = () => {
+    localStorage.setItem("role", "Student Teacher");
+    navigate("/modules/leaders");
   };
 
   return (
@@ -74,9 +79,15 @@ const StudentTeacherView = () => {
       </button>
       <button
         className="w-full p-4 md:p-5 border-2 border-indigo-700 text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
-        onClick={navigateToModules}
+        onClick={navigateToTeacherModules}
       >
-        📘 Modules
+        📘 Modules for Teachers
+      </button>
+      <button
+        className="w-full p-4 md:p-5 border-2 border-violet-700 text-white bg-violet-700 rounded-lg hover:bg-violet-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"
+        onClick={navigateToLeaderModules}
+      >
+        🧑‍💼 Modules for School Leaders
       </button>
       <button
         className="w-full p-4 md:p-5 border-2 border-green-700 text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center justify-center shadow-lg transition duration-300 transform hover:scale-105 font-semibold text-xl md:text-2xl"

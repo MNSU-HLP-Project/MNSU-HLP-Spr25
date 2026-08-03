@@ -197,10 +197,18 @@ function App() {
           />
 
           <Route
-            path="/modules/"
+            path="/modules/teachers"
             element={
               <ProtectedRoute allowedRoles={["Student Teacher"]}>
-                <Modules />
+                <Modules audience="teacher" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/modules/leaders"
+            element={
+              <ProtectedRoute allowedRoles={["Student Teacher"]}>
+                <Modules audience="leader" />
               </ProtectedRoute>
             }
           />
@@ -213,10 +221,26 @@ function App() {
             }
           />
           <Route
-            path="/supervisor/modules/"
+            path="/supervisor/modules/:moduleId"
             element={
               <ProtectedRoute allowedRoles={["Supervisor"]}>
-                <SupervisorModules />
+                <ModuleDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/supervisor/modules/teachers"
+            element={
+              <ProtectedRoute allowedRoles={["Supervisor"]}>
+                <SupervisorModules audience="teacher" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/supervisor/modules/leaders"
+            element={
+              <ProtectedRoute allowedRoles={["Supervisor"]}>
+                <SupervisorModules audience="leader" />
               </ProtectedRoute>
             }
           />

@@ -91,6 +91,18 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
         📋 Assigned HLPs
       </button>
       <button
+        onClick={() => handleNavigation("/modules/teachers")}
+        className="w-full text-left px-4 py-3 bg-indigo-600 text-white rounded-lg text-base font-semibold hover:bg-indigo-700 transition"
+      >
+        📘 Modules for Teachers
+      </button>
+      <button
+        onClick={() => handleNavigation("/modules/leaders")}
+        className="w-full text-left px-4 py-3 bg-violet-600 text-white rounded-lg text-base font-semibold hover:bg-violet-700 transition"
+      >
+        🧑‍💼 Modules for School Leaders
+      </button>
+      <button
         onClick={() => {
           window.open("/resources/", "_blank", "noopener,noreferrer");
           onClose?.();
@@ -108,7 +120,7 @@ const MainMenuDropdown = ({ className = "", onClose }) => {
       </div>
       }
     </div>
-  );;
+  );
 }
 
 export default MainMenuDropdown;

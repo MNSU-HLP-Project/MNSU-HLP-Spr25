@@ -3,7 +3,7 @@ import { FaArrowLeft, FaBars, FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import MainMenuDropdown from "./StudentMainMenuDropdown";
 
-export default function Modules() {
+export default function Modules({ audience }) {
   const navigate = useNavigate();
   const handleBackClick = () => navigate(-1);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,9 +11,10 @@ export default function Modules() {
   const modules = [
     {
       id: "overview",
-      title: "Overview",
+      title: "Overview of the HLPs",
       description: "An introduction to the High-Leverage Practices framework.",
       color: "bg-indigo-700",
+      audience: "both",
     },
     {
       id: "hlp7",
@@ -21,6 +22,7 @@ export default function Modules() {
       description: "Coming Soon.",
       color: "bg-rose-700",
       comingSoon: true,
+      audience: "teacher",
     },
     {
       id: "hlp9",
@@ -28,6 +30,7 @@ export default function Modules() {
       description: "Coming Soon.",
       color: "bg-teal-700",
       comingSoon: true,
+      audience: "teacher",
     },
     {
       id: "hlp10",
@@ -35,8 +38,13 @@ export default function Modules() {
       description: "Coming Soon.",
       color: "bg-purple-700",
       comingSoon: true,
+      audience: "teacher",
     }
   ];
+
+  const visibleModules = modules.filter(
+    (m) => m.audience === "both" || m.audience === audience
+  );
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-gradient-to-b from-gray-100 to-white p-6">
@@ -54,7 +62,7 @@ export default function Modules() {
             />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold border-b-2 border-gray-300 pb-1">
-            Modules
+            {audience === "teacher" ? "Modules for Teachers" : "Modules for School Leaders"}
           </h1>
           <div className="relative">
             <FaBars
@@ -70,12 +78,12 @@ export default function Modules() {
 
       {/* Module Cards */}
       <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 items-start">
-        {modules.map((module, index) => (
-          <div 
+        {visibleModules.map((module, index) => (
+          <div
             key={index}
             onClick={() => navigate(`/modules/${module.id}`)}
             className={`relative ${module.color} text-white rounded-xl max-w-xs min-h-[160px] flex flex-col justify-center p-6 shadow-xl cursor-pointer hover:scale-105 hover:rotate-1 transition-transform`}
-            >
+          >
             <h2 className="text-xl font-bold mb-2">{module.title}</h2>
             <p className="text-white/90">{module.description}</p>
           </div>
