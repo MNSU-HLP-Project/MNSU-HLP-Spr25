@@ -1,13 +1,13 @@
 const overviewData = {
-  title: "Overview",
+  title: "Overview of the HLPs",
   steps: [
     {
       name: "Pre-assessment",
-      type: "link",
+      type: "embed",
       intro:
         "Before continuing, please complete the Pre-Assessment. It's ungraded and simply helps you reflect on your current understanding of the High-Leverage Practices before beginning this module.",
-      linkLabel: "Open Pre-Assessment",
-      linkUrl: "https://forms.gle/ec4w8GzqXv3W6v5X9",
+      embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeKQbrqSqBN8_USF-1O3EquaKI-bSBjeDiGkqq8Q1WLmUoKaA/viewform?embedded=true",
+      embedTitle: "Pre-Assessment",
     },
     {
       name: "Implementation guide",
@@ -370,6 +370,11 @@ Together, we can strengthen educator practice and improve outcomes for every lea
       ],
     },
     {
+      name: "HLP in Action",
+      type: "video",
+      videoSrc: "",
+    },
+    {
       name: "Application activity",
       content: `# Overview of the High-Leverage Practices Application Activity: Choosing Your HLP Learning Journey
 
@@ -434,11 +439,11 @@ Write a brief reflection (approximately 200–300 words) considering:
     },
     {
       name: "Post-assessment",
-      type: "link",
+      type: "embed",
       intro:
         "Now that you've completed the module, take a few minutes to complete the Post-Assessment. This uses the same questions as the Pre-Assessment, so we can measure how your understanding has grown.",
-      linkLabel: "Open Post-Assessment",
-      linkUrl: "https://forms.gle/uWCxtSdsqpkJ43LH6",
+      embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeNnpr9MICXjZ8sZEd6aGa6ro7mM-xPTN_7FCrAGUn2FIcFXg/viewform?embedded=true",
+      embedTitle: "Post-Assessment",
     },
   ],
 };

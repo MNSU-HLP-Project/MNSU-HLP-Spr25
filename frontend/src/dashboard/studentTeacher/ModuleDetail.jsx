@@ -144,6 +144,34 @@ function FormattedText({ text }) {
 
 // Renders whatever kind of content a step or tab has.
 function StepContent({ item }) {
+  if (item.type === "embed") {
+    return (
+      <div>
+        {item.intro && <p className="text-gray-700 mb-4">{item.intro}</p>}
+        <iframe
+          src={item.embedUrl}
+          className="w-full rounded-lg border border-gray-200"
+          style={{ height: "800px" }}
+          title={item.embedTitle || "Embedded form"}
+        >
+          Loading…
+        </iframe>
+        <p className="text-sm text-gray-500 mt-2">
+          Having trouble with the form above?{" "}
+          <a
+            href={item.embedUrl.replace("?embedded=true", "")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline hover:text-blue-800"
+          >
+            Open it in a new tab instead
+          </a>
+          .
+        </p>
+      </div>
+    );
+  }
+
   if (item.type === "link") {
     return (
       <div>
