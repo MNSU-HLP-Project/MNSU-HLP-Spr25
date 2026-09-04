@@ -35,11 +35,18 @@ export default function Modules({ audience }) {
     {
       id: "hlp10",
       title: "HLP 10: FBA",
-      description: "Coming Soon.",
+      description: "Conduct Functional Behavioral Assessments to Develop Individual Student Behavior Support Plans.",
       color: "bg-purple-700",
-      comingSoon: true,
       audience: "teacher",
-    }
+    },
+
+  {
+      id: "hlp2",
+      title: "Culturally Responsive Assessments (HLP 4 & 5)",
+      description: "Leading for equity in special education evaluation processes.",
+      color: "bg-pink-700",
+      audience: "leader",
+    },
   ];
 
   const visibleModules = modules.filter(

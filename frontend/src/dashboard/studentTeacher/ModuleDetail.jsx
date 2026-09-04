@@ -6,6 +6,7 @@ import overviewData from "./overviewData";
 import hlp7Data from "./hlp7Data";
 import hlp9Data from "./hlp9Data";
 import hlp10Data from "./hlp10Data";
+import hlp2Data from "./hlp2Data";
 
 // Turns "[Label](url)" into a real clickable link
 function parseInline(text) {
@@ -194,6 +195,20 @@ function StepContent({ item }) {
         Your browser does not support video playback.
       </video>
     );
+
+  }
+  if (item.type === "youtube") {
+    return (
+      <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+        <iframe
+          className="absolute top-0 left-0 w-full h-full rounded-lg"
+          src={item.youtubeEmbedUrl}
+          title={item.youtubeTitle || "YouTube video"}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
   }
 
   if (item.type === "download") {
@@ -219,6 +234,7 @@ const moduleData = {
   hlp7: hlp7Data,
   hlp9: hlp9Data,
   hlp10: hlp10Data,
+  hlp2: hlp2Data,
 };
 
 export default function ModuleDetail() {

@@ -35,9 +35,8 @@ export default function Modules({ audience }) {
     {
       id: "hlp10",
       title: "HLP 10: FBA",
-      description: "Coming Soon.",
+      description: "Conduct Functional Behavioral Assessments to Develop Individual Student Behavior Support Plans.",
       color: "bg-purple-700",
-      comingSoon: true,
       audience: "teacher"
     },
   ];

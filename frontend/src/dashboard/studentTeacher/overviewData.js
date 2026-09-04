@@ -371,8 +371,116 @@ Together, we can strengthen educator practice and improve outcomes for every lea
     },
     {
       name: "HLP in Action",
-      type: "video",
-      videoSrc: "",
+      tabs: [
+        {
+          label: "Video",
+          type: "video",
+          videoSrc: "/overview-hlp-in-action.mp4",
+        },
+        {
+          label: "Script",
+          content: `Hi, I'm Dr. Ruby Owiny, and I'm currently an associate professor of special education at Minnesota State University, Mankato. Before coming to higher education, I had the opportunity to work as both a general education teacher and a special education teacher. Those experiences have shaped how I think about teaching, inclusion, and the high-leverage practices.
+
+
+Today, I work with teacher candidates, practicing teachers, and school teams around inclusive practices, including the HLPs. I also have the privilege of writing and training about how educators can use high-leverage practices alongside evidence-based practices to make instruction more effective for students.
+
+
+What Are the HLPs?
+
+
+Dr.And I want to start by saying something that every education professional should understand. [00:01:00] The HLPs are not just another list of things teachers are supposed to do. They're a way of thinking about the work of teaching. When I first encountered the HLPs, I recognized many of the practices. I'd been implementing pieces of them as a teacher, but seeing them organized into a framework helped me understand how those practices fit together and, just as importantly, how they help us make better decisions for students The HLPs have influenced my thinking by shifting my attention from asking, "What am I going to teach?"
+
+
+to asking, "What does this student need to be successful? And how will I know whether what I'm doing is working?" That sounds simple, but it changes a lot 
+
+
+The Four Domains
+
+
+The HLPs organize this work into four connected domains: collaboration, data-driven [00:02:00] planning, instruction in behavior and academics, and intensify and intervene as needed.
+
+
+The word connected is really important. These aren't four separate domains that don't ever relate to one another. For example, I might collaborate with a general education teacher and a student's family to understand the student's strengths and needs. We might look at multiple sources of information and use that information to identify an important learning goal.
+
+
+Then we design instruction toward that goal, deliver instruction using effective practices, monitor how the student is responding, and adjust what we're doing when the data show a change is needed. That's the HLP framework in action. It's a cycle of understanding, planning, teaching, collaborating, looking at the evidence, and adjusting.
+
+
+[00:03:00] I remember situations from my own teaching where I initially thought the solution was simply to find a better instructional strategy. But sometimes the issue wasn't that I needed another strategy. I needed to step back and ask better questions. I needed to understand the student's strengths and needs more completely.
+
+
+I needed to look at what was happening in the classroom. I needed to talk with colleagues. I needed to consider what the student and family could tell us, and I needed to look at the data rather than relying on my own assumptions about what was or wasn't working. That experience has stayed with me. It's one reason HLP six: using student assessment data, analyzing instructional practices, and making necessary adjustments, has had such a strong influence on my professional practice.
+
+
+HLP Six: Data-Driven Decision
+
+
+For me, HLP [00:04:00] six represents an important mindset. If students aren't making the progress we expect, we don't simply ask, what's wrong with the student? We ask, what can the data tell us about the instruction, the environment, the supports, and the match between what we're teaching and what the student needs?
+
+
+This is a very different way of approaching teaching. It places the emphasis where it belongs, on improving student outcomes. Another thing I want education professionals, whether that's educational leaders, general educators, special educators, related service providers, or even paraeducators to understand is that you don't necessarily implement one HLP at a time.
+
+
+Intertwined Functionality
+
+
+They work together in what I like to call intertwined functionality. Take planning and instruction, for example. HLP [00:05:00] eleven asks us to identify and prioritize long and short-term learning goals. HLP twelve asks us to systematically design instruction toward a specific learning goal. Thinking about how lessons connect, how learning is sequenced, and how we adjust the plan based on student performance.
+
+
+Then HLP sixteen addresses how we deliver that instruction explicitly through explanation, modeling, guided practice, continuous feedback, and opportunities for students to practice independently. Those practices are related, but they're not interchangeable. I sometimes hear HLP described as explicit instruction.
+
+
+That's not quite right. HLP twelve is primarily about designing instruction toward a goal. HLP sixteen is about the delivery of instruction. That distinction matters because good teaching [00:06:00] requires both. We need to know where we're going and how we're going to get there, then deliver instruction in ways that make learning accessible to students.
+
+
+And of course, we need to look at the evidence and ask whether it's working. In other words, has the student met the learning objective, or is the student making progress toward meeting their individualized education program goals or IEP goals? As a former general educator and special educator, I also appreciate that the HLPs aren't practices that belong only to special education.
+
+
+The current HLP framework is explicitly intended to support all educators and all students while maintaining a particular focus on supporting students with disabilities. That's especially important in inclusive classrooms. A general education teacher, special education teacher, [00:07:00] paraprofessional, instructional coach, administrator, or teacher candidate might have a different role, but each of us can contribute to this work.
+
+
+Consider HLP one, collaborating with professionals to increase student success. Collaboration isn't simply being in the same room or sending an email. Effective collaboration involves skills such as active listening, asking questions, sharing ideas, planning together, problem-solving, and sharing responsibility for student outcomes.
+
+
+I've learned that lesson repeatedly throughout my career. When educators genuinely work together, students experience a much more coherent educational program, and that same idea extends to families. The HLP framework emphasizes collaborating with families, recognizing the knowledge they have of their children, honoring their [00:08:00] perspectives and backgrounds, and working together to support student learning.
+
+
+This isn't an extra. It's part of effective practice. 
+
+
+Advice for Beginners
+
+
+So what advice would I give someone who's just beginning to learn about the HLPs? Don't try to master all twenty-two at once. Start by understanding the framework. Learn the four domains. Understand the difference between pillar and embedded practices.
+
+
+Then choose one or two practices that connect directly to something you're working on right now. Maybe you're trying to improve collaboration with a co-teacher or a grade-level team member. Start with HLP one. Maybe you're trying to make better instructional decisions. Start with the data-driven planning practices.
+
+
+Maybe you're working on lesson design. Explore HLP eleven and HLP twelve. Maybe you're thinking about how you actually deliver instruction, then [00:09:00] explore HLP sixteen. Ask yourself three questions. What does this practice look like when it's implemented well? What am I already doing that aligns with the practice?
+
+
+And what is one thing I could do differently or more intentionally? That last question is important. The goal isn't perfection. The goal is becoming more intentional and more effective. If I could give you just one more piece of advice as you walk along your HLP journey, it would be this: Don't think of the HLPs as a checklist.
+
+
+Think of them as a lens. Use the lens to look at your planning, use it to look at your instruction, use it to look at your collaboration with colleagues and families, use it to examine the data you're collecting and the decisions you're making, and most importantly, use it to ask whether what you're doing is [00:10:00] actually helping students learn, participate, and become more independent.
+
+
+Conclusion
+
+
+The HLPs become powerful when they move from something we can define on a page to something we can recognize in our own practice. As you continue through this module and traverse your own HLP learning journey, I hope you take away one central idea. The HLPs are about putting your professional knowledge into action.
+
+
+They give educators a common language and a framework for making thoughtful decisions about teaching, collaboration, assessment, and support. You don't have to become an expert in all 22 practices tomorrow. Start with curiosity. Look at your own practice. Identify one area where you want to grow. Try a practice.
+
+
+Collect information about what happens. Reflect. Adjust. Try again. [00:11:00] That's how professional learning becomes professional practice, and ultimately, that's why the HLP matters... HLPs matter. They aren't doing more for the sake of doing more. They're about helping us become more intentional, more collaborative, and more responsive educators so that our students have better opportunities to learn and succeed.
+
+
+I'm excited for you to be even more successful in that journey. Thank you.`,
+        },
+      ],
     },
     {
       name: "Application activity",

@@ -95,6 +95,21 @@ function LandingPage() {
       Ask HLP GPT
     </button>
   </a>
+  <a
+        href="https://forms.gle/nhWBq2F8wmzur59g7"
+        target="_blank"
+        rel="noopener noreferrer"
+  >
+    <button
+      className={`px-4 py-1.5 border rounded-full font-medium ${
+        scrolled
+          ? "border-orange-600 text-orange-600"
+          : "border-white text-white"
+      } transition duration-300 text-sm sm:text-base`}
+    >
+      Request Supervisor Account
+    </button>
+  </a>
 </div>
 
 
