@@ -19,3 +19,6 @@ dist/
 venv/
 backend/db.sqlite3
 .env
+
+frontend/public/overview-hlp-in-action.mp4
+frontend/public/hlp2-video.mp4
