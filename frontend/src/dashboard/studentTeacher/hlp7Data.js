@@ -92,7 +92,7 @@ Follow the same "# Slide 1 - Title" / "# Slide 2 - Title" pattern used in the Ov
     {
       name: "HLP in Action",
       type: "video",
-      videoSrc: "",
+      videoSrc: "/HLP-In-Action-Hlp-7.mp4",
     },
     {
       name: "Application activity",

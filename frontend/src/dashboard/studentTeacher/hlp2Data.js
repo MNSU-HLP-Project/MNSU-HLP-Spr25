@@ -6,7 +6,7 @@ const hlp2Data = {
       type: "embed",
       intro:
         "Before continuing, please complete the Pre-Assessment below. It's ungraded and simply helps you reflect on your current understanding of culturally responsive assessment practices before beginning this module.",
-      embedUrl: "PLACEHOLDER - waiting on the Pre-Assessment Google Form",
+      embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSet-WoqDdRVb3kyz6Y1NWnJWpzRc2oevizL96Wut9IFJzVcwQ/viewform?usp=header",
       embedTitle: "HLP 4 & 5 Pre-Assessment",
     },
     {
@@ -94,7 +94,7 @@ Voulgarides, C. K. (2018). Does compliance matter in special education?: IDEA an
         {
           label: "Video",
           type: "video",
-          videoSrc: "/hlp2-video.mp4",
+          videoSrc: "/4.1-Hlp-4-and-5-Culturally-Responsive-Assessments.mp4",
         },
         {
           label: "Script",
@@ -235,7 +235,7 @@ Undertaking this self-reflection gives you a space to evaluate your assumptions 
       type: "embed",
       intro:
         "Now that you've completed the module, take a few minutes to complete the Post-Assessment below.",
-      embedUrl: "PLACEHOLDER - waiting on the Post-Assessment Google Form",
+      embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe2dHhke1oCULwajGEdinVoJaxRKzT1-IQ3ayaJUAV989FuGQ/viewform?usp=header",
       embedTitle: "HLP 4 & 5 Post-Assessment",
     },
   ],

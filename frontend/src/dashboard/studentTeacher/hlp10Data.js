@@ -130,7 +130,7 @@ Rivera, M. O., & McKeithan, G. K. (2021). High-leverage social, emotional and be
         {
           label: "Video",
           type: "video",
-          videoSrc: "",
+          videoSrc: "/4.1-Hlp-10-Learning-Module.mp4",
         },
         {
           label: "Script",
@@ -287,7 +287,7 @@ Narration: You are now ready for the Jordan application. Let the data guide the 
     {
       name: "HLP in Action",
       type: "video",
-      videoSrc: "",
+      videoSrc: "/6.1-Hlp-10-In-Action -Dr-Alexandra-Panahon.mp4",
     },
     {
       name: "Application activity",
