@@ -6,7 +6,8 @@ import overviewData from "./overviewData";
 import hlp7Data from "./hlp7Data";
 import hlp9Data from "./hlp9Data";
 import hlp10Data from "./hlp10Data";
-import hlp2Data from "./hlp2Data";
+import hlp4A5Data from "./hlp4&5Data";
+import hlp8Data from "./hlp8-22Data";
 
 // Turns "[Label](url)" into a real clickable link
 function parseInline(text) {
@@ -191,7 +192,7 @@ function StepContent({ item }) {
 
   if (item.type === "video") {
     return (
-      <video controls className="w-full rounded-lg" src={item.videoSrc}>
+      <video autoPlay controls className="w-full rounded-lg" src={item.videoSrc}>
         Your browser does not support video playback.
       </video>
     );
@@ -234,7 +235,8 @@ const moduleData = {
   hlp7: hlp7Data,
   hlp9: hlp9Data,
   hlp10: hlp10Data,
-  hlp2: hlp2Data,
+  hlp4A5: hlp4A5Data,
+  "hlp8-22": hlp8Data,
 };
 
 export default function ModuleDetail() {

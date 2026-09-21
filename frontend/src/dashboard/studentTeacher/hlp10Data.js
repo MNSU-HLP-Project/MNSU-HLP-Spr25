@@ -1,6 +1,29 @@
 const hlp10Data = {
-  title: "HLP 10: FBA",
+  title: "HLP 10: Functional Behavioral Assessments (FBA)",
   steps: [
+    {
+      name: "Introduction",
+      tabs: [
+        {
+          label: "Video",
+          type: "video",
+          videoSrc: "/HLP 10 materials/Introduction To The HLP 10 Module.mp4",
+        },
+        {
+          label: "Script",
+          content: `
+# Script: Introduction to the HLP 10 Module
+Welcome to the HLP 10 Learning Module: Conduct Functional Behavioral Assessments to Develop Individual Student Behavior Support Plans. I’m glad you’re here! In this module, we take a closer look at one of the most important shifts we can make when supporting students whose behavior interferes with learning or participation. That shift moves us from asking, “How do we stop this behavior?” to asking, “What is this behavior telling us, and how can we better support the student?” This shift helps us consider why the target behavior is occurring and the student’s unmet needs, so we can design an intervention that meets those needs in a socially appropriate way while also identifying which social, emotional, behavioral, or academic skills need to be developed. In many cases, it is a combination of skills. 
+HLP 10 focuses on conducting a Functional Behavioral Assessment, or FBA, and using what we learn to develop an individualized Behavior Support Plan, or BSP. You may hear BSPs called Behavior Intervention Plans (BIPs). BSPs are also sometimes called Positive Behavior Support Plans (PBSPs). An FBA gives us a systematic way to look beyond the behavior to examine what happens before the behavior, what the student actually does, what happens afterward, and most importantly, what patterns emerge across situations and settings.
+The goal is not to assume a student’s motivation or simply label a behavior. Instead, we use information and data to develop a tentative, function-based hypothesis about why the behavior may be occurring, determined by objective data with no assumptions, only fact. That understanding matters because effective behavior support is about more than reducing challenging behavior. We want to help students learn more effective ways to communicate, participate, regulate, and access what they need. That means a strong BSP addresses the conditions surrounding the behavior, teaches an appropriate replacement behavior, reinforces that new behavior, and uses ongoing data to determine whether the plan is actually helping.
+You’ll also see throughout this module that HLP 10 is not something educators do in isolation. Understanding and supporting behavior is a collaborative process that must involve the student, family members, educators, specialists, and other members of the school team, as appropriate, to gather the information needed to make sound decisions. Remember, involving caregivers is vital to keep them informed about their child and decisions being made. Involving the student is dependent on their age and ability, among other factors. 
+As you work through the module, you'll learn a process for defining behavior, gathering and analyzing information, developing a function-based hypothesis, creating a support plan, and monitoring and adjusting that plan over time. You’ll also have opportunities to apply what you learn to a case example and then use that knowledge with a new student scenario. As you work through the module, I encourage you to think about students and situations you know. Consider where you might currently be making assumptions about behavior and what might change if you paused to gather more information and look for patterns.
+Most importantly, keep the student at the center of the process. The purpose of HLP 10 isn't simply behavior change. The goal is to help students participate more successfully, learn meaningful skills, and become increasingly independent.
+Before you begin, please complete the pre-assessment. It will give you an opportunity to reflect on what you already know and help you focus your learning as you move through the module. Let's get started with HLP 10.
+`
+        },
+      ],
+    },
     {
       name: "Pre-assessment",
       type: "embed",
@@ -130,7 +153,7 @@ Rivera, M. O., & McKeithan, G. K. (2021). High-leverage social, emotional and be
         {
           label: "Video",
           type: "video",
-          videoSrc: "/4.1-Hlp-10-Learning-Module.mp4",
+          videoSrc: "/HLP 10 materials/4.1-Hlp-10-Learning-Module.mp4",
         },
         {
           label: "Script",
@@ -279,15 +302,56 @@ Narration: You are now ready for the Jordan application. Let the data guide the 
           type: "download",
           intro:
             "Download the slide deck used to create the HLP 10 video, if you'd like to review it directly.",
-          fileUrl: "/hlp10-slides.pptx",
+          fileUrl: "/HLP 10 materials/hlp10-slides.pptx",
           fileLabel: "Download Slide Deck (PowerPoint)",
         },
       ],
     },
     {
       name: "HLP in Action",
-      type: "video",
-      videoSrc: "/6.1-Hlp-10-In-Action -Dr-Alexandra-Panahon.mp4",
+      tabs: [
+        {
+          label: "Video",
+          type: "video",
+        videoSrc: "/HLP 10 materials/6.1-Hlp-10-In-Action -Dr-Alexandra-Panahon.mp4",
+        },
+        {
+          label: "Script",
+          content: `
+          # HLP 10 in Action: Dr. Alex Panahon
+​[00:00:00] 
+​
+### Introduction
+Hi, my name is Dr. Alexandra Panahon, and I am a faculty member in the Special Education Department at Minnesota State University, Mankato. I've been faculty here for seventeen years, and I've worked in the field of education in a variety of roles, for over thirty years now. I'm here to talk with you today about, HLP ten, which is conducting functional behavioral assessment and developing intervention based on the results of those assessments.
+I, over the course of my career, have had the opportunity to conduct hundreds, if not thousands of, FBAs and consult with, teachers and schools on, both the assessments and the interventions that they put [00:01:00] in place for students with-- that are struggling with behavioral concerns. and so I'm just here today to talk with you about my experiences and, what that HLP means to me.
+when I think about, 
+### What Is an FBA?
+what does a functional behavioral assessment, what that process looks like in practice, I think the first thing that's really important to remember is that an, a f-- FBA is a process. It is not a piece of paper. It is not a form that we fill out. It is a process that we go through to gather information to understand why a student is engaging in the behaviors that they are.
+### Behavior Is Communication
+we know that behavior is a form of communication for many of our students. they are expressing a want or a need, and it is the job of the FBA and the FBA team to [00:02:00] determine what that need is so that we can meet it and teach-- help them to learn a better way to get that need met. so when I think about what an FBA looks like in practice, I think about, how we go about gathering that information that's going to, Going to help us to understand what that student's behavior means and how it benefits them in some way.
+so we're talking with teachers, we're talking with parents, we're talking with the student themself. We're gathering that kind of information. We're going into the classroom, we're looking at the environment, we're seeing what's happening around this student, how the student interacts with others in their environment, and how the environment interacts with them.
+we're collecting direct observational data. We're collecting, information about previous school years, previous interventions. We're gathering all this infor- [00:03:00] information to be able to understand What is happening for that student and what the behavior in question, what purpose it's serving for that child, so that we can then find a, better, more socially appropriate way for them to have that same need met.
+and 
+### Data-Driven Decisions
+sometimes this can seem really straightforward, and sometimes we think we know what, what the student is trying to communicate. but I think one thing that I would, I always stress is that just because we think we know, we-- it's still important for us to gather information and make that determination based on facts and data versus just our gut feeling.
+'Cause, I'm gonna say ninety percent of the time our gut feeling's gonna be right, but sometimes it's not. And when it's not, we don't wanna waste time on an ineffective intervention that's not gonna be helpful. So going through the [00:04:00] process of conducting the FBA and identifying what the function of that behavior might be, is really an important step not to skip before just jumping into interventions to make sure that we, have the right function and are able to accurately develop an intervention based off of that function.
+### Case Study Example
+I'll give an example of this from my own practice. I had a student that I worked with, this was many years ago, but this student was highly aggressive, highly disruptive. We were actually in a preschool setting, so this little boy was four years old, and he was a big, he was a big four. and he would become very aggressive and, very destructive in our classroom.
+So he would be throwing things around, he would be hitting adults, not so much hitting his peers, but hitting adults and ripping things off the [00:05:00] walls and throwing things around the room and just being highly disruptive. And when we looked at it, we really thought that he was trying to, get out of doing things that we asked him to do, that was our gut reaction.
+But we went through the process of conducting the functional assessment, and what we found was that he was actually Looking for physical touch and attention. And we found that because we realized that he was actually motivated by the fact that he would be put into a hold or a restraint, when he got so aggressive and so disruptive.
+We would put him into a, a, a restraint, and he actually enjoyed that and wanted that physical touch and attention from adults. And so he would become aggressive in order to get that physical touch that he maybe wasn't [00:06:00] able to get somewhere else. so from that, we designed intervention that allowed him to have that physical closeness with adult, in a way that was positive as opposed to physical restraint.
+and when he... once he was able to access that, physical touch that he wanted without having to become aggressive, problem behaviors went away. and we would never have figured that out, I don't think, or it would have taken us quite a bit longer to figure that out if we hadn't conducted a functional behavioral assessment and really tried to isolate what, what variables were really impacting this student, what situations was he most likely to engage in these problem behaviors, what seemed to increase the problem behaviors, what settled him down, all of those things.
+and so that was 
+### Lessons Learned
+something that I felt really positive about at the end because we had a student that was [00:07:00] no longer being so disruptive and aggressive and hurting people and getting himself so upset where he could get what he needed in a positive and appropriate way. So I think, just thinking about lessons learned and things to consider, some advice, that you don't wanna go in with a preconceived notion when conducting a functional behavioral assessment.
+you want to be really open-minded and collect a lot of information, a lot of data. Think about it from different angles, even if it's things that you didn't necessarily go into it thinking about. Just know that you're looking for the reasons why tho-those behaviors are occurring and, how you can intervene in a way that's going to improve that student's, functioning in the school, in life, in the community.
+and 
+### Conclusion
+when we can identify those things, we [00:08:00] will, be successful. so those are my thoughts on HLP 10. I hope you found this, interesting and informative, and, thank you very much
+`,
+        },
+      ],
+      
     },
     {
       name: "Application activity",

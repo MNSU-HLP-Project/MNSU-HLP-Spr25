@@ -25,6 +25,14 @@ export default function Modules({ audience }) {
       audience: "teacher",
     },
     {
+      id: "hlp8-22",
+      title: "HLP 8-22: Feedback",
+      description: "Coming Soon.",
+      color: "bg-orange-700",
+      comingSoon: true,
+      audience: "teacher",
+    },
+    {
       id: "hlp9",
       title: "HLP 9: Social Behaviors",
       description: "Coming Soon.",
@@ -34,14 +42,14 @@ export default function Modules({ audience }) {
     },
     {
       id: "hlp10",
-      title: "HLP 10: FBA",
+      title: "HLP 10: Functional Behavioral Assessments (FBA)",
       description: "Conduct Functional Behavioral Assessments to Develop Individual Student Behavior Support Plans.",
       color: "bg-purple-700",
       audience: "teacher",
     },
 
   {
-      id: "hlp2",
+      id: "hlp4A5",
       title: "Culturally Responsive Assessments (HLP 4 & 5)",
       description: "Leading for equity in special education evaluation processes.",
       color: "bg-pink-700",
