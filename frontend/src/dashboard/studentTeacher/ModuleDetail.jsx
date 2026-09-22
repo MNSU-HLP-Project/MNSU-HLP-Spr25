@@ -9,10 +9,10 @@ import hlp10Data from "./hlp10Data";
 import hlp4A5Data from "./hlp4&5Data";
 import hlp8Data from "./hlp8-22Data";
 
-// Turns "[Label](url)" into a real clickable link
+// Turns Markdown links and images into rendered elements.
 function parseInline(text) {
   const parts = [];
-  const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const regex = /(!)?\[([^\]]+)\]\(([^)]+)\)/g;
   let lastIndex = 0;
   let match;
   let key = 0;
@@ -21,17 +21,28 @@ function parseInline(text) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
-    parts.push(
-      <a
-        key={key++}
-        href={match[2]}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline hover:text-blue-800"
-      >
-        {match[1]}
-      </a>
-    );
+    if (match[1]) {
+      parts.push(
+        <img
+          key={key++}
+          src={match[3]}
+          alt={match[2]}
+          className="max-w-full h-auto rounded-lg my-4"
+        />
+      );
+    } else {
+      parts.push(
+        <a
+          key={key++}
+          href={match[3]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline hover:text-blue-800"
+        >
+          {match[2]}
+        </a>
+      );
+    }
     lastIndex = match.index + match[0].length;
   }
 
@@ -109,6 +120,13 @@ function FormattedText({ text }) {
         <h4 key={i} className="font-semibold text-gray-900 mt-4 mb-1">
           {trimmed.replace("### ", "")}
         </h4>
+      );
+    } else if (trimmed.startsWith("## ")) {
+      currentList = null;
+      blocks.push(
+        <h3 key={i} className="text-base font-bold text-gray-900 mt-6 mb-2">
+          {trimmed.replace("## ", "")}
+        </h3>
       );
     } else if (trimmed.startsWith("# ")) {
       currentList = null;

@@ -52,234 +52,191 @@ So, as you begin the module, listen closely to the examples, think about your ow
         embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc7crrkHmYljn0-IMIAUpy6kgkU-dyCs_hweN7c9aj12rGCKg/viewform?usp=header",
         embedTitle: "HLP 8/22 Pre-Assessment",
     },
-    { //Needs formating
-      name: "Implementation guide - Needs Formating",
-      content: `HLP8/22 Implementation Guide
+    { 
+      name: "HLP 8/22 Implementation Guide",
+      content: `
 Dr. Ruby L. Owiny
 Minnesota State University, Mankato
 Associate Professor of Special Education
-HLP 8/22: Provide Positive and Constructive Feedback to Guide Students’ Learning
-and Behavior
+### HLP 8/22: Provide Positive and Constructive Feedback to Guide Students’ Learning and Behavior
 Domain: Instruction in Behavior and Academics
 HLP Type: Embedded HLP — How to Teach
-Purpose Statement
+### Purpose Statement
 Feedback is more than telling students whether they are right or wrong. Effective feedback gives students information about their performance and helps them move toward a learning or behavioral goal. When feedback is clear, specific, timely, goal-directed, and focused on the skill, task, process, or self-regulation, it can support student learning, engagement, motivation, independence, and behavior.
 HLP 8/22 applies across academic and behavioral contexts and is especially important for students with disabilities who may need more explicit, individualized, intensive information about how to improve performance. Effective educators also consider students’ developmental levels, cultural and linguistic backgrounds, learning histories, preferences, and classroom contexts when deciding what feedback to provide, how to provide it, and how often.
-Essential Question
+### Essential Question
 How can I provide feedback that helps students understand where they are, where they are going, and what they can do next?
-Key Ideas 
+### Key Ideas 
 Feedback should improve learning or behavior. The goal is to give students information they can use to move forward in their development.
 Remember:
-Not all praise is feedback.
-Not all correction is constructive.
-Not all feedback improves learning.
+- Not all praise is feedback.
+- Not all correction is constructive.
+- Not all feedback improves learning.
 
-HLP 8 and HLP 22: Why Are There Two?
+### HLP 8 and HLP 22: Why Are There Two?
 Same Practice. Two Applications.
-HLP
-Primary Emphasis
-Example
-HLP 8
-Guide behavior, social-emotional, and behavioral performance.
-“You started your independent work right away and stayed with the task. That helped you finish the first three problems.”
-HLP 22
-Guide academic learning and performance.
+| HLP | Primary Emphasis | Example
+| HLP 8 | Guide behavior, social-emotional, and behavioral performance. | “You started your independent work right away and stayed with the task. That helped you finish the first three problems.”
+| HLP 22 | Guide academic learning and performance. | “You identified the main idea correctly. Now go back to the text and find one detail that supports your answer.”
 
-
-“You identified the main idea correctly. Now go back to the text and find one detail that supports your answer.”
-
-
-The Connection
+### The Connection
 The feedback process is the same:
-Observe → Identify the goal → Respond → Guide the next step → Check the response
+### Observe → Identify the goal → Respond → Guide the next step → Check the response
 The difference is what the feedback is helping the student improve.
-Section 1: What Is This HLP?
-Definition
+# Section 1: What Is This HLP?
+### Definition
 The effective provision of feedback is one of the most important instructional practices for teachers. Feedback guides student learning and behavior and increases motivation, engagement, and independence. Effective feedback must be strategically delivered and focused on tasks, processes, or self-regulatory actions. Feedback should be goal directed and is most effective when the learner has a goal, and the feedback informs the learner how to improve performance toward reaching that goal. Feedback may be verbal, nonverbal, or written, and should be timely, contingent, genuine, meaningful, age appropriate, and at rates commensurate with task and phase of learning (i.e., acquisition, fluency, maintenance). In equitable and inclusive classrooms, educators take care to provide meaningful feedback to all students and recognize the potential for unconscious bias that may prompt lowered expectations or deficit thinking toward historically marginalized students. Educators must consider age, cultural background, learning preferences, and classroom dynamics when providing public or private feedback. 
-Why This Practice Matters
-Importance for Students with Disabilities
+## Why This Practice Matters
+
+### Importance for Students with Disabilities
 Students with disabilities may benefit from feedback that clearly communicates what they are doing well, identifies areas for improvement, and provides specific information about how to move toward a learning or behavioral goal. Positive and constructive feedback can help students understand expectations, strengthen academic and behavioral skills, and develop greater independence in their learning and behavior.
-Importance for All Learners
+### Importance for All Learners
 All students benefit from feedback that is timely, specific, and connected to clearly defined learning and behavioral goals. Rather than simply telling students whether their performance is correct, effective feedback gives students information they can use to recognize successful strategies, correct errors, and improve their performance.
-Connection to Inclusive Education
+### Connection to Inclusive Education
 Effective feedback supports inclusive education by providing every student with meaningful information about their learning and behavior while maintaining high expectations. When educators individualize feedback based on students’ strengths, needs, communication styles, and learning contexts, feedback can provide an equitable pathway for students to participate, learn, and demonstrate their knowledge and skills.
-Impact on Academic, Behavioral, and Social Outcomes
+### Impact on Academic, Behavioral, and Social Outcomes
 Positive and constructive feedback can support students’ academic learning, engagement, motivation, self-regulation, and independence. In behavioral contexts, feedback can reinforce appropriate behavior and provide students with information needed to make behavioral adjustments. Across academic and social contexts, feedback can help students understand expectations, recognize their progress, and identify actionable next steps.
-Connections to Other HLPs
-HLP
-Connection to HLP 8/22
-HLP 11
-Identify and prioritize long- and short-term learning goals
-HLP 12
-Systematically design and plan instruction
-HLP 16
-Use explicit instruction
-HLP 18
-Use strategies to promote active student engagement
-HLP 20
-Provide intensive instruction
-HLP 21
-Teach students to maintain and generalize new skills
+### Connections to Other HLPs
+| HLP | Connection to HLP 8/22
+| HLP 11 | Identify and prioritize long- and short-term learning goals
+| HLP 12 | Systematically design and plan instruction
+| HLP 16 | Use explicit instruction
+| HLP 18 | Use strategies to promote active student engagement
+| HLP 20 | Provide intensive instruction
+| HLP 21 | Teach students to maintain and generalize new skills
+
+![Feedback Example](/HLP 8-22 materials/HLP 8-22 Image 1.PNG)
 
 
-
-
-Section 2: Key Components of HLP 8/22
-Component 1: Make Feedback Goal-Directed
+# Section 2: Key Components of HLP 8/22
+## Component 1: Make Feedback Goal-Directed
 Feedback should connect directly to a clearly identified learning or behavioral goal.
-Teacher actions
-Identify the learning or behavior goal.
-Make the expected performance clear.
-Connect feedback directly to that goal.
-Tell students what they are doing in relation to the goal.
-Identify the next step when appropriate.
-Component 2: Make Feedback Specific and Descriptive
+### Teacher actions
+- Identify the learning or behavior goal.
+- Make the expected performance clear.
+- Connect feedback directly to that goal.
+- Tell students what they are doing in relation to the goal.
+- Identify the next step when appropriate.
+## Component 2: Make Feedback Specific and Descriptive
 Students need information they can use. Which statement is more helpful to move a student forward in their learning? The generic statement,  “Good job,” or the specific statement, “You used two pieces of evidence from the text to support your answer”?
 Specific feedback tells students what they did, rather than simply judging their performance. Based on the teacher’s feedback, the student knows their two pieces of evidence from the text correctly support their answer. Thus, they are more likely to repeat a similar response the next time a question regarding text evidence comes up because they know exactly what they did correctly. 
-A Simple Formula
+### A Simple Formula
 
-Name it
-Describe it 
-Connect it
-Next step
-You [what the student did]. [Why/how it was effective]. This helps you [connect to goal]. Next, [actionable next step].
+|Name it|Describe it|Connect it|Next step|
+|---|---|---|---|
+|You [what the student did]| [Why/how it was effective]| This helps you [connect to goal]| Next, [actionable next step].
 
 
-Component 3: Focus on Task, Process, or Self-Regulation
-Task
-What did the student do?
-“You correctly identified the numerator.”
+## Component 3: Focus on Task, Process, or Self-Regulation
+### Task
+| What did the student do? | “You correctly identified the numerator.”
 
+### Process
+| What strategy did the student use? | “You broke the problem into smaller steps before solving it.”
 
-Process
-What strategy did the student use?
-“You broke the problem into smaller steps before solving it.”
+### Self-Regulation
+| How did the student monitor or manage their own learning? | “You noticed that your answer didn't make sense, checked your work, and corrected it.”
 
+## Component 4: Provide Instructive and Corrective Feedback
+![Image 2](/HLP 8-22 materials/HLP 8-22 Image 2.PNG)
+### Instructive feedback
 
-Self-Regulation
-How did the student monitor or manage their own learning?
-“You noticed that your answer didn't make sense, checked your work, and corrected it.”
+| Used to teach or reinforce a skill. | “That's right. We use a quiet voice when we line up so other classes can continue learning.”
 
+### Corrective feedback
+| Used when the student's performance doesn't yet meet the expectation. | “Remember, during independent reading, we read quietly. Try that again.”
 
-Component 4: Provide Instructive and Corrective Feedback
-
-Instructive feedback
-
-Used to teach or reinforce a skill.
-“That's right. We use a quiet voice when we line up so other classes can continue learning.”
-
-Corrective feedback
-Used when the student's performance doesn't yet meet the expectation.
-“Remember, during independent reading, we read quietly. Try that again.”
-
-Component 5: Make Feedback Timely, Contingent, and Genuine
+## Component 5: Make Feedback Timely, Contingent, and Genuine
 Effective feedback should occur close enough to the student's performance that the student can connect it to what they just did.
-Timely
-Give feedback close to the performance.
-Contingent
-Give feedback because you observed the target behavior or performance.
-Genuine
-Use a sincere tone and avoid sarcasm or joking.
+| Timely | Give feedback close to the performance.
+| Contingent |  Give feedback because you observed the target behavior or performance.
+| Genuine | Use a sincere tone and avoid sarcasm or joking.
 
-Component 6: Individualize Feedback
-Effective feedback is not one-size-fits-all.
+## Component 6: Individualize Feedback
+### Effective feedback is not one-size-fits-all.
 Teachers should consider:
-age and developmental level
-disability-related needs
-learning history
-cultural background
-language
-preferences
-classroom dynamics
-whether feedback should be public or private
-phase of learning
-student response to previous feedback
+- age and developmental level
+- disability-related needs
+- learning history
+- cultural background
+- language
+- preferences
+- classroom dynamics
+- whether feedback should be public or private
+- phase of learning
+- student response to previous feedback
 Current HLP guidance explicitly emphasizes culturally responsive feedback and consideration of students' age, cultural background, learning preferences, and classroom dynamics.
-A Powerful Reflection Question 
-Would this feedback feel supportive and useful to this particular student?
+| A Powerful Reflection Question
+| Would this feedback feel supportive and useful to this particular student?
 
+### Examples of Each Component
+| Component | What It Looks Like
+| 1 | Teacher connects feedback to a clearly identified learning or behavioral goal, “Your topic sentence clearly tells the reader what your paragraph will be about. Now add a detail that supports that idea.”
+| 2 | Teacher describes exactly what the student did, “You identified the main idea and used two details from the text to support your answer.”
+| 3 | Teacher focuses feedback on the task, process, or self-regulation, “You reread the question and underlined the important information before choosing your answer. That strategy helped you find the evidence.”
+| 4 | Teacher provides instructive or corrective feedback that tells the student what to do next, “Your first step is correct. Go back to the second step and check whether you multiplied before adding.”
+| 5 | Teacher provides feedback promptly, based on observed performance, and in a genuine manner. Student begins work independently within 30 seconds. The teacher immediately states, “You got started right away and followed the first step independently. That's exactly what our goal was.”
+| 6 | Teacher individualizes feedback based on the student's needs, preferences, and context, “You said that written reminders help you remember the steps. Your checklist helped you complete the first three steps independently. Let's use it again for the next problem.”
 
-Examples of Each Component
-Component
-What It Looks Like
-1
-Teacher connects feedback to a clearly identified learning or behavioral goal, “Your topic sentence clearly tells the reader what your paragraph will be about. Now add a detail that supports that idea.”
-2
-Teacher describes exactly what the student did, “You identified the main idea and used two details from the text to support your answer.”
-3
-Teacher focuses feedback on the task, process, or self-regulation, “You reread the question and underlined the important information before choosing your answer. That strategy helped you find the evidence.”
-4
-Teacher provides instructive or corrective feedback that tells the student what to do next, “Your first step is correct. Go back to the second step and check whether you multiplied before adding.”
-5
-Teacher provides feedback promptly, based on observed performance, and in a genuine manner. Student begins work independently within 30 seconds. The teacher immediately states, “You got started right away and followed the first step independently. That's exactly what our goal was.”
-6
-Teacher individualizes feedback based on the student's needs, preferences, and context, “You said that written reminders help you remember the steps. Your checklist helped you complete the first three steps independently. Let's use it again for the next problem.”
-
-Section 3: Evidence Base
-What Research Tells Us
+# Section 3: Evidence Base
+### What Research Tells Us
 Research identifies feedback as an important influence on student learning and achievement, but its effectiveness depends on the type and quality of feedback provided. Effective feedback helps students understand the relationship between their current performance and a clearly identified goal while providing information they can use to improve. Feedback is particularly useful when it is specific, explanatory, timely, and focused on the task, process, or self-regulation rather than simply evaluating the student’s performance (Hattie & Timperley, 2007; Wisniewski et al., 2020).
 Feedback has applications across academic and behavioral contexts. Within HLP 8/22, educators use positive and constructive feedback to guide learning and behavior, increase engagement and independence, and support students in moving toward instructional or behavioral goals (Kennedy et al., 2018). Positive feedback is most effective when it is specific, process-centered, and instructive; corrective feedback is most effective when it connects to observed student performance to guide student growth.
 The research base shows benefits for students with and without disabilities across instructional settings. Effective feedback can be incorporated into whole-class instruction, small-group instruction, individualized intervention, and behavioral support. For students with disabilities, feedback can provide additional information about expectations, strategies, errors, and next steps. Importantly, feedback should be individualized and responsive to students' learning histories, preferences, cultural and linguistic backgrounds, and instructional contexts (Kennedy et al., 2018).
-Key Research Findings
-Feedback can positively influence student learning and achievement. 
-Feedback should be goal-directed, specific, and explanatory.
-Process-focused feedback supports students' engagement, motivation, and perseverance.
-Behavior-specific praise and feedback can support positive classroom behavior. 
-Feedback should be responsive to the learner and context. 
-Section 4: Resources for Further Learning
-Recommended Readings
-Collins, L. W., Cook, S. C., Sweigart, C. A., & Evanovich, L. L. (2018). Using performance feedback to increase special education teachers’ use of effective practices. TEACHING Exceptional Children, 51(2), 125-133. https://doi.org/10.1177/0040059918802774
+### Key Research Findings
+- Feedback can positively influence student learning and achievement. 
+- Feedback should be goal-directed, specific, and explanatory.
+- Process-focused feedback supports students' engagement, motivation, and perseverance.
+- Behavior-specific praise and feedback can support positive classroom behavior. 
+- Feedback should be responsive to the learner and context. 
+# Section 4: Resources for Further Learning
+### Recommended Readings
+Collins, L. W., Cook, S. C., Sweigart, C. A., & Evanovich, L. L. (2018). Using performance feedback to increase special education teachers’ use of effective practices. TEACHING Exceptional Children, 51(2), 125-133. [https://doi.org/10.1177/0040059918802774](https://doi.org/10.1177/0040059918802774)
 
-FitzPatrick, E., & McKeown, D. (2020). How to use audio feedback to improve students’ 
-writing quality. TEACHING Exceptional Children, 53(1), 12-22. https://doi.org/10.1177/0040059920908901
+FitzPatrick, E., & McKeown, D. (2020). How to use audio feedback to improve students’ writing quality. TEACHING Exceptional Children, 53(1), 12-22. [https://doi.org/10.1177/0040059920908901](https://doi.org/10.1177/0040059920908901)
 
-McLeskey, J., Maheady, L., Billingsley, B., Brownell, M. T., & Lewis, T. J. (Eds.). (2022). 
-High leverage practices for inclusive classrooms. Routledge.
+McLeskey, J., Maheady, L., Billingsley, B., Brownell, M. T., & Lewis, T. J. (Eds.). (2022). High leverage practices for inclusive classrooms. Routledge.
 
-Owiny, R. L., & Cornelius, K. E. (2023). The practical guide to high-leverage practices 
-in special education: The Purposeful ‘how’ to increase classroom rigor. 
-Routledge. 
-Perle, J. G. (2018). Teacher-provided positive attending to improve student behavior. TEACHING Exceptional Children, 50(4), 204-212. https://doi.org/10.1177/0040059918757954
-Stevenson, N. A., Chen, C.-I., Harker, B., Al-Smadi, F., & Alanazi, H. (2026). Empowering students through effective performance feedback: The FACTS framework. TEACHING Exceptional Children, 58(3), 168-174. https://doi.org/10.1177/00400599241256561
+Owiny, R. L., & Cornelius, K. E. (2023). The practical guide to high-leverage practices in special education: The Purposeful ‘how’ to increase classroom rigor. Routledge. 
 
-Professional Organizations
-Council for Exceptional Children (CEC): https://exceptionalchildren.org/
-The CEEDAR Center: ​​https://ceedar.education.ufl.edu/
-The IRIS Center at Vanderbilt University: https://iris.peabody.vanderbilt.edu/
-Videos
-HLP 8 & 22: Provide Positive Constructive Feedback Clip
+Perle, J. G. (2018). Teacher-provided positive attending to improve student behavior. TEACHING Exceptional Children, 50(4), 204-212. [https://doi.org/10.1177/0040059918757954](https://doi.org/10.1177/0040059918757954)
 
+Stevenson, N. A., Chen, C.-I., Harker, B., Al-Smadi, F., & Alanazi, H. (2026). Empowering students through effective performance feedback: The FACTS framework. TEACHING Exceptional Children, 58(3), 168-174. [https://doi.org/10.1177/00400599241256561](https://doi.org/10.1177/00400599241256561)
 
-HLPs #8 and #22: Provide Positive and Constructive Feedback to Guide Students’ Learning and Behavior
+### Professional Organizations
+- Council for Exceptional Children (CEC): https://exceptionalchildren.org/
+- The CEEDAR Center: ​​https://ceedar.education.ufl.edu/
+- The IRIS Center at Vanderbilt University: https://iris.peabody.vanderbilt.edu/
+### Videos
+[HLP 8 & 22: Provide Positive Constructive Feedback Clip](https://www.youtube.com/watch?v=atC2J-yGj30)
 
-HLP 22: Academic Specific Feedback
+[HLPs #8 and #22: Provide Positive and Constructive Feedback to Guide Students’ Learning and Behavior](https://www.youtube.com/watch?v=zi820aDfvwU)
 
-The Power of Feedback: John Hattie
+[HLP 22: Academic Specific Feedback](https://www.youtube.com/watch?v=8QBSPNL1Dhs)
 
-Types and Purposes of Feedback
+[The Power of Feedback: John Hattie](https://www.youtube.com/watch?v=HbHt1OecP0U)
 
-Related HLP Resources
-Brownell, M. T., Cuillo, S., Kennedy, M. J. (Winter 2020 - 2021). High-leverage practices 
-teaching students with disabilities—and all students who need a learning boost. Education Healthcare Services. https://www.aft.org/ae/winter2020-2021/brownell_ciullo_kennedy
+[Types and Purposes of Feedback](https://www.youtube.com/watch?v=CXGt53AGGng)
 
-Coyne, M. D., & Koriakin, T. A. (2017). What do beginning special educators need to know about intensive reading interventions? TEACHING Exceptional Children, 49(4), 239-248. https://doi.org/10.1177/0040059916688648
+### Related HLP Resources
+Brownell, M. T., Cuillo, S., Kennedy, M. J. (Winter 2020 - 2021). High-leverage practices teaching students with disabilities—and all students who need a learning boost. Education Healthcare Services. https://www.aft.org/ae/winter2020-2021/brownell_ciullo_kennedy
 
-Datchuk, S. M., & Hier, B. O. (2019). Fluency practice: Techniques for building automaticity in foundational knowledge and skills. TEACHING Exceptional Children, 51(6), 424-435. https://doi.org/10.1177/0040059919847213
+Coyne, M. D., & Koriakin, T. A. (2017). What do beginning special educators need to know about intensive reading interventions? TEACHING Exceptional Children, 49(4), 239-248. [https://doi.org/10.1177/0040059916688648](https://doi.org/10.1177/0040059916688648)
 
-Mahoney, M. W. M. (2019). Peer-mediated instruction and activity schedules: Tools for providing academic support for students with ASD. TEACHING Exceptional Children, 51(5), 350-360. https://doi.org/10.1177/0040059919835816
+Datchuk, S. M., & Hier, B. O. (2019). Fluency practice: Techniques for building automaticity in foundational knowledge and skills. TEACHING Exceptional Children, 51(6), 424-435. [https://doi.org/10.1177/0040059919847213](https://doi.org/10.1177/0040059919847213)
 
+Mahoney, M. W. M. (2019). Peer-mediated instruction and activity schedules: Tools for providing academic support for students with ASD. TEACHING Exceptional Children, 51(5), 350-360. [https://doi.org/10.1177/0040059919835816](https://doi.org/10.1177/0040059919835816)
 
-References
-Hattie, J., & Timperley, H. (2007). The power of feedback. Review of Educational 
-Research, 77(1), 81–112. https://doi.org/10.3102/003465430298487
-Kennedy, M. J., Peeples, K. N., Romig, J. E., Mathews, H. M., & Rodgers, W. J. (2018). 
-High-leverage practices #8 & #22: Provide positive and constructive feedback to guide students' learning and behavior. High-Leverage Practices for Students with Disabilities.
-Owiny, R. L., & Cornelius, K. E. (2023). The practical guide to high-leverage practices in 
-special education: The purposeful “how” to enhance classroom rigor. Routledge.
-Wisniewski, B., Zierer, K., & Hattie, J. (2020). The power of feedback revisited: A 
-meta-analysis of educational feedback research. Frontiers in Psychology, 10, Article 3087. https://doi.org/10.3389/fpsyg.2019.03087
-Zoder-Martell, K. A., Floress, M. T., Bernas, R. S., Dufrene, B. A., & Foulks, S. L. 
-(2019). Training teachers to increase behavior-specific praise: A meta-analysis. Journal of Applied School Psychology, 35(4), 309–338. https://doi.org/10.1080/15377903.2019.1587802
+### References
+Hattie, J., & Timperley, H. (2007). The power of feedback. Review of Educational  Research, 77(1), 81–112. [https://doi.org/10.3102/003465430298487](https://doi.org/10.3102/003465430298487)
+
+Kennedy, M. J., Peeples, K. N., Romig, J. E., Mathews, H. M., & Rodgers, W. J. (2018). High-leverage practices #8 & #22: Provide positive and constructive feedback to guide students' learning and behavior. High-Leverage Practices for Students with Disabilities.
+
+Owiny, R. L., & Cornelius, K. E. (2023). The practical guide to high-leverage practices in special education: The purposeful “how” to enhance classroom rigor. Routledge.
+
+Wisniewski, B., Zierer, K., & Hattie, J. (2020). The power of feedback revisited: A meta-analysis of educational feedback research. Frontiers in Psychology, 10, Article 3087. [https://doi.org/10.3389/fpsyg.2019.03087](https://doi.org/10.3389/fpsyg.2019.03087)
+
+Zoder-Martell, K. A., Floress, M. T., Bernas, R. S., Dufrene, B. A., & Foulks, S. L. (2019). Training teachers to increase behavior-specific praise: A meta-analysis. Journal of Applied School Psychology, 35(4), 309–338. [https://doi.org/10.1080/15377903.2019.1587802](https://doi.org/10.1080/15377903.2019.1587802)
 `,
     },
     {
@@ -446,202 +403,151 @@ Dr. Ruby Owiny: Absolutely. Thank you, Dr. Cornelius. My pleasure. Appreciate yo
       ],
     },
     { //Needs formating
-      name: "Application activity - Needs Formating",
-      content: `HLP 8/22 Application Activity
-Feedback in Action
+      name: "HLP 8/22 Application Activity",
+      content: `
+# Feedback in Action
 
 In this application activity, you will examine the feedback you provide to students, identify strengths and opportunities for improvement, and intentionally revise it using the six components of HLP 8/22. You will then apply a revised feedback strategy in an authentic or simulated instructional context and examine the student's response.
 This activity connects research on effective feedback with the practice of teaching students with disabilities by emphasizing feedback that is goal-directed, specific and descriptive, focused on the task/process/self-regulation, timely and contingent, and individualized to the learner and context.
-Objectives
+## Objectives
 By completing this application activity, you will be able to:
-Distinguish effective feedback from general praise and reprimands. 
-Identify characteristics of feedback that provide learners with usable information.
-Apply the six implementation components of HLP 8/22 to analyze and improve feedback provided in academic and behavioral contexts.
-Use observable indicators to evaluate implementation of HLP 8/22
-Identify a next step to strengthen practice.
-Purpose
+1. Distinguish effective feedback from general praise and reprimands. 
+2. Identify characteristics of feedback that provide learners with usable information.
+3. Apply the six implementation components of HLP 8/22 to analyze and improve feedback provided in academic and behavioral contexts.
+4. Use observable indicators to evaluate implementation of HLP 8/22
+5. Identify a next step to strengthen practice.
+## Purpose
 This application activity gives you an opportunity to examine your own feedback rather than simply learning what effective feedback should look like. The goal is to answer one central question: Am I giving students information they can actually use?
-Contextualizing the Application
+## Contextualizing the Application
 You can complete the activity in a variety of professional settings. Select the option that best fits your current role.
-Practicing Teachers
+### Practicing Teachers
 Use 3 examples of actual feedback from your classroom. If possible, select feedback from both an academic and a behavioral/social context.
-Special Education Teachers
+### Special Education Teachers
 Consider feedback connected to:
-IEP goals;
-specially designed instruction;
-academic intervention;
-behavior support;
-self-regulation;
-social skills; or
-independence.
-General Education Teachers
+- IEP goals;
+- specially designed instruction;
+- academic intervention;
+- behavior support;
+- self-regulation;
+- social skills; or
+- independence.
+### General Education Teachers
 Select a lesson, small-group activity, independent work period, or classroom routine in which you regularly provide feedback.
-Related-Service Professionals
+### Related-Service Professionals
 Use feedback provided during speech-language, occupational therapy, counseling, behavioral, or other related-service contexts.
-Teacher Candidates
+### Teacher Candidates
 If you are not currently teaching, use:
-a field-experience observation;
-a recorded lesson;
-a case scenario;
-a simulated interaction; or
-an example from a previous instructional experience.
-Directions
-Step 1: NOTICE — Identify Your Current Feedback
+- a field-experience observation;
+- a recorded lesson;
+- a case scenario;
+- a simulated interaction; or
+- an example from a previous instructional experience.
+# Directions
+## Step 1: NOTICE — Identify Your Current Feedback
 Begin by identifying 3 examples of feedback you have recently provided to a student or students. For each example, record what you said or wrote, as closely as you can.
 You may use:
-an academic lesson;
-a behavioral or social-emotional situation;
-a small-group activity;
-an IEP goal-related instructional activity;
-written feedback on student work;
-a video of your own instruction;
-an observation of another educator; or
-a simulated classroom scenario if you are not currently teaching.
-Feedback Example 1
-Student goal/expectation: 
-What the student did: 
-What I said/wrote: 
-Feedback Example 2
-Student goal/expectation: 
-What the student did: 
-What I said/wrote: 
-Feedback Example 3
-Student goal/expectation:
-What the student did:
-What I said/wrote: 
+- an academic lesson;
+- a behavioral or social-emotional situation;
+- a small-group activity;
+- an IEP goal-related instructional activity;
+- written feedback on student work;
+- a video of your own instruction;
+- an observation of another educator; or
+- a simulated classroom scenario if you are not currently teaching.
+### Feedback Example 1
+- Student goal/expectation: 
+- What the student did: 
+- What I said/wrote: 
+### Feedback Example 2
+- Student goal/expectation: 
+- What the student did: 
+- What I said/wrote: 
+### Feedback Example 3
+- Student goal/expectation: 
+- What the student did: 
+- What I said/wrote: 
 
-Step 2: ANALYZE — What Kind of Feedback Am I Providing?
+## Step 2: ANALYZE — What Kind of Feedback Am I Providing?
 Review each feedback example and analyze it using the six HLP 8/22 components.
-HLP 8/22 Component
-Yes
-Partially
-Not Yet
-1. Goal-directed — Is the feedback connected to a learning or behavioral goal?
-☐
-☐
-☐
-2. Specific & descriptive — Does it identify what the student actually did?
-☐
-☐
-☐
-3. Task, process & self-regulation — Does it focus on the work, strategy, or learner action rather than the person?
-☐
-☐
-☐
-4. Feedback—not praise or reprimand — Does it provide information the learner can use?
-☐
-☐
-☐
-5. Timely, contingent & genuine — Is it connected to the student's response and delivered when it can be used?
-☐
-☐
-☐
-6. Individualized — Is it appropriate for this learner, task, context, and phase of learning?
-☐
-☐
-☐
+| HLP 8/22 Component | Yes | Partially | Not Yet |
+|---------------------|-----|-----------|---------|
+| 1. Goal-directed — Is the feedback connected to a learning or behavioral goal? | ☐ | ☐ | ☐ |
+| 2. Specific & descriptive — Does it identify what the student actually did? | ☐ | ☐ | ☐ |
+| 3. Task, process & self-regulation — Does it focus on the work, strategy, or learner action rather than the person? | ☐ | ☐ | ☐ |
+| 4. Feedback—not praise or reprimand — Does it provide information the learner can use? | ☐ | ☐ | ☐ |
+| 5. Timely, contingent & genuine — Is it connected to the student's response and delivered when it can be used? | ☐ | ☐ | ☐ |
+| 6. Individualized — Is it appropriate for this learner, task, context, and phase of learning? | ☐ | ☐ | ☐ |
 
+### Ask yourself:
+- Which component is strongest in my feedback?
+- Which component is most often missing?
+- Do I tend to provide feedback, praise, or reprimands?
+## Step 3: REBUILD — Turn Feedback Into Information for Action
+1. Select one of your feedback examples that could be improved.
+2. Rewrite it using the following structure: NOTICE → CONNECT → GUIDE → RESPOND
 
-Ask yourself:
-Which component is strongest in my feedback?
-Which component is most often missing?
-Do I tend to provide feedback, praise, or reprimands?
-Step 3: REBUILD — Turn Feedback Into Information for Action
-Select one of your feedback examples that could be improved.
-Rewrite it using the following structure: NOTICE → CONNECT → GUIDE → RESPOND
-
-NOTICE
+### NOTICE
 What did the student actually do? Example: You identified two pieces of evidence…
-CONNECT
+### CONNECT
 How does the performance connect to the goal? Example: …which supports our goal of using evidence to explain your claim.
-GUIDE
+### GUIDE
 What should the student do next? Example: Now explain how your second piece of evidence supports your claim.
-RESPOND
+### RESPOND
 How will the student use the feedback? Example: Explain how that evidence connects to your claim.
-Step 4: TRY — Implement Your Revised Feedback
+## Step 4: TRY — Implement Your Revised Feedback
 Now use your revised feedback in an authentic or simulated setting.
-Before providing feedback:
+### Before providing feedback:
 Identify
-Student goal: 
-Expected performance/behavior: 
-Feedback I plan to provide: 
-During the interaction:
+- Student goal: 
+- Expected performance/behavior: 
+- Feedback I plan to provide: 
+### During the interaction:
 Observe the student's response.
-What did the student do after receiving the feedback?
-Did the student revise, retry, continue, or adjust the performance? 
-What evidence did I observe? 
-Step 5: REFLECT — What Did I Learn?
+- What did the student do after receiving the feedback?
+- Did the student revise, retry, continue, or adjust the performance? 
+- What evidence did I observe? 
+## Step 5: REFLECT — What Did I Learn?
 After implementing the feedback, respond to the following questions.
-About the student
-What did the student do in response to the feedback?
-What evidence suggests that the student understood and/or used the feedback?
-About your practice
-Which HLP 8/22 component did you intentionally strengthen?
-What did you learn about your own feedback practices?
-About your context
-What contextual factors influenced how you provided feedback?
+### About the student
+- What did the student do in response to the feedback?
+- What evidence suggests that the student understood and/or used the feedback?
+### About your practice
+- Which HLP 8/22 component did you intentionally strengthen?
+- What did you learn about your own feedback practices?
+### About your context
+- What contextual factors influenced how you provided feedback?
 Consider factors such as:
-student age;
-disability-related needs;
-task demands;
-classroom environment;
-cultural or linguistic considerations;
-student preferences;
-privacy;
-timing; or
-phase of learning.
-Next Step
+- student age;
+- disability-related needs;
+- task demands;
+- classroom environment;
+- cultural or linguistic considerations;
+- student preferences;
+- privacy;
+- timing; or
+- phase of learning.
+### Next Step
 Complete this statement: One change I will make to strengthen my implementation of HLP 8/22 is…
-Optional Extension: Feedback Audit
+### Optional Extension: Feedback Audit
 For those who want to go one step further, conduct a one-week Feedback Audit. During one week, record approximately 10 instances of feedback.
 Classify each instance as:
-Type
-Number
-Specific/constructive feedback
+| Type | Number
+|Specific/constructive feedback |  |
+| Generic praise |  |
+| Reprimand/correction without usable information |  |
+| Other | |
 
-
-Generic praise
-
-
-Reprimand/correction without usable information
-
-
-Other
-
-
-
-Calculate: What percentage of my feedback provided students with specific information they could use?
-The purpose isn't to achieve a perfect percentage. The purpose is to make your feedback practice visible.
-Application Activity Rubric
-HLP 8/22: Feedback in Action
-Expectation
-Beginning
-Developing
-Proficient
-1. Identify and describe feedback examples 
-Provides fewer than three examples, or examples are vague, incomplete, or do not represent actual/simulated feedback.
-Provides three feedback examples and describes the student performance and teacher response, but some information is incomplete.
-Provides three clear examples that accurately describe the student performance and the feedback provided.
-2. Distinguish feedback from praise and reprimands 
-Does not accurately distinguish feedback from praise or reprimands and/or provides limited explanation.
-Correctly identifies some examples as feedback, praise, or reprimands but provides limited explanation of the differences.
-Accurately distinguishes feedback from praise and reprimands and explains whether the feedback provides information the student can use.
-3. Apply the six HLP 8/22 components 
-Does not analyze feedback using the six components or identifies components inaccurately.
-Analyzes feedback using some of the six components but misses or inaccurately applies one or more components.
-Accurately analyzes feedback using all six components: goal-directed; specific/descriptive; task, process, or self-regulation focused; feedback rather than praise/reprimand; timely, contingent, and genuine; and individualized.
-4. Revise feedback to make it more effective 
-Revised feedback remains generic, person-focused, or disconnected from the goal and does not provide a clear next step.
-Revised feedback includes some characteristics of effective feedback but could be more specific, goal-directed, individualized, or actionable.
-Revised feedback is specific, goal-directed, focused on the task/process/self-regulation, appropriate to the learner and context, and provides a clear next step or opportunity to respond.
-5. Implement and examine student response 
-Does not implement the revised feedback or provides little evidence of how the student responded.
-Implements the revised feedback and describes the student response, but evidence is limited or largely descriptive.
-Implements the revised feedback and provides specific evidence of how the student responded, including whether the student revised, retried, continued, or demonstrated increased independence.
-6. Reflect and identify a next step 
-Reflection is incomplete or does not identify a meaningful change in practice.
-Identifies a strength, challenge, or next step but provides limited connection to the HLP or student response.
-Thoughtfully reflects on personal practice, contextual factors, student response, and identifies a specific, actionable next step for strengthening HLP 8/22.
+- Calculate: What percentage of my feedback provided students with specific information they could use?
+- The purpose isn't to achieve a perfect percentage. The purpose is to make your feedback practice visible.
+# Application Activity Rubric
+### HLP 8/22: Feedback in Action
+| Expectation | Beginning | Developing | Proficient
+| 1. Identify and describe feedback examples |Provides fewer than three examples, or examples are vague, incomplete, or do not represent actual/simulated feedback. | Provides three feedback examples and describes the student performance and teacher response, but some information is incomplete. | Provides three clear examples that accurately describe the student performance and the feedback provided.
+| 2. Distinguish feedback from praise and reprimands | Does not accurately distinguish feedback from praise or reprimands and/or provides limited explanation. | Correctly identifies some examples as feedback, praise, or reprimands but provides limited explanation of the differences. | Accurately distinguishes feedback from praise and reprimands and explains whether the feedback provides information the student can use.
+| 3. Apply the six HLP 8/22 components | Does not analyze feedback using the six components or identifies components inaccurately. | Analyzes feedback using some of the six components but misses or inaccurately applies one or more components. | Accurately analyzes feedback using all six components: goal-directed; specific/descriptive; task, process, or self-regulation focused; feedback rather than praise/reprimand; timely, contingent, and genuine; and individualized.
+| 4. Revise feedback to make it more effective | Revised feedback remains generic, person-focused, or disconnected from the goal and does not provide a clear next step. | Revised feedback includes some characteristics of effective feedback but could be more specific, goal-directed, individualized, or actionable. | Revised feedback is specific, goal-directed, focused on the task/process/self-regulation, appropriate to the learner and context, and provides a clear next step or opportunity to respond.
+| 5. Implement and examine student response | Does not implement the revised feedback or provides little evidence of how the student responded. | Implements the revised feedback and describes the student response, but evidence is limited or largely descriptive. | Implements the revised feedback and provides specific evidence of how the student responded, including whether the student revised, retried, continued, or demonstrated increased independence.
+| 6. Reflect and identify a next step  | Reflection is incomplete or does not identify a meaningful change in practice. | Identifies a strength, challenge, or next step but provides limited connection to the HLP or student response. | Thoughtfully reflects on personal practice, contextual factors, student response, and identifies a specific, actionable next step for strengthening HLP 8/22.
 
 
 `,
