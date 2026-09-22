@@ -19,10 +19,16 @@ export default function Modules({ audience }) {
     {
       id: "hlp7",
       title: "HLP 7: Organized Learning Environment",
-      description: "Coming Soon.",
+      description: "Establish a Consistent, Organized, and Respectful Learning Environment",
       color: "bg-rose-700",
-      comingSoon: true,
-      audience: "teacher"
+      audience: "teacher",
+    },
+    {
+      id: "hlp8-22",
+      title: "HLP 8-22: Feedback",
+      description: "Provide Positive and Constructive Feedback to Guide Students’ Learning and Behavior",
+      color: "bg-orange-700",
+      audience: "teacher",
     },
     {
       id: "hlp9",
@@ -30,14 +36,22 @@ export default function Modules({ audience }) {
       description: "Coming Soon.",
       color: "bg-teal-700",
       comingSoon: true,
-      audience: "teacher"
+      audience: "teacher",
     },
     {
       id: "hlp10",
-      title: "HLP 10: FBA",
+      title: "HLP 10: Functional Behavioral Assessments (FBA)",
       description: "Conduct Functional Behavioral Assessments to Develop Individual Student Behavior Support Plans.",
       color: "bg-purple-700",
-      audience: "teacher"
+      audience: "teacher",
+    },
+
+  {
+      id: "hlp4A5",
+      title: "Culturally Responsive Assessments (HLP 4 & 5)",
+      description: "Leading for equity in special education evaluation processes.",
+      color: "bg-pink-700",
+      audience: "leader",
     },
   ];
 
