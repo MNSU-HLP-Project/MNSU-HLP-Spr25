@@ -27,9 +27,8 @@ export default function Modules({ audience }) {
     {
       id: "hlp8-22",
       title: "HLP 8-22: Feedback",
-      description: "Coming Soon.",
+      description: "Provide Positive and Constructive Feedback to Guide Students’ Learning and Behavior",
       color: "bg-orange-700",
-      comingSoon: true,
       audience: "teacher",
     },
     {

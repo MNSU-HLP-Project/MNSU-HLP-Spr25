@@ -1,6 +1,5 @@
 const hlp8Data = {
   title: "HLP 8/22: Feedback",
-  comingSoon: true,
   steps: [
     { //Has placeholder for now, but will be replaced with a real video once it's created
       name: "Introduction",
