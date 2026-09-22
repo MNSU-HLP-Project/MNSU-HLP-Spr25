@@ -2,12 +2,64 @@ const overviewData = {
   title: "Overview of the HLPs",
   steps: [
     {
+      name: "Introduction",
+      tabs: [
+        {
+      label: "Video",
+      type: "video",
+      videoSrc: "/HLP Overview materials/1.1 Overview Of High-Leverage Practices (Hlp) Framework.mp4",
+        },
+        {
+        label: "Script",
+        content: `
+        # Introduction to the Overview of HLP Framework Module Script
+
+Hello, and welcome to the overview of the high-leverage practices module in myHLP Tracker. Good teaching is complex. Educators make decisions about what students need to learn, how we will teach it, how we will support engagement and behavior, and how we will work with colleagues and families, not to mention how we will know whether what we're doing is actually working, and sometimes that can feel like a lot. 
+
+
+That's one reason I find the high-leverage practices so valuable. The high-leverage practices give us a manageable set of essential practices that help us focus our attention on what matters most for effective teaching and improved student outcomes. In this module, we'll take a step back and look at the HLP framework as a whole. 
+
+
+We'll begin by answering a basic question: What are high-leverage practices and why do they matter? [00:01:00] You'll learn about the four HLP domains: collaboration, data-driven planning, instruction and behavior and academics, and intensify and intervene as needed. These domains represent different aspects of the work educators do to support student success. 
+
+
+But keep one important idea in mind as you move through this module. The domains are connected. Teaching doesn't happen in four separate boxes. For example, when a student isn't making the progress we expect, we might collaborate with colleagues and the student's family, examine information from multiple sources, identify an important learning goal, design instruction toward that goal, provide appropriate supports, monitor the student's response, and adjust our instruction when the data tell us that we need to make a change That's the individual HLPs working together as a framework. 
+
+
+You'll also learn about [00:02:00] two important categories within the framework: pillar practices and embedded practices. The pillar practices represent the most essential practices, the foundational practices that educators should initially focus on learning and mastering. The embedded practices support and strengthen those pillar practices. 
+
+
+So rather than thinking, "I need to learn twenty-two separate practices," I encourage you to think about the HLPs as a connected system of professional practices, or as I like to call them, intertwined functionality. Another important theme throughout this module is culturally inclusive practices and pedagogies. 
+
+
+Effective practice isn't simply about selecting a strategy and applying it the same way with every student. We need to understand and value students' strengths, identities, cultures, languages, and lived experiences. [00:03:00] We need to consider whether our practices create equitable opportunities for students to access, participate in, and succeed in learning. 
+
+
+That perspective is woven throughout the HLP framework. As you work through this module, you'll also begin to see an important connection between HLPs and evidence-based practices. The high-leverage practices help us think about the professional actions we need to take, how we collaborate, plan, teach, assess, and respond to student needs. Evidence-based practices, or EBPs, can give us specific research-supported approaches to use within that work. 
+
+
+In other words, knowing which practice to use matters, but so does knowing how to select it, implement it, monitor it, and adjust it based on the students in front of us. That's where the HLPs become [00:04:00] especially powerful. So, as you move throughout this module, don't worry about memorizing every HLP. Instead, I encourage you to think about your own professional practice. 
+
+
+Which of these practices are already part of what you do? Which practices are strengths for you? And perhaps most importantly, where is there an opportunity for you to grow? At the end of the module , you'll have an opportunity to choose an HLP or domain that is particularly relevant to your current role and identify a strategy that you can begin applying in your own practice. 
+
+
+That is really the goal of my HLP tracker. This isn't simply about learning the HLPs. It's about using the framework to support ongoing professional learning, reflection, implementation, and growth. So whether you're a general educator, a special education teacher, instructional coach, [00:05:00] school leader, teacher candidate, or faculty member, I invite you to approach this module with curiosity. 
+
+
+You probably already use many of these practices. The HLP framework gives you a way to name them, strengthen them, connect them to one another, and become more intentional about how you use them to support students. I'm glad you're here, and I'm excited for you to begin. So let's get started.
+`,
+        },
+
+      ],
+    },
+    {
       name: "Pre-assessment",
       type: "embed",
       intro:
         "Before continuing, please complete the Pre-Assessment. It's ungraded and simply helps you reflect on your current understanding of the High-Leverage Practices before beginning this module.",
       embedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeKQbrqSqBN8_USF-1O3EquaKI-bSBjeDiGkqq8Q1WLmUoKaA/viewform?embedded=true",
-      embedTitle: "Pre-Assessment",
+      embedTitle: "HLP Overview Pre-Assessment",
     },
     {
       name: "Implementation guide",
@@ -144,7 +196,7 @@ The research behind the HLPs suggests that improving student outcomes is not dep
         {
           label: "Video",
           type: "video",
-          videoSrc: "/overview-video.mp4",
+          videoSrc: "/HLP Overview materials/overview-video.mp4",
         },
         {
           label: "Script",
@@ -364,18 +416,18 @@ Together, we can strengthen educator practice and improve outcomes for every lea
           type: "download",
           intro:
             "Download the slide deck used to create the Overview video, if you'd like to review it directly.",
-          fileUrl: "/overview-slides.pptx",
+          fileUrl: "/HLP Overview materials/overview-slides.pptx",
           fileLabel: "Download Slide Deck (PowerPoint)",
         },
       ],
     },
     {
-      name: "HLP in Action",
+      name: "HLPs in Action",
       tabs: [
         {
           label: "Video",
           type: "video",
-          videoSrc: "/overview-hlp-in-action.mp4",
+          videoSrc: "/HLP Overview materials/6.2 Hlp In Action  Overview Of The Hlps Module.mp4",
         },
         {
           label: "Script",
@@ -385,16 +437,16 @@ Together, we can strengthen educator practice and improve outcomes for every lea
 Today, I work with teacher candidates, practicing teachers, and school teams around inclusive practices, including the HLPs. I also have the privilege of writing and training about how educators can use high-leverage practices alongside evidence-based practices to make instruction more effective for students.
 
 
-What Are the HLPs?
+## What Are the HLPs?
 
 
 Dr.And I want to start by saying something that every education professional should understand. [00:01:00] The HLPs are not just another list of things teachers are supposed to do. They're a way of thinking about the work of teaching. When I first encountered the HLPs, I recognized many of the practices. I'd been implementing pieces of them as a teacher, but seeing them organized into a framework helped me understand how those practices fit together and, just as importantly, how they help us make better decisions for students The HLPs have influenced my thinking by shifting my attention from asking, "What am I going to teach?"
 
 
-to asking, "What does this student need to be successful? And how will I know whether what I'm doing is working?" That sounds simple, but it changes a lot 
+to asking, "What does this student need to be successful? And how will I know whether what I'm doing is working?" That sounds simple, but it changes a lot
 
 
-The Four Domains
+## The Four Domains
 
 
 The HLPs organize this work into four connected domains: collaboration, data-driven [00:02:00] planning, instruction in behavior and academics, and intensify and intervene as needed.
@@ -412,7 +464,7 @@ Then we design instruction toward that goal, deliver instruction using effective
 I needed to look at what was happening in the classroom. I needed to talk with colleagues. I needed to consider what the student and family could tell us, and I needed to look at the data rather than relying on my own assumptions about what was or wasn't working. That experience has stayed with me. It's one reason HLP six: using student assessment data, analyzing instructional practices, and making necessary adjustments, has had such a strong influence on my professional practice.
 
 
-HLP Six: Data-Driven Decision
+## HLP Six: Data-Driven Decision
 
 
 For me, HLP [00:04:00] six represents an important mindset. If students aren't making the progress we expect, we don't simply ask, what's wrong with the student? We ask, what can the data tell us about the instruction, the environment, the supports, and the match between what we're teaching and what the student needs?
@@ -421,7 +473,7 @@ For me, HLP [00:04:00] six represents an important mindset. If students aren't m
 This is a very different way of approaching teaching. It places the emphasis where it belongs, on improving student outcomes. Another thing I want education professionals, whether that's educational leaders, general educators, special educators, related service providers, or even paraeducators to understand is that you don't necessarily implement one HLP at a time.
 
 
-Intertwined Functionality
+## Intertwined Functionality
 
 
 They work together in what I like to call intertwined functionality. Take planning and instruction, for example. HLP [00:05:00] eleven asks us to identify and prioritize long and short-term learning goals. HLP twelve asks us to systematically design instruction toward a specific learning goal. Thinking about how lessons connect, how learning is sequenced, and how we adjust the plan based on student performance.
@@ -445,10 +497,10 @@ Consider HLP one, collaborating with professionals to increase student success. 
 I've learned that lesson repeatedly throughout my career. When educators genuinely work together, students experience a much more coherent educational program, and that same idea extends to families. The HLP framework emphasizes collaborating with families, recognizing the knowledge they have of their children, honoring their [00:08:00] perspectives and backgrounds, and working together to support student learning.
 
 
-This isn't an extra. It's part of effective practice. 
+This isn't an extra. It's part of effective practice.
 
 
-Advice for Beginners
+## Advice for Beginners
 
 
 So what advice would I give someone who's just beginning to learn about the HLPs? Don't try to master all twenty-two at once. Start by understanding the framework. Learn the four domains. Understand the difference between pillar and embedded practices.
@@ -466,7 +518,7 @@ And what is one thing I could do differently or more intentionally? That last qu
 Think of them as a lens. Use the lens to look at your planning, use it to look at your instruction, use it to look at your collaboration with colleagues and families, use it to examine the data you're collecting and the decisions you're making, and most importantly, use it to ask whether what you're doing is [00:10:00] actually helping students learn, participate, and become more independent.
 
 
-Conclusion
+## Conclusion
 
 
 The HLPs become powerful when they move from something we can define on a page to something we can recognize in our own practice. As you continue through this module and traverse your own HLP learning journey, I hope you take away one central idea. The HLPs are about putting your professional knowledge into action.
