@@ -19,9 +19,8 @@ export default function Modules({ audience }) {
     {
       id: "hlp7",
       title: "HLP 7: Organized learning environment",
-      description: "Coming Soon.",
+      description: "Establish a Consistent, Organized, and Respectful Learning Environment",
       color: "bg-rose-700",
-      comingSoon: true,
       audience: "teacher",
     },
     {
