@@ -94,9 +94,9 @@ function Register() {
     newErrors.confirmPassword = "Passwords do not match.";
     };
     if (formData.grade_levels.length === 0) newErrors.grade_levels = "Select at least one grade level."
-    if (!formData.professional_category) newErrors.professional_category = "Select a professional role."
+    if (!formData.professional_category) newErrors.professional_category = "Select an educator type."
     if (formData.professional_category === "other" && !formData.other_professional_category.trim()) {
-      newErrors.other_professional_category = "Please specify your professional role."
+      newErrors.other_professional_category = "Please specify your educator type."
     }
     // if (!formData.role) newErrors.role = "Role is required.";
     
@@ -215,7 +215,7 @@ function Register() {
             )}
           </div>
           <div className="mt-4">
-            <label htmlFor="professional_category" className="text-gray-700 font-medium">Professional Role (GEN/SPED):</label>
+            <label htmlFor="professional_category" className="text-gray-700 font-medium">Educator Type:</label>
             <select
               id="professional_category"
               name="professional_category"
@@ -223,7 +223,7 @@ function Register() {
               className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               onChange={handleChange}
             >
-              <option value="">Select a professional role</option>
+              <option value="">Select an educator type</option>
               {professionalCategories.map((category) => (
                 <option key={category.value} value={category.value}>
                   {category.label}
