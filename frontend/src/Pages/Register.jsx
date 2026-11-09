@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import API from "../utils/axios";
-import toast from "react-hot-toast";
 
 const roleObj = {
   'stu': 'Practitioner',
@@ -70,14 +69,23 @@ function Register() {
     }));
   };
 
-  const handleGradeLevelChange = (event) => {
-    const { checked, value } = event.target;
+  const updateGradeLevel = (value, checked) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       grade_levels: checked
         ? [...prevFormData.grade_levels, value]
         : prevFormData.grade_levels.filter((gradeLevel) => gradeLevel !== value),
     }));
+  };
+
+  const handleGradeLevelChange = (event) => {
+    updateGradeLevel(event.target.value, event.target.checked);
+  };
+
+  const handleGradeLevelKeyDown = (event) => {
+    if (event.key !== "Enter" || event.repeat) return;
+    event.preventDefault();
+    updateGradeLevel(event.currentTarget.value, !event.currentTarget.checked);
   };
 
   // Main submit function
@@ -100,11 +108,16 @@ function Register() {
     }
     // if (!formData.role) newErrors.role = "Role is required.";
     
-    // Set the errors to display
-    setErrors(newErrors);
+    // Stop before sending the request if any required data is missing or invalid.
+    if (Object.keys(newErrors).length > 0) {
+      setErrors({
+        ...newErrors,
+        general: "Sign up unsuccessful. Please correct the highlighted fields and try again."
+      });
+      return;
+    }
+    setErrors({});
 
-    // If any errors exist, stop execution
-    if (Object.keys(newErrors).length > 0) return;
     try {
         // Posting to backend for signup, all these are required
         const response = await API.post("/user_auth/signup/", {
@@ -140,19 +153,20 @@ function Register() {
     } catch (error) {
       console.error("Error:", error);
 
-      if (error.response && error.response.data) {
-        // Update errors based on what is given in response
-        const apiErrors = error.response.data;
-        const updatedErrors = { ...newErrors };
-        if (apiErrors.email) updatedErrors.email = apiErrors.email;
-        if (apiErrors.password) updatedErrors.password = apiErrors.password;
-        if (apiErrors.detail) updatedErrors.general = apiErrors.detail;
-        if (apiErrors.error) updatedErrors.general = apiErrors.error
+      const apiErrors = error.response?.data ?? {};
+      const updatedErrors = {};
+      if (apiErrors.email) updatedErrors.email = apiErrors.email;
+      if (apiErrors.password) updatedErrors.password = apiErrors.password;
+      const serverMessage = [apiErrors.detail, apiErrors.error].find(
+        (message) => typeof message === "string"
+      );
 
-        setErrors(updatedErrors);
-      } else {
-        toast.error("An error occurred. Please try again.");
-      }
+      setErrors({
+        ...updatedErrors,
+        general: serverMessage
+          ? `Sign up unsuccessful. ${serverMessage}`
+          : "Sign up unsuccessful. Please check your information and try again."
+      });
     }
   };
 
@@ -168,7 +182,18 @@ function Register() {
         </p>
       )}
 
-        <form onSubmit={(e) => { e.preventDefault(); buttonPress(); }}>
+        <form
+          onKeyDown={(event) => {
+            if (
+              event.key === "Enter" &&
+              event.target.type !== "submit" &&
+              event.target.type !== "checkbox"
+            ) {
+              event.preventDefault();
+            }
+          }}
+          onSubmit={(e) => { e.preventDefault(); buttonPress(); }}
+        >
           <div className="mt-4 flex gap-2">
             <input
               name="firstName"
@@ -203,6 +228,7 @@ function Register() {
                       value={gradeLevel.value}
                       checked={formData.grade_levels.includes(gradeLevel.value)}
                       onChange={handleGradeLevelChange}
+                      onKeyDown={handleGradeLevelKeyDown}
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                     {gradeLevel.label}
@@ -275,9 +301,9 @@ function Register() {
           onChange={handleChange}
         />
         {errors.password && (
-          errors.password.map((e, index) => (
-            <p key={index} className="text-red-500 text-sm mt-1">{e}</p>
-          ))
+          <p className="text-red-500 text-sm mt-1">
+            {Array.isArray(errors.password) ? errors.password.join(" ") : errors.password}
+          </p>
         )}
       </div>
 
@@ -298,7 +324,7 @@ function Register() {
         </div>
 
 
-      {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
+      {errors.general && <p role="alert" className="text-red-500 text-sm mt-2">{errors.general}</p>}
 
       <button
         className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
