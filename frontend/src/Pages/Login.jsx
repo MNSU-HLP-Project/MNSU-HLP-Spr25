@@ -82,7 +82,7 @@ function Auth() {
           <input
             name="username"
             type="text"
-            placeholder="e.g. supervisor@mnsu.edu"
+            placeholder="e.g. coach@mnsu.edu"
             className="w-full px-4 py-3 bg-blue-50 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 transition-all"
             onChange={handleChange}
             onKeyDown={handleKeyDown}

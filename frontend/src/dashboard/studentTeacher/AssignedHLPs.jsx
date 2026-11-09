@@ -56,7 +56,7 @@ const AssignedHLPs = () => {
         />
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Assigned HLPs</h1>
-          <p className="text-sm text-gray-500">HLPs your supervisor has assigned to you</p>
+          <p className="text-sm text-gray-500">HLPs your Coach / Facilitator has assigned to you</p>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ const AssignedHLPs = () => {
           <FaCheckCircle className="text-5xl text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600 font-medium">No assignments yet.</p>
           <p className="text-sm text-gray-400 mt-1">
-            Your supervisor hasn&apos;t assigned any HLPs to you or your class yet.
+            Your Coach / Facilitator hasn&apos;t assigned any HLPs to you or your class yet.
           </p>
         </div>
       )}
@@ -115,10 +115,10 @@ const AssignedHLPs = () => {
                     </p>
                   )}
 
-                  {/* Note from supervisor */}
+                  {/* Note from Coach / Facilitator */}
                   {a.note && (
                     <div className="mt-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
-                      <p className="text-xs font-semibold text-blue-700 mb-0.5">Supervisor note:</p>
+                      <p className="text-xs font-semibold text-blue-700 mb-0.5">Coach / Facilitator note:</p>
                       <p className="text-sm text-gray-700">{a.note}</p>
                     </div>
                   )}

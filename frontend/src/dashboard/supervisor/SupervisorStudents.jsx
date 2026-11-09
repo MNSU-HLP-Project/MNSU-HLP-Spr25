@@ -79,7 +79,7 @@ const SupervisorStudents = () => {
               <FaHome />
             </button>
             <div>
-              <h1 className="text-xl md-text-2xl font-bold">Students in Class</h1>
+              <h1 className="text-xl md-text-2xl font-bold">Practitioners in Class</h1>
               <p className="text-sm text-white-100">Click "Review" to view reflections</p>
             </div>
             {window.screen.width <= 600 && <MenuDropdown />}
@@ -97,7 +97,7 @@ const SupervisorStudents = () => {
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* Students Grid */}
+        {/* Practitioners Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {students.map((student) => (
             <div

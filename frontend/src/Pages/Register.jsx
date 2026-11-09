@@ -1,35 +1,38 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
 
+const roleObj = {
+  'stu': 'Practitioner',
+  'admin': 'Administrator',
+  'sup': 'Coach / Facilitator'
+};
 
 function Register() {
   const [searchParams] = useSearchParams();
   const [roleSignup, setRoleSignup] = useState('')
-  const gradelevels = [
-    { id: 1, grade_level: "K", gradelevel: "Kindergarten" },
-    { id: 2, grade_level: "1", gradelevel: "1st Grade" },
-    { id: 3, grade_level: "2", gradelevel: "2nd Grade" },
-    { id: 4, grade_level: "3", gradelevel: "3rd Grade" },
-    { id: 5, grade_level: "4", gradelevel: "4th Grade" },
-    { id: 6, grade_level: "5", gradelevel: "5th Grade" },
-    { id: 7, grade_level: "6", gradelevel: "6th Grade" },
-    { id: 8, grade_level: "7", gradelevel: "7th Grade" },
-    { id: 9, grade_level: "8", gradelevel: "8th Grade" },
-    { id: 10, grade_level: "9", gradelevel: "9th Grade" },
-    { id: 11, grade_level: "10", gradelevel: "10th Grade" },
-    { id: 12, grade_level: "11", gradelevel: "11th Grade" },
-    { id: 13, grade_level: "12", gradelevel: "12th Grade" }
+  const gradeLevels = [
+    { value: "primary", label: "Primary (K-3)" },
+    { value: "intermediate", label: "Intermediate (4-5)" },
+    { value: "middle_grades", label: "Middle Grades (6-8)" },
+    { value: "high_school", label: "High School (9-12)" }
   ];
-  const roleObj = {
-    'stu': 'Student Teacher',
-    'admin': 'Administrator',
-    'sup': 'Supervisor'
-  }
+  const professionalCategories = [
+    { value: "principal", label: "Principal" },
+    { value: "assistant_principal", label: "Assistant Principal" },
+    { value: "dean", label: "Dean" },
+    { value: "special_education_administrator", label: "Special Education Administrator" },
+    { value: "instructional_coach", label: "Instructional Coach" },
+    { value: "general_educator", label: "General Educator" },
+    { value: "special_educator", label: "Special Educator" },
+    { value: "other", label: "Other" }
+  ];
+  const roleDescriptions = {
+    Practitioner: "Supports users who are developing, practicing, documenting, and reflecting on their implementation of High-Leverage Practices. This includes pre-service teacher and leader candidates, in-service teachers, special educators, and school leaders.",
+    "Coach / Facilitator": "Supports users who observe practice, provide feedback, mentor educators, facilitate reflection, or monitor progress. Examples include IHE faculty, cooperating teachers, principals, instructional coaches, and professional learning facilitators."
+  };
   // Used to get the role that will be filled out as well as invitation code
   useEffect(() => {
       const code = searchParams.get('code');
@@ -37,19 +40,13 @@ function Register() {
       if (code) {
           setFormData((prev) => ({ ...prev, searchParams: code }));
       }
-      // pull role form search params
+      // Pull role from search params
       const role = searchParams.get('role')
       setRoleSignup(roleObj[role])
-      if (role == 'sup' || role=='admin') {
-
-        // Set student_teacher to false to display different options
-          setFormData((prev) => ({ ...prev, student_teacher: false}))
-      }
   }, [searchParams]);
 
 // Default form data
   const [formData, setFormData] = useState({
-    student_teacher: true,
     firstName: "",
     lastName: "",
     email: "",
@@ -57,8 +54,9 @@ function Register() {
     // organization: "",
     confirmPassword: "",
     searchParams: "",
-    grade_level:"",
-    type_of_educator: "GE"
+    grade_levels: [],
+    professional_category: "",
+    other_professional_category: ""
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -69,6 +67,16 @@ function Register() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+  };
+
+  const handleGradeLevelChange = (event) => {
+    const { checked, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      grade_levels: checked
+        ? [...prevFormData.grade_levels, value]
+        : prevFormData.grade_levels.filter((gradeLevel) => gradeLevel !== value),
     }));
   };
 
@@ -85,7 +93,11 @@ function Register() {
     if (formData.password !== formData.confirmPassword) {
     newErrors.confirmPassword = "Passwords do not match.";
     };
-    if (formData.student_teacher && !formData.grade_level) newErrors.grade_level = "Grade level is required."
+    if (formData.grade_levels.length === 0) newErrors.grade_levels = "Select at least one grade level."
+    if (!formData.professional_category) newErrors.professional_category = "Select a professional role."
+    if (formData.professional_category === "other" && !formData.other_professional_category.trim()) {
+      newErrors.other_professional_category = "Please specify your professional role."
+    }
     // if (!formData.role) newErrors.role = "Role is required.";
     
     // Set the errors to display
@@ -101,8 +113,9 @@ function Register() {
           email: formData.email,
           password: formData.password,
           invitation_code: formData.searchParams,
-          grade_level: formData.grade_level,
-          type_of_educator: formData.type_of_educator
+          grade_levels: formData.grade_levels,
+          professional_category: formData.professional_category,
+          other_professional_category: formData.other_professional_category
         });
         // On success navigate to email verification page
         if (response.status === 201) {
@@ -149,6 +162,11 @@ function Register() {
       <h2 className="text-2xl font-bold text-center text-gray-800">
         {roleSignup} Sign Up
       </h2>
+      {roleDescriptions[roleSignup] && (
+        <p className="mt-2 text-sm text-center text-gray-600">
+          {roleDescriptions[roleSignup]}
+        </p>
+      )}
 
         <form onSubmit={(e) => { e.preventDefault(); buttonPress(); }}>
           <div className="mt-4 flex gap-2">
@@ -173,44 +191,65 @@ function Register() {
               <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
             )}
           </div>
-          {/* Only shown with Student Teacher registrations */}
-          {formData.student_teacher && (
           <div className="mt-4">
-            <label className="text-gray-700 font-medium">Grade Level:</label>
+            <fieldset>
+              <legend className="text-gray-700 font-medium">Grade Level:</legend>
+              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {gradeLevels.map((gradeLevel) => (
+                  <label key={gradeLevel.value} className="flex items-center gap-2 text-gray-700">
+                    <input
+                      type="checkbox"
+                      name="grade_levels"
+                      value={gradeLevel.value}
+                      checked={formData.grade_levels.includes(gradeLevel.value)}
+                      onChange={handleGradeLevelChange}
+                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    {gradeLevel.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            {errors.grade_levels && (
+              <p className="text-red-500 text-sm mt-1">{errors.grade_levels}</p>
+            )}
+          </div>
+          <div className="mt-4">
+            <label htmlFor="professional_category" className="text-gray-700 font-medium">Professional Role (GEN/SPED):</label>
             <select
-              name="grade_level"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              id="professional_category"
+              name="professional_category"
+              value={formData.professional_category}
+              className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               onChange={handleChange}
             >
-              <option value="">Select a grade level</option> {/* Default empty option */}
-              {gradelevels.map((object) => (
-                <option key={object.id} value={object.grade_level}>
-                  {object.gradelevel}
+              <option value="">Select a professional role</option>
+              {professionalCategories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
                 </option>
               ))}
             </select>
-            {errors.grade_level && (
-              <p className="text-red-500 text-sm mt-1">{errors.grade_level}</p>
+            {errors.professional_category && (
+              <p className="text-red-500 text-sm mt-1">{errors.professional_category}</p>
             )}
-          </div>)}
-          {formData.student_teacher && (
-          <div className="mt-4 flex items-center gap-2">
-            <label className="text-gray-700 font-medium">Educator Type:</label>
-            <select
-              name="type_of_educator"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              onChange={handleChange}
-            >
-              {/* <option value="" disabled>
-                Select an option...
-              </option> */}
-              <option value="GE">General Educator</option>
-              <option value="SE">Special Educator</option>
-            </select>
-            {errors.type_of_educator && (
-              <p className="text-red-500 text-sm mt-1">{errors.type_of_educator}</p>
-            )}
-          </div>)}
+          </div>
+          {formData.professional_category === "other" && (
+            <div className="mt-4">
+              <label htmlFor="other_professional_category" className="text-gray-700 font-medium">Please specify:</label>
+              <input
+                id="other_professional_category"
+                name="other_professional_category"
+                type="text"
+                value={formData.other_professional_category}
+                className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                onChange={handleChange}
+              />
+              {errors.other_professional_category && (
+                <p className="text-red-500 text-sm mt-1">{errors.other_professional_category}</p>
+              )}
+            </div>
+          )}
         
       
 

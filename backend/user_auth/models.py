@@ -22,9 +22,29 @@ class Organization(models.Model):
         return self.name
 
 class ExtendUser(models.Model):
+    GRADE_LEVEL_CHOICES = [
+        ('primary', 'Primary (K-3)'),
+        ('intermediate', 'Intermediate (4-5)'),
+        ('middle_grades', 'Middle Grades (6-8)'),
+        ('high_school', 'High School (9-12)'),
+    ]
+    PROFESSIONAL_CATEGORY_CHOICES = [
+        ('principal', 'Principal'),
+        ('assistant_principal', 'Assistant Principal'),
+        ('dean', 'Dean'),
+        ('special_education_administrator', 'Special Education Administrator'),
+        ('instructional_coach', 'Instructional Coach'),
+        ('general_educator', 'General Educator'),
+        ('special_educator', 'Special Educator'),
+        ('other', 'Other'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extend_user')
     role = models.CharField(max_length=100)
     org = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.CASCADE)
+    grade_levels = models.JSONField(default=list, blank=True)
+    professional_category = models.CharField(max_length=40, choices=PROFESSIONAL_CATEGORY_CHOICES, blank=True, default='')
+    other_professional_category = models.CharField(max_length=200, blank=True, default='')
 
     def __str__(self):
         return self.user.username
@@ -65,8 +85,8 @@ class StudentTeacher(models.Model):
         ('11', '11th Grade'),
         ('12', '12th Grade'),
     ]
-    type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES)
-    grade_level = models.CharField(max_length=2, choices=GRADE_LEVEL_CHOICES)
+    type_of_teacher = models.CharField(max_length=2, choices=TEACHER_TYPE_CHOICES, blank=True, default='')
+    grade_level = models.CharField(max_length=2, choices=GRADE_LEVEL_CHOICES, blank=True, default='')
     class_name = models.ForeignKey(SupervisorClass, on_delete=models.CASCADE, null=True, blank=True)
 
 

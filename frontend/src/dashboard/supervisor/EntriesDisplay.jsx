@@ -85,8 +85,8 @@ const EntriesDisplay = () => {
               <FaArrowLeft />
             </button>
             <div>
-              <h1 className="text-xl md-text-2xl font-bold">Student Reflections</h1>
-              <p className="text-sm text-white-100">Review submissions by student</p>
+              <h1 className="text-xl md-text-2xl font-bold">Practitioner Reflections</h1>
+              <p className="text-sm text-white-100">Review submissions by Practitioner</p>
             </div>
           </div>
           <div>

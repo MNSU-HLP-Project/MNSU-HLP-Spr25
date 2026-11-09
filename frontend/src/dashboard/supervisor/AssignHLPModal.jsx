@@ -119,7 +119,7 @@ const AssignHLPModal = ({ classId, students = [], onClose, onAssigned, embedded 
               rows={2}
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Add any instructions or context for students..."
+              placeholder="Add any instructions or context for Practitioners..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 resize-none"
             />
           </div>
@@ -150,14 +150,14 @@ const AssignHLPModal = ({ classId, students = [], onClose, onAssigned, embedded 
                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                Specific Students
+                Specific Practitioners
               </button>
             </div>
 
             {targetType === "students" && (
               <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
                 {students.length === 0 ? (
-                  <p className="text-sm text-gray-500 p-3">No students in class.</p>
+                  <p className="text-sm text-gray-500 p-3">No Practitioners in class.</p>
                 ) : (
                   students.map((s) => (
                     <label

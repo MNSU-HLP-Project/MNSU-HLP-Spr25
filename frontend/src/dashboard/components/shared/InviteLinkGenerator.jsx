@@ -52,9 +52,9 @@ const InviteLinkGenerator = ({ userRole = "Admin", refreshSignal }) => {
   // Determine invite message based on user role
   const inviteMessage =
     userRole === "Admin"
-      ? "Send this to a supervisor:" 
+      ? "Send this to a Coach / Facilitator:" 
       : userRole === "Superuser" ? "Send this to the admin"
-      : "Share this link with students:";
+      : "Share this link with Practitioners:";
 
   return (
     <div className="mt-1 w-full p-3 bg-gray-100 rounded-lg shadow-lg">

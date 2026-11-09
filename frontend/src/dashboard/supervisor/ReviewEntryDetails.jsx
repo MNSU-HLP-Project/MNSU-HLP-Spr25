@@ -197,7 +197,7 @@ const ReviewEntryDetails = () => {
               <div className="flex items-center gap-2">
                 <FaUser className="text-blue-600" />
                 <span>
-                  Student: {entry.user_detail?.first_name} {entry.user_detail?.last_name}
+                  Practitioner: {entry.user_detail?.first_name} {entry.user_detail?.last_name}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ const ReviewEntryDetails = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Student Reflections
+                Practitioner Reflections
               </h3>
 
               {entry.prompt_responses && entry.prompt_responses.length > 0 ? (
@@ -341,12 +341,12 @@ const ReviewEntryDetails = () => {
             {/* Comment Box */}
             <div className="print:hidden">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Supervisor Comment
+                Coach / Facilitator Comment
               </label>
               <textarea
                 rows={4}
                 className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400 transition resize-none"
-                placeholder="Add your comments for the student..."
+                placeholder="Add your comments for the Practitioner..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />

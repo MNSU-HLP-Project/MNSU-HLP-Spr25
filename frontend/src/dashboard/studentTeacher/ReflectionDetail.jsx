@@ -293,7 +293,7 @@ const ReflectionDetail = () => {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-yellow-800 mb-2">Revision Requested</h2>
-              <p className="text-yellow-700">Your supervisor has requested revisions to this reflection. Please review their feedback below and make the necessary changes.</p>
+              <p className="text-yellow-700">Your Coach / Facilitator has requested revisions to this reflection. Please review their feedback below and make the necessary changes.</p>
             </div>
           </div>
         </div>
@@ -321,7 +321,7 @@ const ReflectionDetail = () => {
                 </span>
               </h2>
               <p className="text-sm text-indigo-700 mb-4">
-                Your supervisor evaluated your reflection using the rubric below. Your score for each criterion is highlighted.
+                Your Coach / Facilitator evaluated your reflection using the rubric below. Your score for each criterion is highlighted.
               </p>
               <div className="overflow-x-auto rounded-lg border border-indigo-100">
                 <table className="w-full text-xs">

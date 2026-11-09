@@ -243,8 +243,9 @@ Zoder-Martell, K. A., Floress, M. T., Bernas, R. S., Dufrene, B. A., & Foulks, S
       tabs: [
         {
           label: "Video",
-          type: "video",
-          videoSrc: "/HLP 8-22 materials/Hlp 8 22 Module Video.mp4",
+          type: "youtube",
+          youtubeEmbedUrl: "https://www.youtube.com/embed/TSxRw3_WRbc",
+          youtubeTitle: "HLP 8/22 Module Video",
         },
         {
           label: "Script",
@@ -317,8 +318,9 @@ Thank you, and I hope you'll take your next implementation step into your actual
       tabs: [
         {
           label: "Video",
-          type: "video",
-          videoSrc: "/HLP 8-22 materials/6.2 Hlp8 22 In Action  Dr. Kyena Cornelius.mp4",
+          type: "youtube",
+          youtubeEmbedUrl: "https://www.youtube.com/embed/j66KbQVq9Bg",
+          youtubeTitle: "HLP8/22 in Action: Dr. Kyena Cornelius",
         },
         {
           label: "Script",

@@ -39,7 +39,7 @@ As you begin, I encourage you to look beyond the question “How do I get studen
         embedTitle: "Open Pre-Assessment",
     },
     { // Could use formating revision
-      name: "HLP 7 Implementation guide",
+      name: "HLP 7 Implementation Guide",
       content: `
 ### Ruby L. Owiny, Ph.D.
 ### Minnesota State University, Mankato
@@ -329,8 +329,45 @@ This final slide provides the references used to develop this HLP 7 module. I en
     },
     {
       name: "HLP in Action",
-      type: "video",
-      videoSrc: "/HLP 7 materials/HLP-In-Action-Hlp-7.mp4",
+      tabs: [
+        {
+          label: "Video",
+          type: "youtube",
+          youtubeEmbedUrl: "https://www.youtube.com/embed/sN3s2SmRQQc",
+          youtubeTitle: "HLP 7 in Action",
+        },
+        {
+          label: "Script",
+          content: `
+# HLP 7 In Action Transcript
+[00:00:00] 
+## What is HLP7?
+Kendra: Hi, guys. I'm Kendra, 
+here to share a little bit about what I think HLP7 is and how I implement it in my classroom. when we're talking about HLP7, we're talking about establishing a consistent and organized and respectful learning 
+and safe and valued in your environment. so when you use HLP7 in your classroom, it should look like teaching explicit routines and expectations.
+## Routines & Expectations
+Kendra: this is including things like how you want your students to enter your classroom from the bus, where you want them to, unload all their things, like their backpacks and their coats and their folders. if students go and get breakfast, what does that routine look like, and what are the expectations of that routine?
+some of the expectations and routines that I have for my classroom include all those things, and it includes finding their own [00:01:00] supplies for their, classroom work and the activities that we are doing. So at the beginning of the year, I showed my students where everything was, how I expect everything to be put back when they're done using it so that they know, what I expect from them and how...
+## How to Use HLP7
+Kendra: And this just helps generate some more, independence from my students. So a good way to think about how to use HLP7 in your classroom would be to explain to the group what being successful looks like and then to model that for the students. after you explain and model, it's really important to practice that expectation with your students and then to remind your students what those expectations are before a transition, before lunch, before recess, or before any activity [00:02:00] begins, and then to always give positive specific feedback to your students.
+so in the next video, you'll see a little bit of my classroom and a little bit of how I, use HLP7 in my classroom. I hope you gain some information through these videos from me. I also apologize for non-Hollywood quality of videoing and video editing. but I hope you enjoyed it, and I wanna wish you all good luck, this year and next year.
+## Classroom Tour
+Kendra: Hey, I'm Kendra, and welcome to my classroom. Come on in
+## Q&A: Role & Definition
+Kendra: Hey, Kendra. Hey. What's your role and educational setting? Oh, okay. So I am a first year special education teacher. I teach in a transition program with young adults
+Sam, define HLP 7 in your own words. All right. [00:03:00] HLP 7 is, the ability to create a consistent, organized, and respectful classroom. So that's what we're showing you today. in my own words, HLP 7 just means creating a learning environment for students and staff that feels safe, that feels organized, that feels, predictable for them.
+## Q&A: Implementation
+Kendra: How do you implement HLP 7 in your classroom? thanks for asking. So each day, one of the most important things I do is I always greet students at the door. So I stand in the doorway, and when students come in, I make sure I greet them by name, and I check in to see how they're doing. And then when students come in, they, they have been
+## Q&A: Challenges & Impact
+Kendra: What have been some challenges and lessons learned when implementing HLP7? [00:04:00] I think a challenge when implementing HLP7 is just making sure you're
+when you learn about your students' needs and interests, you can really incorporate them into the classroom and the expectations that you set What impact has HLP7 had on your students? I think it's had a very positive impact. my crew is... We're in our third week of, third or fourth? Third week of school already, they have had a ton of practice with- I think, one of the coolest things that we did was up here, we as a classroom created our own core classroom rules, and we did that the very first week of school.
+this has been a very big impact on my students. They were able to [00:05:00] have the autonomy to decide what those classroom rules looked like, and then we were able to brainstorm about what they sounded and what they looked like
+So this has been
+What is one piece of advice for educators seeking to strengthen their use
+Joining us to visit your crib. 
+`,
+        },
+      ]
     },
     { // Could use formating revision
       name: "Application activity",

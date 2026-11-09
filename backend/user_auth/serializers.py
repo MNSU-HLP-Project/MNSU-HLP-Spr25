@@ -24,16 +24,33 @@ class SignupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
     invitation_code = serializers.UUIDField(required=True)
-    grade_level = serializers.CharField(required=False, allow_blank=True)
-    type_of_educator = serializers.CharField(source='type_of_teacher', required=False, allow_blank=True)
+    grade_levels = serializers.ListField(
+        child=serializers.ChoiceField(choices=ExtendUser.GRADE_LEVEL_CHOICES),
+        allow_empty=False,
+    )
+    professional_category = serializers.ChoiceField(choices=ExtendUser.PROFESSIONAL_CATEGORY_CHOICES)
+    other_professional_category = serializers.CharField(required=False, allow_blank=True, max_length=200)
     
     class Meta:
         model = User
-        fields = ['firstName', 'lastName', 'email', 'password', 'invitation_code', 'grade_level', 'type_of_educator']
+        fields = [
+            'firstName', 'lastName', 'email', 'password', 'invitation_code',
+            'grade_levels', 'professional_category', 'other_professional_category',
+        ]
+
+    def validate(self, data):
+        if data['professional_category'] == 'other' and not data.get('other_professional_category', '').strip():
+            raise serializers.ValidationError({
+                'other_professional_category': 'Please specify your professional role.'
+            })
+        return data
 
     def create(self, validated_data):
         # Get inviation code to look up
         invitation_code = validated_data.pop('invitation_code')
+        grade_levels = validated_data.pop('grade_levels')
+        professional_category = validated_data.pop('professional_category')
+        other_professional_category = validated_data.pop('other_professional_category', '')
         try:
             # If invitation code is there get it, if not error as url is incorrect
             invitation = Invitation.objects.get(code=invitation_code)
@@ -81,7 +98,10 @@ class SignupSerializer(serializers.ModelSerializer):
             ExtendUser.objects.create(
                 user=user,
                 org=org,
-                role=role
+                role=role,
+                grade_levels=grade_levels,
+                professional_category=professional_category,
+                other_professional_category=other_professional_category,
             )
         
         # Increment the invitation use count
@@ -90,7 +110,7 @@ class SignupSerializer(serializers.ModelSerializer):
         
         # if student teacher we need to register them with a class
         if role == 'Student Teacher':
-            stuteach = StudentTeacher.objects.create(user=user, type_of_teacher=validated_data['type_of_teacher'], grade_level=validated_data['grade_level'])
+            stuteach = StudentTeacher.objects.create(user=user)
             # Get info and look for a class
             sup = Supervisor.objects.filter(user=invitation.teacher).first()
             class_name = invitation.class_name

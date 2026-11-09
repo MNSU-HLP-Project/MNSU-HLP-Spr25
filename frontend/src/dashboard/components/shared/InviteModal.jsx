@@ -52,10 +52,10 @@ const InviteModal = ({ userRole = "Supervisor", onClose }) => {
 
   const inviteMessage =
     userRole === "Admin"
-      ? "Send this link to a supervisor:"
+      ? "Send this link to a Coach / Facilitator:"
       : userRole === "Superuser"
       ? "Send this link to an admin:"
-      : "Share this link with students to join the class:";
+      : "Share this link with Practitioners to join the class:";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-modal="true" role="dialog">

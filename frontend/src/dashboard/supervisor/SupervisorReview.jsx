@@ -42,10 +42,10 @@ const SupervisorReview = () => {
         <button onClick={() => navigate("/mainmenu/")} className="text-2xl text-blue-600 hover:scale-110 transition-transform" title="Home">
           <FaHome />
         </button>
-        <h1 className="text-2xl font-bold">Student Reflections</h1>
+        <h1 className="text-2xl font-bold">Practitioner Reflections</h1>
       </div>
       {entries.length === 0 ? (
-        <p>No reflections found for this student.</p>
+          <p>No reflections found for this Practitioner.</p>
       ) : (
         <div className="space-y-4">
           {entries.map((entry) => (

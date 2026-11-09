@@ -150,7 +150,7 @@ const ClassEditor = () => {
               Reflection Prompts for {classDetails.name}
             </h3>
             <p className="text-sm text-gray-600">
-              Check the prompts you want students to answer. Default prompts are pre-selected.
+              Check the prompts you want Practitioners to answer. Default prompts are pre-selected.
               At least one prompt must be included.
             </p>
 

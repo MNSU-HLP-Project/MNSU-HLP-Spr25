@@ -5,9 +5,10 @@ const overviewData = {
       name: "Introduction",
       tabs: [
         {
-      label: "Video",
-      type: "video",
-      videoSrc: "/HLP Overview materials/1.1 Overview Of High-Leverage Practices (Hlp) Framework.mp4",
+          label: "Video",
+          type: "youtube",
+          youtubeEmbedUrl: "https://www.youtube.com/embed/6GMzeVMg5Cw",
+          youtubeTitle: "Overview of High Leverage Practices HLP Framework",
         },
         {
         label: "Script",
@@ -426,8 +427,9 @@ Together, we can strengthen educator practice and improve outcomes for every lea
       tabs: [
         {
           label: "Video",
-          type: "video",
-          videoSrc: "/HLP Overview materials/6.2 Hlp In Action  Overview Of The Hlps Module.mp4",
+          type: "youtube",
+          youtubeEmbedUrl: "https://www.youtube.com/embed/NER3QVur8uI",
+          youtubeTitle: "HLP in Action: Overview of the HLPs Module",
         },
         {
           label: "Script",

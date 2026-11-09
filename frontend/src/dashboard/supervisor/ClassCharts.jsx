@@ -159,13 +159,13 @@ const ClassCharts = ({ entries }) => {
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Filter by Student</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Filter by Practitioner</label>
               <select
                 className="p-2 rounded border border-gray-300 w-full sm:w-64 text-sm"
                 value={selectedStudentId}
                 onChange={(e) => setSelectedStudentId(e.target.value)}
               >
-                <option value="">All Students (class overview)</option>
+                <option value="">All Practitioners (class overview)</option>
                 {students.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}

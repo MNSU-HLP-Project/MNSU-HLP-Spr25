@@ -621,7 +621,7 @@ const HLPReflectionForm = () => {
             </span>
           </h2>
           <p className="text-sm text-indigo-700 mb-4">
-            Your supervisor will evaluate your reflection using the rubric below. Each of the 6 criteria is scored 1–4.
+            Your Coach / Facilitator will evaluate your reflection using the rubric below. Each of the 6 criteria is scored 1–4.
           </p>
           <div className="overflow-x-auto rounded-lg border border-indigo-100">
             <table className="w-full text-xs">

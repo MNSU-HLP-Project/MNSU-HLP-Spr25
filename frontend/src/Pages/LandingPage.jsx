@@ -62,7 +62,7 @@ function LandingPage() {
           : "border-white text-white"
       } transition duration-300 text-sm sm:text-base`}
     >
-      Student Guide
+      Practitioner Guide
     </button>
   </a>
   <a
@@ -77,7 +77,7 @@ function LandingPage() {
           : "border-white text-white"
       } transition duration-300 text-sm sm:text-base`}
     >
-      Supervisor Guide
+      Coach / Facilitator Guide
     </button>
   </a>
   <a
@@ -107,7 +107,7 @@ function LandingPage() {
           : "border-white text-white"
       } transition duration-300 text-sm sm:text-base`}
     >
-      Request Supervisor Account
+      Request Coach / Facilitator Account
     </button>
   </a>
 </div>

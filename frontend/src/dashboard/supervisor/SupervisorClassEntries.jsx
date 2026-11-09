@@ -107,7 +107,7 @@ const SupervisorClassEntries = () => {
               <FaHome />
             </button>
             <div>
-              <h1 className="text-xl font-bold">Student Reflections</h1>
+              <h1 className="text-xl font-bold">Practitioner Reflections</h1>
               <p className="text-sm text-white-100">Viewing all class entries for: <span className="font-semibold">{className}</span></p>
             </div>
 
